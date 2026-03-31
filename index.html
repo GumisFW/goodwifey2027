@@ -412,6 +412,209 @@
   }
 
   #wiki-close:active { box-shadow:none; transform:translate(3px,3px); }
+
+  /* ══ TAB PANELS ══ */
+  .tab-panel { display: block; }
+
+  /* ══ DISCUSSION ══ */
+  .disc-add {
+    background: #eeeede;
+    border: 2px solid #888;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .disc-add-label {
+    font-size: clamp(4px, 1vw, 7px);
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 2;
+  }
+  .disc-user { color: #0000cc; text-decoration: underline; }
+  .disc-textarea {
+    width: 100%;
+    min-height: 70px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(4px, 1vw, 7px);
+    border: 2px inset #aaa;
+    background: #fff;
+    color: #000;
+    padding: 6px;
+    resize: vertical;
+    line-height: 2;
+  }
+  .disc-divider {
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #888;
+    margin: 16px 0 12px;
+    letter-spacing: 0.05em;
+  }
+  .disc-locked {
+    border: 2px solid #999;
+    background: #e8e8d8;
+    padding: 20px 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .lock-icon { font-size: 24px; margin-bottom: 4px; }
+  .lock-title {
+    font-size: clamp(7px, 1.8vw, 12px);
+    color: #000;
+    letter-spacing: 0.04em;
+  }
+  .lock-sub {
+    font-size: clamp(4px, 1vw, 7px);
+    color: #555;
+    line-height: 2;
+    max-width: 400px;
+  }
+  .lock-count {
+    font-size: clamp(4px, 1vw, 7px);
+    color: #333;
+    background: #d4d0c8;
+    border: 1px solid #888;
+    padding: 3px 10px;
+    letter-spacing: 0.1em;
+  }
+  .lock-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(5px, 1.2vw, 8px);
+    background: #0000cc;
+    color: #fff;
+    border: 2px solid #000080;
+    border-right-color: #000033;
+    border-bottom-color: #000033;
+    padding: 6px 16px;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .lock-btn:active { border-style: inset; }
+  .lock-hint {
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #555;
+    line-height: 2;
+  }
+
+  /* ══ RETRO PLAYER ══ */
+  .retro-player {
+    border: 3px solid #444;
+    border-right-color: #aaa;
+    border-bottom-color: #aaa;
+    background: #c0c0c0;
+    max-width: 520px;
+    margin: 0 auto;
+    font-family: 'Press Start 2P', monospace;
+  }
+  .rp-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: clamp(5px, 1.1vw, 8px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.03em;
+    user-select: none;
+  }
+  .rp-dot {
+    width: 10px; height: 10px;
+    background: #c0c0c0;
+    border: 1px solid #888;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    display: inline-block;
+  }
+  .rp-screen {
+    background: #000;
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border: 3px inset #888;
+    margin: 6px;
+  }
+  .rp-screen video {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .rp-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.45);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .rp-overlay.hidden { opacity: 0; pointer-events: none; }
+  .rp-play-big {
+    font-size: clamp(24px, 6vw, 48px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(255,255,255,0.7);
+    line-height: 1;
+  }
+  .rp-caption {
+    font-size: clamp(5px, 1.2vw, 8px);
+    color: #000;
+    text-align: center;
+    padding: 2px 8px 4px;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #888;
+    margin: 0 6px;
+  }
+  .rp-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid #999;
+  }
+  .rp-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(5px, 1.2vw, 9px);
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #444;
+    border-bottom-color: #444;
+    padding: 3px 6px;
+    cursor: pointer;
+    color: #000;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rp-btn:active { border-color: #444; border-right-color: #fff; border-bottom-color: #fff; }
+  .rp-progress-wrap {
+    flex: 1;
+    height: 12px;
+    background: #888;
+    border: 2px inset #666;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .rp-progress-bar {
+    height: 100%;
+    background: #000080;
+    width: 0%;
+    transition: width 0.3s linear;
+    pointer-events: none;
+  }
+  .rp-time {
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #000;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 70px;
+    text-align: right;
+  }
+  .rp-statusbar {
+    background: #d4d0c8;
+    border-top: 1px solid #fff;
+    padding: 3px 8px;
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #000;
+    letter-spacing: 0.08em;
+  }
 </style>
 </head>
 <body>
@@ -439,7 +642,7 @@
       </div>
     </div>
 
-    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 28.02.2025 00:00:00</div>
+    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 27.02.2025 00:00:00</div>
 
     <a class="wiki-link" onclick="openWiki()">
       <canvas id="ie-icon" width="64" height="64"></canvas>
@@ -459,17 +662,19 @@
       <button class="wp-btn">SZUKAJ</button>
     </div>
     <div class="wp-tabs">
-      <div class="wp-tab active">ARTYKUŁ</div>
-      <div class="wp-tab">DYSKUSJA</div>
-      <div class="wp-tab">EDYTUJ</div>
-      <div class="wp-tab">HISTORIA</div>
+      <div class="wp-tab active" onclick="switchTab('artykul')">ARTYKUŁ</div>
+      <div class="wp-tab" onclick="switchTab('dyskusja')">DYSKUSJA</div>
+      <div class="wp-tab" onclick="switchTab('media')">MEDIA</div>
+      <div class="wp-tab" onclick="switchTab('historia')">HISTORIA</div>
     </div>
 
+    <!-- ══ TAB: ARTYKUŁ ══ -->
+    <div id="tab-artykul" class="tab-panel">
     <div class="infobox">
       <div class="ib-title">GOD.WIFI<br>Wiktoria Maciuk</div>
       <table class="ib-table">
         <tr><td>STATUS</td><td>ZAGINIONA</td></tr>
-        <tr><td>OD</td><td>28.02.2025</td></tr>
+        <tr><td>OD</td><td>27.02.2025</td></tr>
         <tr><td>ZAWÓD</td><td>DJ / FOTO / VJ</td></tr>
         <tr><td>SYGNAŁ</td><td>BRAK</td></tr>
         <tr><td>PING</td><td>TIMEOUT</td></tr>
@@ -489,7 +694,6 @@
     <h2>HIPOTEZY ZAGINIĘCIA</h2>
     <ul>
       <li>Praca nad nową muzyką w trybie „nie przeszkadzać"</li>
-       <li>Praca nad czapkami oraz plajatami"</li>
       <li>Zbyt głęboka infiltracja projektu <a>#party</a></li>
       <li>Wyjście „tylko na chwilę" na matche i brak powrotu do głównej osi czasu</li>
       <li>Wciągnięcie przez backstage o nieznanej geometrii</li>
@@ -529,12 +733,89 @@
       <li><a onclick="closeWiki()">&#x25C4; Wróć do ekranu głównego</a></li>
     </ul>
 
-  </div>
-</div>
+    </div><!-- /tab-artykul -->
+
+    <!-- ══ TAB: DYSKUSJA ══ -->
+    <div id="tab-dyskusja" class="tab-panel" style="display:none;">
+      <h1>Dyskusja: <span>god.wifi</span></h1>
+
+      <!-- Dodaj komentarz -->
+      <div class="disc-add">
+        <div class="disc-add-label">&#x25BA; DODAJ KOMENTARZ jako: <span class="disc-user">Anonimowy_użytkownik</span></div>
+        <textarea class="disc-textarea" placeholder="Wpisz komentarz..." rows="4"></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="wp-btn">DODAJ SEKCJĘ</button>
+          <button class="wp-btn">PODGLĄD</button>
+        </div>
+      </div>
+
+      <div class="disc-divider">── WĄTKI ──────────────────────────────</div>
+
+      <!-- Locked comments -->
+      <div class="disc-locked">
+        <div class="lock-icon">&#x1F512;</div>
+        <div class="lock-title">KOMENTARZE UKRYTE</div>
+        <div class="lock-sub">Ta sekcja jest dostępna tylko dla zalogowanych użytkowników.</div>
+        <div class="lock-count">&#x25A0;&#x25A0;&#x25A0; ukrytych wątków (12)</div>
+        <button class="lock-btn" onclick="alert('Rejestracja tymczasowo niedostępna.\nSignal god.wifi wciąż nieosiągalny.')">&#x25BA; ZALOGUJ SIĘ</button>
+        <div class="lock-hint">Nie masz konta? <a>Zarejestruj się</a> · <a>Przypomnij hasło</a></div>
+      </div>
+
+    </div><!-- /tab-dyskusja -->
+
+    <!-- ══ TAB: MEDIA ══ -->
+    <div id="tab-media" class="tab-panel" style="display:none;">
+      <h1>Media: <span>god.wifi</span></h1>
+
+      <!-- Retro player -->
+      <div class="retro-player">
+        <div class="rp-titlebar">
+          <span class="rp-dot"></span><span class="rp-dot"></span><span class="rp-dot"></span>
+          <span class="rp-title">&#x25BA; MEDIA PLAYER v1.0 &nbsp;–&nbsp; snippet</span>
+        </div>
+        <div class="rp-screen">
+          <video id="rp-video"
+            src="media/videos/EDB0DFEA-BF19-4394-A5E5-FD20DF61EAA1.mov"
+            preload="metadata"
+            playsinline
+          ></video>
+          <div class="rp-overlay" id="rp-overlay">
+            <div class="rp-play-big" onclick="rpPlay()">&#x25BA;</div>
+          </div>
+        </div>
+        <div class="rp-caption">snippet</div>
+        <div class="rp-controls">
+          <button class="rp-btn" id="rp-playbtn" onclick="rpToggle()">&#x25BA;</button>
+          <button class="rp-btn" onclick="rpRewind()">&#x25C4;&#x25C4;</button>
+          <div class="rp-progress-wrap" onclick="rpSeek(event)">
+            <div class="rp-progress-bar" id="rp-bar"></div>
+          </div>
+          <span class="rp-time" id="rp-time">0:00 / 0:00</span>
+          <button class="rp-btn" onclick="rpMute()">&#x1F50A;</button>
+        </div>
+        <div class="rp-statusbar">
+          <span id="rp-status">GOTOWY &nbsp;|&nbsp; KLIKNIJ ▶ ABY ODTWORZYĆ</span>
+        </div>
+      </div>
+    </div><!-- /tab-media -->
+
+    <!-- ══ TAB: HISTORIA ══ -->
+    <div id="tab-historia" class="tab-panel" style="display:none;">
+      <h1>Historia edycji: <span>god.wifi</span></h1>
+      <div class="disc-locked" style="margin-top:16px;">
+        <div class="lock-icon">&#x1F512;</div>
+        <div class="lock-title">HISTORIA UKRYTA</div>
+        <div class="lock-sub">Historia edycji dostępna tylko dla zalogowanych użytkowników.</div>
+        <button class="lock-btn" onclick="alert('Rejestracja tymczasowo niedostępna.')">&#x25BA; ZALOGUJ SIĘ</button>
+      </div>
+    </div><!-- /tab-historia -->
+
+  </div><!-- /wp -->
+</div><!-- /wiki -->
 
 <script>
 /* ═══════ TIMER ═══════ */
-const START = new Date('2025-02-28T00:00:00');
+const START = new Date('2025-02-27T00:00:00');
 function pad(n, w=2){ return String(n).padStart(w,'0'); }
 
 function tick(){
@@ -651,6 +932,76 @@ tick(); setInterval(tick,1000);
 /* ═══════ WIKI ═══════ */
 function openWiki(){ document.getElementById('wiki').classList.add('open'); }
 function closeWiki(){ document.getElementById('wiki').classList.remove('open'); }
+
+/* ═══════ TAB SWITCHER ═══════ */
+const TABS = ['artykul','dyskusja','media','historia'];
+function switchTab(name){
+  TABS.forEach(t => {
+    const panel = document.getElementById('tab-'+t);
+    if(panel) panel.style.display = (t===name) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.wp-tab').forEach((el,i) => {
+    el.classList.toggle('active', TABS[i]===name);
+  });
+}
+
+/* ═══════ VIDEO PLAYER ═══════ */
+const vid = document.getElementById('rp-video');
+const overlay = document.getElementById('rp-overlay');
+const bar = document.getElementById('rp-bar');
+const timeEl = document.getElementById('rp-time');
+const playBtn = document.getElementById('rp-playbtn');
+const statusEl = document.getElementById('rp-status');
+
+function fmtTime(s){
+  const m=Math.floor(s/60), sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+function rpPlay(){
+  vid.play();
+  overlay.classList.add('hidden');
+  statusEl.textContent = 'ODTWARZANIE...';
+}
+
+function rpToggle(){
+  if(vid.paused){ vid.play(); overlay.classList.add('hidden'); playBtn.textContent='⏸'; statusEl.textContent='ODTWARZANIE...'; }
+  else { vid.pause(); playBtn.textContent='▶'; statusEl.textContent='PAUZA'; }
+}
+
+function rpRewind(){
+  vid.currentTime = Math.max(0, vid.currentTime - 10);
+}
+
+function rpMute(){
+  vid.muted = !vid.muted;
+  document.querySelectorAll('.rp-btn')[3].textContent = vid.muted ? '🔇' : '🔊';
+}
+
+function rpSeek(e){
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  vid.currentTime = pct * (vid.duration || 0);
+}
+
+vid.addEventListener('timeupdate', () => {
+  const pct = vid.duration ? (vid.currentTime/vid.duration)*100 : 0;
+  bar.style.width = pct+'%';
+  timeEl.textContent = fmtTime(vid.currentTime)+' / '+fmtTime(vid.duration||0);
+});
+
+vid.addEventListener('ended', () => {
+  overlay.classList.remove('hidden');
+  playBtn.textContent='▶';
+  statusEl.textContent='KONIEC · KLIKNIJ ▶ ABY ODTWORZYĆ PONOWNIE';
+});
+
+vid.addEventListener('error', () => {
+  statusEl.textContent='BŁĄD: PLIK NIEDOSTĘPNY · SPRAWDŹ ŚCIEŻKĘ media/videos/';
+});
+
+vid.addEventListener('waiting', () => { statusEl.textContent='ŁADOWANIE BUFORA...'; });
+vid.addEventListener('playing', () => { statusEl.textContent='ODTWARZANIE...'; });
 </script>
 </body>
 </html>
