@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gdzie jest god.wifi?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --phosphor: #d4f5c0;
+    --phosphor-bright: #eeffdd;
+    --phosphor-dim: #7ab86a;
+    --phosphor-dark: #1a3012;
+    --bg: #040804;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* ═══════════════ CRT BASE ═══════════════ */
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    /* CRT curvature via transform */
+  }
+
+  /* ═══════════════ MAIN STAGE ═══════════════ */
+  #stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 4vh, 40px);
+    overflow: hidden;
+  }
+
+  /* ═══════════════ SCANLINES ═══════════════ */
+  #stage::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.38) 2px,
+      rgba(0,0,0,0.38) 4px
+    );
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  /* ═══════════════ VIGNETTE ═══════════════ */
+  #stage::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      transparent 40%,
+      rgba(0,0,0,0.55) 75%,
+      rgba(0,0,0,0.9) 100%
+    );
+    pointer-events: none;
+    z-index: 21;
+  }
+
+  /* ═══════════════ GLASS REFLECTION ═══════════════ */
+  #glass {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.04) 0%, transparent 40%),
+      radial-gradient(ellipse at 72% 82%, rgba(0,0,0,0.3) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 22;
+  }
+
+  /* ═══════════════ NOISE / GRAIN ═══════════════ */
+  #noise {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 23;
+    opacity: 0.055;
+  }
+
+  /* ═══════════════ HORIZONTAL INTERFERENCE ═══════════════ */
+  #hline {
+    position: fixed;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(200,255,180,0.18), transparent);
+    pointer-events: none;
+    z-index: 24;
+    animation: sweep 14s linear infinite;
+    top: -3px;
+  }
+
+  @keyframes sweep {
+    0%   { top: -3px; opacity: 0; }
+    2%   { opacity: 1; }
+    95%  { opacity: 0.6; }
+    100% { top: 103vh; opacity: 0; }
+  }
+
+  /* ═══════════════ CONTENT ═══════════════ */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2.5vh, 28px);
+    animation: screenFlicker 9s infinite;
+  }
+
+  @keyframes screenFlicker {
+    0%,100% { opacity:1; filter: brightness(1); }
+    91%  { opacity:1; filter: brightness(1); }
+    92%  { opacity:0.75; filter: brightness(0.9); }
+    93%  { opacity:1; filter: brightness(1.05); }
+    96%  { opacity:0.88; filter: brightness(0.95); }
+    97%  { opacity:1; filter: brightness(1); }
+  }
+
+  /* ═══════════════ TITLE ═══════════════ */
+  .title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 20px);
+    color: var(--phosphor-bright);
+    text-align: center;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    text-shadow:
+      0 0 4px var(--phosphor),
+      0 0 12px rgba(180,255,150,0.5),
+      0 0 24px rgba(140,220,110,0.25);
+  }
+
+  .title .highlight {
+    color: #ffffff;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 12px rgba(255,255,255,0.7),
+      0 0 28px rgba(200,255,180,0.4);
+  }
+
+  /* ═══════════════ BLINK CURSOR ═══════════════ */
+  .cursor-line {
+    font-family: 'VT323', monospace;
+    font-size: clamp(16px, 3vw, 26px);
+    color: var(--phosphor-dim);
+    text-shadow: 0 0 6px var(--phosphor-dim);
+    letter-spacing: 0.12em;
+  }
+
+  .cursor-line::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ═══════════════ ZAGINĘŁA LABEL ═══════════════ */
+  .missing {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.8vw, 16px);
+    color: var(--phosphor);
+    text-shadow: 0 0 6px var(--phosphor), 0 0 16px rgba(180,255,150,0.3);
+    letter-spacing: 0.06em;
+  }
+
+  /* ═══════════════ COUNTER BOX ═══════════════ */
+  .counter-wrap {
+    position: relative;
+    padding: clamp(8px,2vw,18px) clamp(14px,3vw,32px);
+    border: 2px solid var(--phosphor-dim);
+    box-shadow:
+      0 0 10px rgba(150,230,120,0.2),
+      inset 0 0 12px rgba(0,0,0,0.5);
+  }
+
+  /* corner crosses */
+  .counter-wrap::before,
+  .counter-wrap::after {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: var(--phosphor-dim);
+    position: absolute;
+  }
+  .counter-wrap::before { content:'┼'; top:-9px; left:-5px; }
+  .counter-wrap::after  { content:'┼'; bottom:-9px; right:-5px; }
+
+  #counter {
+    font-family: 'VT323', monospace;
+    font-size: clamp(22px, 6vw, 56px);
+    color: var(--phosphor-bright);
+    text-shadow:
+      0 0 6px var(--phosphor),
+      0 0 18px rgba(180,255,150,0.45);
+    letter-spacing: 0.05em;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  #counter .days-n {
+    color: #f0f0f0;
+    text-shadow: 0 0 8px #fff, 0 0 20px rgba(255,255,255,0.5);
+  }
+
+  #counter .sep { color: var(--phosphor-dim); }
+
+  /* ═══════════════ SINCE ═══════════════ */
+  .since {
+    font-family: 'VT323', monospace;
+    font-size: clamp(12px, 2.2vw, 20px);
+    color: var(--phosphor-dim);
+    text-shadow: 0 0 4px rgba(100,180,80,0.4);
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+
+  /* ═══════════════ WIN95 INTERNET ICON ═══════════════ */
+  .wiki-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.15s;
+    margin-top: clamp(4px,1vh,14px);
+  }
+
+  .wiki-link:hover { filter: brightness(1.4); }
+
+  .wiki-link canvas {
+    image-rendering: pixelated;
+    width: clamp(44px,8vw,64px);
+    height: clamp(44px,8vw,64px);
+  }
+
+  .wiki-label {
+    font-family: 'VT323', monospace;
+    font-size: clamp(12px, 2vw, 18px);
+    color: var(--phosphor-dim);
+    text-shadow: 0 0 4px rgba(100,180,80,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ═══════════════ WIKI OVERLAY ═══════════════ */
+  #wiki {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.88);
+    overflow-y: auto;
+    padding: 24px 16px;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  #wiki.open { display: block; }
+
+  .wp {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #f4f4e4;
+    border: 3px solid #666;
+    box-shadow: 6px 6px 0 #000;
+    padding: 16px;
+  }
+
+  .wp-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 3px solid #666;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .wp-logo {
+    font-size: clamp(9px, 2.5vw, 16px);
+    color: #000;
+    letter-spacing: 0.04em;
+  }
+
+  .wp-logo span { color: #0000cc; text-decoration: underline; }
+
+  .wp-search {
+    flex: 1; min-width: 100px;
+    border: 2px inset #aaa;
+    background: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(5px, 1.2vw, 8px);
+    padding: 3px 6px;
+  }
+
+  .wp-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(4px, 1vw, 7px);
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #444;
+    border-bottom-color: #444;
+    padding: 3px 8px;
+    cursor: pointer;
+    color: #000;
+  }
+
+  .wp-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .wp-tab {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(4px, 1vw, 7px);
+    background: #d4d0c8;
+    border: 2px solid #666;
+    border-bottom: 0;
+    padding: 4px 10px;
+    color: #0000cc;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .wp-tab.active { background: #f4f4e4; color: #000; text-decoration: none; }
+
+  .wp h1 {
+    font-size: clamp(9px, 2.5vw, 16px);
+    border-bottom: 2px solid #888;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    color: #000;
+    line-height: 1.6;
+  }
+
+  .wp h1 span { color: #0000cc; }
+
+  .wp p {
+    font-size: clamp(5px, 1.2vw, 8px);
+    color: #000;
+    line-height: 2.4;
+    margin-bottom: 12px;
+  }
+
+  .wp a { color: #0000cc; text-decoration: underline; cursor: pointer; }
+
+  .wp h2 {
+    font-size: clamp(7px, 1.8vw, 11px);
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 4px;
+    margin: 14px 0 8px;
+    color: #000;
+  }
+
+  .wp ul { padding-left: 20px; margin-bottom: 12px; }
+
+  .wp ul li {
+    font-size: clamp(4px, 1.1vw, 7px);
+    color: #000;
+    line-height: 2.8;
+    list-style: square;
+  }
+
+  .infobox {
+    float: right;
+    width: clamp(120px, 34%, 230px);
+    border: 2px solid #888;
+    background: #ddd8c0;
+    margin: 0 0 12px 14px;
+    font-size: clamp(4px, 1vw, 7px);
+  }
+
+  .ib-title {
+    background: #5577aa;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    font-size: clamp(5px, 1.2vw, 8px);
+    line-height: 1.8;
+  }
+
+  .ib-table { width: 100%; border-collapse: collapse; }
+  .ib-table td { padding: 3px 6px; border-top: 1px solid #bbb; line-height: 2; vertical-align: top; }
+  .ib-table td:first-child { color: #555; font-size: clamp(4px,0.9vw,6px); }
+
+  #wiki-close {
+    position: fixed; top: 10px; right: 10px;
+    background: #c00;
+    color: #fff;
+    border: 2px solid #800;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px, 1.5vw, 10px);
+    padding: 5px 10px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #400;
+    z-index: 201;
+  }
+
+  #wiki-close:active { box-shadow:none; transform:translate(3px,3px); }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="glass"></div>
+
+  <canvas id="noise" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:23;opacity:0.055;"></canvas>
+
+  <div id="hline"></div>
+
+  <div class="content">
+
+    <div class="title">
+      &rsaquo;&rsaquo; GDZIE JEST <span class="highlight">god.wifi</span>?
+    </div>
+
+    <div class="cursor-line">SEARCHING FOR SIGNAL</div>
+
+    <div class="missing">&#x25B6; ZAGINĘŁA</div>
+
+    <div class="counter-wrap">
+      <div id="counter">
+        <span class="days-n" id="d">000</span><span class="sep"> DNI </span><span id="h">00</span><span class="sep">:</span><span id="m">00</span><span class="sep">:</span><span id="s">00</span>
+      </div>
+    </div>
+
+    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 27.02.2025 00:00:00</div>
+
+    <a class="wiki-link" onclick="openWiki()">
+      <canvas id="ie-icon" width="64" height="64"></canvas>
+      <span class="wiki-label">&#x25BA; GOD.WIFIPEDIA</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- WIKI PAGE -->
+<div id="wiki">
+  <button id="wiki-close" onclick="closeWiki()">X ZAMKNIJ</button>
+  <div class="wp">
+    <div class="wp-bar">
+      <div class="wp-logo">GOD.<span>wifi</span>PEDIA</div>
+      <input class="wp-search" type="text" placeholder="SZUKAJ...">
+      <button class="wp-btn">SZUKAJ</button>
+    </div>
+    <div class="wp-tabs">
+      <div class="wp-tab active">ARTYKUŁ</div>
+      <div class="wp-tab">DYSKUSJA</div>
+      <div class="wp-tab">EDYTUJ</div>
+      <div class="wp-tab">HISTORIA</div>
+    </div>
+
+    <div class="infobox">
+      <div class="ib-title">GOD.WIFI<br>Osoba zaginiona</div>
+      <table class="ib-table">
+        <tr><td>STATUS</td><td>ZAGINIONA</td></tr>
+        <tr><td>OD</td><td>27.02.2025</td></tr>
+        <tr><td>SYGNAŁ</td><td>BRAK</td></tr>
+        <tr><td>PING</td><td>TIMEOUT</td></tr>
+        <tr><td>PASMO</td><td>2.4 GHz ❤</td></tr>
+        <tr><td>PROTOKÓŁ</td><td>802.11 LOVE</td></tr>
+        <tr><td>POSZUK.</td><td><span id="wiki-days">—</span> DNI</td></tr>
+      </table>
+    </div>
+
+    <h1><span>god.wifi</span></h1>
+
+    <p><b>god.wifi</b> (znana też jako <a>Boska Wifi</a>, <a>Sygnał Niedostępny</a> lub po prostu <a>Ona</a>) — legendarna postać o nieskończonym zasięgu serdecznym, której ostatni znany ping został zarejestrowany dnia 27 lutego 2025 roku o godzinie 00:00:00. Od tamtej chwili wszelkie próby nawiązania połączenia kończą się komunikatem <a>Request Timed Out</a>.</p>
+
+    <h2>OPIS</h2>
+    <p>Według dostępnych danych god.wifi charakteryzowała się wyjątkowo silnym sygnałem w paśmie 2,4 GHz (serce) oraz 5 GHz (dusza). Użytkownicy w pobliżu zgłaszali spontaniczne podniesienie nastroju, skrócenie czasu ładowania uśmiechu i brak zakłóceń emocjonalnych. Ostatnie znane logi wskazują, że opuściła sieć lokalną bez pozostawienia adresu MAC.</p>
+
+    <h2>HIPOTEZY ZAGINIĘCIA</h2>
+    <ul>
+      <li>Przeciążenie pakietami uczuć</li>
+      <li>Błąd 404: Wzajemność nie znaleziona</li>
+      <li>Przełączenie na tryb lotniczy</li>
+      <li>Router przepełniony emocjami (buffer overflow)</li>
+      <li>Migracja do innej sieci lokalnej</li>
+    </ul>
+
+    <h2>STATUS POSZUKIWAŃ</h2>
+    <p>Poszukiwania trwają nieprzerwanie od <a id="wiki-days2">—</a> dni. Automatyczny licznik heartbeat wysyła sygnały co sekundę. Brak odpowiedzi. Specjaliści zalecają dalsze wysyłanie ping-ów i cierpliwość na poziomie enterprise.</p>
+
+    <h2>LINKI</h2>
+    <ul>
+      <li><a onclick="closeWiki()">↩ Wróć do ekranu głównego</a></li>
+      <li><a>Protokół poszukiwań v2.0</a></li>
+      <li><a>Skontaktuj się z administratorem sieci</a></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* ═══════ TIMER ═══════ */
+const START = new Date('2025-02-27T00:00:00');
+function pad(n, w=2){ return String(n).padStart(w,'0'); }
+
+function tick(){
+  const diff = Date.now() - START;
+  const ts = Math.floor(diff/1000);
+  const d = Math.floor(ts/86400);
+  const h = Math.floor((ts%86400)/3600);
+  const m = Math.floor((ts%3600)/60);
+  const s = ts%60;
+  document.getElementById('d').textContent = pad(d,3);
+  document.getElementById('h').textContent = pad(h);
+  document.getElementById('m').textContent = pad(m);
+  document.getElementById('s').textContent = pad(s);
+  document.getElementById('wiki-days').textContent = d;
+  document.getElementById('wiki-days2').textContent = d;
+}
+tick(); setInterval(tick,1000);
+
+/* ═══════ NOISE ═══════ */
+(function noiseLoop(){
+  const c = document.getElementById('noise');
+  const ctx = c.getContext('2d');
+  function resize(){
+    c.width  = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function frame(){
+    const w=c.width, h=c.height;
+    const img = ctx.createImageData(w,h);
+    const d = img.data;
+    for(let i=0;i<d.length;i+=4){
+      const v = Math.random()*255|0;
+      d[i]=v; d[i+1]=v; d[i+2]=v; d[i+3]=18;
+    }
+    ctx.putImageData(img,0,0);
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ═══════ WINDOWS 95 IE-STYLE PIXEL GLOBE ═══════ */
+(function drawIcon(){
+  const c = document.getElementById('ie-icon');
+  const cx = c.getContext('2d');
+  cx.imageSmoothingEnabled = false;
+  const SZ = 64;
+  // palette
+  const T = 'transparent';
+  const W = '#ffffff';
+  const B = '#000080'; // navy blue
+  const BL= '#0000ff';
+  const BM= '#1414c8';
+  const GD= '#00c000'; // green dark
+  const GL= '#00ff00'; // green light
+  const CY= '#00ffff'; // cyan highlight
+  const GR= '#808080';
+  const LG= '#c0c0c0';
+  const RD= '#ff0000'; // red (magnifier handle)
+  const YL= '#ffff00';
+  const WH= '#e0e0e0';
+
+  // pixel art: 32×32 grid scaled ×2
+  // Globe (left 3/4) + magnifier (right-bottom)
+  const P = [
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,GR,LG,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,T,T,GR,LG,W, W, CY,CY,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,T,GR,W, CY,CY,B, BL,BL,B, CY,CY,W, GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,GR,W, CY,B, BL,BL,GL,GL,BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,LG,W, B, BL,GL,GD,GD,GD,GD,GL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,W, CY,BL,GL,GD,GD,GD,GD,GD,GD,GL,BL,CY,W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,W, CY,BL,GL,GD,GD,GD,W, GD,GD,GL,BL,CY,W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,W, B, BL,GD,GD,W, GD,GD,GD,BL,BL,B, B, W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,LG,W, B, BL,BL,BL,BL,BL,BL,B, B, W, LG,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,GR,W, CY,B, B, B, B, B, B, CY,W, GR,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,GR,W, CY,CY,CY,CY,CY,CY,W, GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,T,T,GR,W, W, W, W, W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,T,T,T,T,GR,GR,LG,LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    // magnifier: 16 rows × 32 cols (starting row 16)
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, CY,CY,W, LG,GR,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,CY,B, B, CY,CY,W, GR,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,B, B, BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,LG,W, B, BL,BL,BL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,LG,W, B, BL,BL,BL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,B, B, BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,CY,B, B, CY,W, GR,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, CY,W, LG,GR,GR,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,GR,LG,GR,GR,T, GR,GR,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,T, T, GR,GR,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,T, T, GR,GR,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,RD,T, T, RD,GR,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,RD,T, T, RD,RD,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+  ];
+
+  const px = SZ/32;
+  for(let r=0;r<32;r++){
+    for(let col=0;col<32;col++){
+      const color = P[r*32+col];
+      if(color && color !== T){
+        cx.fillStyle = color;
+        cx.fillRect(col*px, r*px, px, px);
+      }
+    }
+  }
+})();
+
+/* ═══════ WIKI ═══════ */
+function openWiki(){ document.getElementById('wiki').classList.add('open'); }
+function closeWiki(){ document.getElementById('wiki').classList.remove('open'); }
+</script>
+</body>
+</html>
