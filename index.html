@@ -41,8 +41,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(18px, 4vh, 40px);
-    overflow: hidden;
+    gap: clamp(12px, 4vmin, 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* ═══════════════ SCANLINES ═══════════════ */
@@ -118,8 +119,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(10px, 2.5vh, 28px);
+    gap: clamp(8px, 3vmin, 28px);
     animation: screenFlicker 9s infinite;
+    width: min(96vw, 96vh);
+    max-width: 700px;
+    padding: 0 clamp(8px, 3vmin, 24px);
   }
 
   @keyframes screenFlicker {
@@ -134,7 +138,7 @@
   /* ═══════════════ TITLE ═══════════════ */
   .title {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(10px, 2.2vw, 20px);
+    font-size: clamp(10px, 2.8vmin, 22px);
     color: var(--phosphor-bright);
     text-align: center;
     line-height: 1.9;
@@ -156,7 +160,7 @@
   /* ═══════════════ BLINK CURSOR ═══════════════ */
   .cursor-line {
     font-family: 'VT323', monospace;
-    font-size: clamp(16px, 3vw, 26px);
+    font-size: clamp(14px, 3.5vmin, 28px);
     color: var(--phosphor-dim);
     text-shadow: 0 0 6px var(--phosphor-dim);
     letter-spacing: 0.12em;
@@ -173,7 +177,7 @@
   /* ═══════════════ ZAGINĘŁA LABEL ═══════════════ */
   .missing {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(8px, 1.8vw, 16px);
+    font-size: clamp(8px, 2.2vmin, 18px);
     color: var(--phosphor);
     text-shadow: 0 0 6px var(--phosphor), 0 0 16px rgba(180,255,150,0.3);
     letter-spacing: 0.06em;
@@ -182,8 +186,9 @@
   /* ═══════════════ COUNTER BOX ═══════════════ */
   .counter-wrap {
     position: relative;
-    padding: clamp(8px,2vw,18px) clamp(14px,3vw,32px);
+    padding: clamp(6px,2vmin,18px) clamp(8px,3vmin,28px);
     border: 2px solid var(--phosphor-dim);
+    max-width: 100%;
     box-shadow:
       0 0 10px rgba(150,230,120,0.2),
       inset 0 0 12px rgba(0,0,0,0.5);
@@ -202,12 +207,12 @@
 
   #counter {
     font-family: 'VT323', monospace;
-    font-size: clamp(22px, 6vw, 56px);
+    font-size: clamp(14px, 6vmin, 56px);
     color: var(--phosphor-bright);
     text-shadow:
       0 0 6px var(--phosphor),
       0 0 18px rgba(180,255,150,0.45);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     text-align: center;
     white-space: nowrap;
   }
@@ -222,7 +227,7 @@
   /* ═══════════════ SINCE ═══════════════ */
   .since {
     font-family: 'VT323', monospace;
-    font-size: clamp(12px, 2.2vw, 20px);
+    font-size: clamp(12px, 2.8vmin, 22px);
     color: var(--phosphor-dim);
     text-shadow: 0 0 4px rgba(100,180,80,0.4);
     letter-spacing: 0.12em;
@@ -238,20 +243,20 @@
     cursor: pointer;
     text-decoration: none;
     transition: filter 0.15s;
-    margin-top: clamp(4px,1vh,14px);
+    margin-top: clamp(4px,1.5vmin,14px);
   }
 
   .wiki-link:hover { filter: brightness(1.4); }
 
   .wiki-link canvas {
     image-rendering: pixelated;
-    width: clamp(44px,8vw,64px);
-    height: clamp(44px,8vw,64px);
+    width: clamp(36px,8vmin,64px);
+    height: clamp(36px,8vmin,64px);
   }
 
   .wiki-label {
     font-family: 'VT323', monospace;
-    font-size: clamp(12px, 2vw, 18px);
+    font-size: clamp(12px, 2.5vmin, 20px);
     color: var(--phosphor-dim);
     text-shadow: 0 0 4px rgba(100,180,80,0.4);
     letter-spacing: 0.1em;
@@ -290,7 +295,7 @@
   }
 
   .wp-logo {
-    font-size: clamp(9px, 2.5vw, 16px);
+    font-size: clamp(9px, 3vmin, 18px);
     color: #000;
     letter-spacing: 0.04em;
   }
@@ -302,13 +307,13 @@
     border: 2px inset #aaa;
     background: #fff;
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     padding: 3px 6px;
   }
 
   .wp-btn {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     background: #d4d0c8;
     border: 2px solid #fff;
     border-right-color: #444;
@@ -327,7 +332,7 @@
 
   .wp-tab {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     background: #d4d0c8;
     border: 2px solid #666;
     border-bottom: 0;
@@ -340,7 +345,7 @@
   .wp-tab.active { background: #f4f4e4; color: #000; text-decoration: none; }
 
   .wp h1 {
-    font-size: clamp(9px, 2.5vw, 16px);
+    font-size: clamp(9px, 3vmin, 18px);
     border-bottom: 2px solid #888;
     padding-bottom: 8px;
     margin-bottom: 12px;
@@ -351,7 +356,7 @@
   .wp h1 span { color: #0000cc; }
 
   .wp p {
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     color: #000;
     line-height: 2.4;
     margin-bottom: 12px;
@@ -360,7 +365,7 @@
   .wp a { color: #0000cc; text-decoration: underline; cursor: pointer; }
 
   .wp h2 {
-    font-size: clamp(7px, 1.8vw, 11px);
+    font-size: clamp(7px, 2.2vmin, 13px);
     border-bottom: 1px solid #aaa;
     padding-bottom: 4px;
     margin: 14px 0 8px;
@@ -370,7 +375,7 @@
   .wp ul { padding-left: 20px; margin-bottom: 12px; }
 
   .wp ul li {
-    font-size: clamp(4px, 1.1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     color: #000;
     line-height: 2.8;
     list-style: square;
@@ -382,7 +387,7 @@
     border: 2px solid #888;
     background: #ddd8c0;
     margin: 0 0 12px 14px;
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
   }
 
   .ib-title {
@@ -390,13 +395,13 @@
     color: #fff;
     text-align: center;
     padding: 5px;
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     line-height: 1.8;
   }
 
   .ib-table { width: 100%; border-collapse: collapse; }
   .ib-table td { padding: 3px 6px; border-top: 1px solid #bbb; line-height: 2; vertical-align: top; }
-  .ib-table td:first-child { color: #555; font-size: clamp(4px,0.9vw,6px); }
+  .ib-table td:first-child { color: #555; font-size: clamp(4px,1.2vmin,7px); }
 
   #wiki-close {
     position: fixed; top: 10px; right: 10px;
@@ -404,7 +409,7 @@
     color: #fff;
     border: 2px solid #800;
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(6px, 1.5vw, 10px);
+    font-size: clamp(6px, 2.2vmin, 12px);
     padding: 5px 10px;
     cursor: pointer;
     box-shadow: 3px 3px 0 #400;
@@ -424,7 +429,7 @@
     margin-bottom: 14px;
   }
   .disc-add-label {
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     color: #333;
     margin-bottom: 8px;
     line-height: 2;
@@ -434,7 +439,7 @@
     width: 100%;
     min-height: 70px;
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     border: 2px inset #aaa;
     background: #fff;
     color: #000;
@@ -443,7 +448,7 @@
     line-height: 2;
   }
   .disc-divider {
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #888;
     margin: 16px 0 12px;
     letter-spacing: 0.05em;
@@ -465,13 +470,13 @@
     letter-spacing: 0.04em;
   }
   .lock-sub {
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     color: #555;
     line-height: 2;
     max-width: 400px;
   }
   .lock-count {
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     color: #333;
     background: #d4d0c8;
     border: 1px solid #888;
@@ -480,7 +485,7 @@
   }
   .lock-btn {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     background: #0000cc;
     color: #fff;
     border: 2px solid #000080;
@@ -492,7 +497,7 @@
   }
   .lock-btn:active { border-style: inset; }
   .lock-hint {
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #555;
     line-height: 2;
   }
@@ -511,7 +516,7 @@
   .login-titlebar {
     background: linear-gradient(90deg, #000080, #1084d0);
     color: #fff;
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     padding: 5px 8px;
     display: flex;
     justify-content: space-between;
@@ -561,13 +566,13 @@
     letter-spacing: 0.1em;
   }
   .login-err {
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     color: #cc0000;
     text-align: center;
     line-height: 2;
   }
   .login-hint {
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #555;
     text-align: center;
     margin-top: 4px;
@@ -601,7 +606,7 @@
     line-height: 1.6;
   }
   .thread-meta {
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #666;
   }
   .thread-user { color: #0000cc; }
@@ -629,7 +634,7 @@
   }
   .vote-btn {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1vw, 7px);
+    font-size: clamp(4px, 1.3vmin, 8px);
     background: #d4d0c8;
     border: 2px solid #fff;
     border-right-color: #666;
@@ -642,7 +647,7 @@
   .vote-btn:active { border-color: #666; border-right-color: #fff; border-bottom-color: #fff; }
   .vote-btn.voted-up   { background: #c8e8c8; border-color: #4a8a4a; color: #004400; }
   .vote-btn.voted-down { background: #e8c8c8; border-color: #8a4a4a; color: #440000; }
-  .vote-count { font-size: clamp(4px, 1vw, 7px); color: #333; }
+  .vote-count { font-size: clamp(4px, 1.3vmin, 8px); color: #333; }
 
   .hidden-user {
     color: #888 !important;
@@ -716,7 +721,7 @@
     line-height: 1;
   }
   .rp-caption {
-    font-size: clamp(5px, 1.2vw, 8px);
+    font-size: clamp(5px, 1.5vmin, 9px);
     color: #000;
     text-align: center;
     padding: 2px 8px 4px;
@@ -762,7 +767,7 @@
     pointer-events: none;
   }
   .rp-time {
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #000;
     white-space: nowrap;
     flex-shrink: 0;
@@ -773,9 +778,33 @@
     background: #d4d0c8;
     border-top: 1px solid #fff;
     padding: 3px 8px;
-    font-size: clamp(4px, 0.9vw, 6px);
+    font-size: clamp(4px, 1.2vmin, 7px);
     color: #000;
     letter-spacing: 0.08em;
+  }
+
+  /* ═══════════════ PIVOT / TALL SCREENS ═══════════════ */
+  @media (max-aspect-ratio: 3/4) {
+    .content {
+      width: min(94vw, 70vh);
+      gap: clamp(6px, 2.5vmin, 20px);
+    }
+    #counter {
+      font-size: clamp(12px, 5vmin, 44px);
+    }
+    .title {
+      font-size: clamp(8px, 2.5vmin, 18px);
+    }
+    .counter-wrap {
+      padding: clamp(5px, 1.8vmin, 14px) clamp(6px, 2.5vmin, 22px);
+    }
+  }
+
+  /* ═══════════════ VERY WIDE SCREENS ═══════════════ */
+  @media (min-aspect-ratio: 21/9) {
+    .content {
+      max-width: min(60vh, 700px);
+    }
   }
 </style>
 </head>
