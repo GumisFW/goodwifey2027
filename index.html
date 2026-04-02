@@ -497,6 +497,153 @@
     line-height: 2;
   }
 
+  /* ══ LOGIN MODAL ══ */
+  #login-modal { display: none; }
+  #login-modal.open { display: flex !important; }
+  .login-win {
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #444;
+    border-bottom-color: #444;
+    width: min(340px, 90vw);
+    font-family: 'Press Start 2P', monospace;
+  }
+  .login-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    font-size: clamp(5px, 1.2vw, 8px);
+    padding: 5px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .login-x {
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #444;
+    border-bottom-color: #444;
+    font-size: 9px;
+    width: 18px; height: 18px;
+    cursor: pointer;
+    color: #000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    font-family: sans-serif;
+  }
+  .login-x:active { border-color: #444; border-right-color: #fff; border-bottom-color: #fff; }
+  .login-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .login-icon { font-size: 28px; text-align: center; margin-bottom: 4px; }
+  .login-field-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .login-label {
+    font-size: clamp(5px, 1.1vw, 7px);
+    color: #000;
+    min-width: 50px;
+    text-align: right;
+  }
+  .login-input {
+    flex: 1;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(5px, 1.1vw, 7px);
+    border: 2px inset #aaa;
+    background: #fff;
+    color: #000;
+    padding: 4px 6px;
+    letter-spacing: 0.1em;
+  }
+  .login-err {
+    font-size: clamp(4px, 1vw, 7px);
+    color: #cc0000;
+    text-align: center;
+    line-height: 2;
+  }
+  .login-hint {
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #555;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .login-hint a { color: #0000cc; text-decoration: underline; cursor: pointer; }
+
+  /* ══ THREADS ══ */
+  .thread {
+    border: 2px solid #999;
+    background: #f0f0e0;
+    margin-bottom: 14px;
+  }
+  .thread.deleted {
+    background: #e8e0d8;
+    border-color: #bbb;
+    opacity: 0.75;
+  }
+  .thread-header {
+    background: #d4d0c8;
+    border-bottom: 1px solid #999;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .thread-title {
+    font-size: clamp(5px, 1.3vw, 9px);
+    color: #000;
+    line-height: 1.6;
+  }
+  .thread-meta {
+    font-size: clamp(4px, 0.9vw, 6px);
+    color: #666;
+  }
+  .thread-user { color: #0000cc; }
+  .thread-body {
+    padding: 8px 10px;
+    font-size: clamp(5px, 1.1vw, 7px);
+    color: #000;
+    line-height: 2.4;
+  }
+  .thread-deleted-msg {
+    font-size: clamp(5px, 1.1vw, 7px);
+    color: #999;
+    font-style: italic;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .thread-votes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    border-top: 1px solid #ccc;
+    background: #e8e8d8;
+  }
+  .vote-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(4px, 1vw, 7px);
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #666;
+    border-bottom-color: #666;
+    padding: 3px 7px;
+    cursor: pointer;
+    color: #000;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .vote-btn:active { border-color: #666; border-right-color: #fff; border-bottom-color: #fff; }
+  .vote-btn.voted-up   { background: #c8e8c8; border-color: #4a8a4a; color: #004400; }
+  .vote-btn.voted-down { background: #e8c8c8; border-color: #8a4a4a; color: #440000; }
+  .vote-count { font-size: clamp(4px, 1vw, 7px); color: #333; }
+
   /* ══ RETRO PLAYER ══ */
   .retro-player {
     border: 3px solid #444;
@@ -741,7 +888,7 @@
 
       <!-- Dodaj komentarz -->
       <div class="disc-add">
-        <div class="disc-add-label">&#x25BA; DODAJ KOMENTARZ jako: <span class="disc-user">Anonimowy_użytkownik</span></div>
+        <div class="disc-add-label">&#x25BA; DODAJ KOMENTARZ jako: <span class="disc-user" id="disc-username">Anonimowy_użytkownik</span></div>
         <textarea class="disc-textarea" placeholder="Wpisz komentarz..." rows="4"></textarea>
         <div style="display:flex;gap:8px;margin-top:6px;">
           <button class="wp-btn">DODAJ SEKCJĘ</button>
@@ -751,17 +898,49 @@
 
       <div class="disc-divider">── WĄTKI ──────────────────────────────</div>
 
-      <!-- Locked comments -->
-      <div class="disc-locked">
-        <div class="lock-icon">&#x1F512;</div>
-        <div class="lock-title">KOMENTARZE UKRYTE</div>
-        <div class="lock-sub">Ta sekcja jest dostępna tylko dla zalogowanych użytkowników.</div>
-        <div class="lock-count">&#x25A0;&#x25A0;&#x25A0; ukrytych wątków (12)</div>
-        <button class="lock-btn" onclick="alert('Rejestracja tymczasowo niedostępna.\nSignal god.wifi wciąż nieosiągalny.')">&#x25BA; ZALOGUJ SIĘ</button>
-        <div class="lock-hint">Nie masz konta? <a>Zarejestruj się</a> · <a>Przypomnij hasło</a></div>
+      <!-- LOCKED STATE (before login) -->
+      <div id="disc-locked-block">
+        <div class="disc-locked">
+          <div class="lock-icon">&#x1F512;</div>
+          <div class="lock-title">KOMENTARZE UKRYTE</div>
+          <div class="lock-sub">Ta sekcja jest dostępna tylko dla zalogowanych użytkowników.</div>
+          <div class="lock-count">&#x25A0;&#x25A0;&#x25A0; ukrytych wątków (12)</div>
+          <button class="lock-btn" onclick="openLoginModal()">&#x25BA; ZALOGUJ SIĘ</button>
+          <div class="lock-hint">Nie masz konta? <a>Zarejestruj się</a> · <a>Przypomnij hasło</a></div>
+        </div>
       </div>
 
+      <!-- THREADS (after login, hidden by default) -->
+      <div id="disc-threads" style="display:none;"></div>
+
     </div><!-- /tab-dyskusja -->
+
+    <!-- ══ LOGIN MODAL ══ -->
+    <div id="login-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+      <div class="login-win">
+        <div class="login-titlebar">
+          <span>Logowanie – god.wifipedia</span>
+          <button class="login-x" onclick="closeLoginModal()">&#x2715;</button>
+        </div>
+        <div class="login-body">
+          <div class="login-icon">&#x1F464;</div>
+          <div class="login-field-wrap">
+            <label class="login-label">Login:</label>
+            <input class="login-input" id="lgi-user" type="text" autocomplete="off" placeholder="wpisz login...">
+          </div>
+          <div class="login-field-wrap">
+            <label class="login-label">Hasło:</label>
+            <input class="login-input" id="lgi-pass" type="password" autocomplete="off" placeholder="········">
+          </div>
+          <div class="login-err" id="login-err" style="display:none;">&#x26A0; Nieprawidłowy login lub hasło</div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
+            <button class="lock-btn" onclick="doLogin()">&#x25BA; ZALOGUJ</button>
+            <button class="wp-btn" onclick="closeLoginModal()">ANULUJ</button>
+          </div>
+          <div class="login-hint">Nie masz konta? <a>Zarejestruj się</a></div>
+        </div>
+      </div>
+    </div>
 
     <!-- ══ TAB: MEDIA ══ -->
     <div id="tab-media" class="tab-panel" style="display:none;">
@@ -929,11 +1108,160 @@ tick(); setInterval(tick,1000);
   }
 })();
 
+/* ═══════ LOGIN MODAL ═══════ */
+const LOGIN = 'WhereAreYou';
+const PASS  = 'Gd7#mKx2';  // 8-char hidden password
+
+function openLoginModal(){
+  document.getElementById('login-modal').classList.add('open');
+  document.getElementById('login-err').style.display='none';
+  // auto-type login char by char
+  const inp = document.getElementById('lgi-user');
+  inp.value = '';
+  let i = 0;
+  const typeLogin = setInterval(()=>{
+    if(i < LOGIN.length){ inp.value += LOGIN[i++]; }
+    else clearInterval(typeLogin);
+  }, 80);
+  // fill password with dots after login types
+  setTimeout(()=>{
+    const pinp = document.getElementById('lgi-pass');
+    pinp.value = '';
+    let j = 0;
+    const typePass = setInterval(()=>{
+      if(j < PASS.length){ pinp.value += PASS[j++]; j; }
+      else clearInterval(typePass);
+    }, 90);
+  }, LOGIN.length * 80 + 200);
+}
+
+function closeLoginModal(){
+  document.getElementById('login-modal').classList.remove('open');
+}
+
+function doLogin(){
+  const u = document.getElementById('lgi-user').value;
+  const p = document.getElementById('lgi-pass').value;
+  const err = document.getElementById('login-err');
+  if(u === LOGIN && p === PASS){
+    closeLoginModal();
+    document.getElementById('disc-username').textContent = LOGIN;
+    showThreads();
+  } else {
+    err.style.display='block';
+    err.textContent='⚠ Nieprawidłowy login lub hasło';
+  }
+}
+
+/* ═══════ THREADS DATA ═══════ */
+function randVotes(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+const THREAD_DATA = [
+  {
+    id:'t1', deleted:true,
+    title:'[usunięty]', user:'[usunięty]', date:'2025-03-12 · 14:22',
+    body:'', up:0, down:0
+  },
+  {
+    id:'t2', deleted:false,
+    title:'Hej słyszałem że mają być czapki ale jeszcze ich nie widziałem? ktoś coś wie?',
+    user:'Gumis', date:'2025-03-18 · 09:47',
+    body:'Serio, słyszałem ze gdzieś miały się pojawić jakieś czapki z logo. Ktoś widział? Dawajcie znać bo bardzo chcę jedną.',
+    up: randVotes(28,45), down: randVotes(2,6)
+  },
+  {
+    id:'t3', deleted:true,
+    title:'[usunięty przez administratora]', user:'[usunięty]', date:'2025-03-21 · 23:11',
+    body:'', up:0, down:0
+  },
+  {
+    id:'t4', deleted:false,
+    title:'Hej, dostaliście plakat? Widzę że idzie coś do mnie pocztą ale nie wiem czy to to?',
+    user:'XVsia', date:'2025-03-29 · 16:05',
+    body:'Sprawdzam śledzenie paczki i coś jedzie ale nadawca nie wiem kto 😅 Macie jakieś info? Adres był z Warszawy chyba.',
+    up: randVotes(19,38), down: randVotes(1,5)
+  },
+  {
+    id:'t5', deleted:false,
+    title:'Jak się czujecie z tym że zaraz rocznica płyty FREE WIFI? Myślicie że będzie jakiś special?',
+    user:'Zanzir', date:'2025-04-01 · 02:33',
+    body:'Serio minął już rok? Czas leci. Ta płyta żyje do dziś w moich playlistach. Mam nadzieję na coś specjalnego, może jakiś set, remastering, cokolwiek. Ktoś coś słyszał?',
+    up: randVotes(52,74), down: randVotes(3,8)
+  },
+  {
+    id:'t6', deleted:true,
+    title:'[usunięty przez administratora]', user:'[usunięty]', date:'2025-04-01 · 11:59',
+    body:'', up:0, down:0
+  },
+];
+
+const voteState = {}; // track user votes per thread
+
+function showThreads(){
+  document.getElementById('disc-locked-block').style.display='none';
+  const container = document.getElementById('disc-threads');
+  container.style.display='block';
+  container.innerHTML = THREAD_DATA.map(t => buildThread(t)).join('');
+}
+
+function buildThread(t){
+  if(t.deleted){
+    return `<div class="thread deleted">
+      <div class="thread-header">
+        <span class="thread-title">${t.title}</span>
+        <span class="thread-meta">${t.date}</span>
+      </div>
+      <div class="thread-deleted-msg">&#x26A0; Ten wątek został usunięty przez administratora.</div>
+    </div>`;
+  }
+  return `<div class="thread" id="thread-${t.id}">
+    <div class="thread-header">
+      <span class="thread-title">${t.title}</span>
+      <span class="thread-meta">autor: <span class="thread-user">${t.user}</span> &nbsp;|&nbsp; ${t.date}</span>
+    </div>
+    <div class="thread-body">${t.body}</div>
+    <div class="thread-votes">
+      <button class="vote-btn" id="up-${t.id}" onclick="vote('${t.id}','up')">&#x25B2; <span id="upc-${t.id}">${t.up}</span></button>
+      <button class="vote-btn" id="dn-${t.id}" onclick="vote('${t.id}','down')">&#x25BC; <span id="dnc-${t.id}">${t.down}</span></button>
+      <span class="vote-count" id="net-${t.id}" style="margin-left:4px;color:${(t.up-t.down)>=0?'#006600':'#880000'}">
+        ${(t.up-t.down)>=0?'+':''}${t.up-t.down}
+      </span>
+    </div>
+  </div>`;
+}
+
+function vote(id, dir){
+  const t = THREAD_DATA.find(x=>x.id===id);
+  if(!t) return;
+  const prev = voteState[id];
+  if(prev === dir){
+    // undo vote
+    if(dir==='up') t.up--;
+    else t.down--;
+    voteState[id] = null;
+  } else {
+    // undo previous if any
+    if(prev==='up') t.up--;
+    if(prev==='down') t.down--;
+    // apply new
+    if(dir==='up') t.up++;
+    else t.down++;
+    voteState[id] = dir;
+  }
+  // update DOM
+  document.getElementById('upc-'+id).textContent = t.up;
+  document.getElementById('dnc-'+id).textContent = t.down;
+  const net = t.up - t.down;
+  const netEl = document.getElementById('net-'+id);
+  netEl.textContent = (net>=0?'+':'')+net;
+  netEl.style.color = net>=0 ? '#006600' : '#880000';
+  document.getElementById('up-'+id).className = 'vote-btn' + (voteState[id]==='up'?' voted-up':'');
+  document.getElementById('dn-'+id).className = 'vote-btn' + (voteState[id]==='down'?' voted-down':'');
+}
+
 /* ═══════ WIKI ═══════ */
 function openWiki(){ document.getElementById('wiki').classList.add('open'); }
 function closeWiki(){ document.getElementById('wiki').classList.remove('open'); }
-
-/* ═══════ TAB SWITCHER ═══════ */
 const TABS = ['artykul','dyskusja','media','historia'];
 function switchTab(name){
   TABS.forEach(t => {
