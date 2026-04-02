@@ -644,6 +644,21 @@
   .vote-btn.voted-down { background: #e8c8c8; border-color: #8a4a4a; color: #440000; }
   .vote-count { font-size: clamp(4px, 1vw, 7px); color: #333; }
 
+  .hidden-user {
+    color: #888 !important;
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+  .thread-mystery {
+    border-color: #777;
+    background: #ebebd8;
+    border-style: dashed;
+  }
+  .thread-mystery .thread-header {
+    background: #d0ccc0;
+    border-bottom-style: dashed;
+  }
+
   /* ══ RETRO PLAYER ══ */
   .retro-player {
     border: 3px solid #444;
@@ -1183,8 +1198,8 @@ const THREAD_DATA = [
   },
   {
     id:'t5', deleted:false,
-    title:'Jak się czujecie z tym że zaraz rocznica płyty FREE WIFI? Myślicie że będzie jakiś special?',
-    user:'Zanzir', date:'2026-02-01 · 02:33',
+    title:'Jak się czujecie z tym że zaraz rocznica płyty FREE WIF? Myślicie że będzie jakiś special?',
+    user:'Zanzir', date:'2025-02-01 · 02:33',
     body:'Serio minął już rok? Czas leci. Ta płyta żyje do dziś w moich playlistach. Mam nadzieję na coś specjalnego, może jakiś set, remastering, cokolwiek. Ktoś coś słyszał?',
     up: randVotes(52,74), down: randVotes(3,8)
   },
@@ -1192,6 +1207,14 @@ const THREAD_DATA = [
     id:'t6', deleted:true,
     title:'[usunięty przez administratora]', user:'[usunięty]', date:'2025-04-01 · 11:59',
     body:'', up:0, down:0
+  },
+  {
+    id:'t7', deleted:false,
+    title:'Widzieliście że powstaje jakaś gra?',
+    user:'[ukryty użytkownik]', date:'2026-04-02 · 03:17',
+    body:'Podobno jeszcze jest w alphie ale udało mi się do niej dokopać... co o niej myślicie? Ciekawe kiedy wyjdzie całość. Zostawiam tu dla chętnych: <a href="https://ilovegodwifi.pl/" target="_blank" style="color:#0000cc;text-decoration:underline;">#NEWGAMEEVENT</a>',
+    up: randVotes(38,61), down: randVotes(2,5),
+    hiddenUser: true
   },
 ];
 
@@ -1214,10 +1237,13 @@ function buildThread(t){
       <div class="thread-deleted-msg">&#x26A0; Ten wątek został usunięty przez administratora.</div>
     </div>`;
   }
-  return `<div class="thread" id="thread-${t.id}">
+  const userHtml = t.hiddenUser
+    ? `<span class="thread-user hidden-user">&#x25A0;&#x25A0;&#x25A0; [ukryty użytkownik]</span>`
+    : `<span class="thread-user">${t.user}</span>`;
+  return `<div class="thread${t.hiddenUser?' thread-mystery':''}" id="thread-${t.id}">
     <div class="thread-header">
       <span class="thread-title">${t.title}</span>
-      <span class="thread-meta">autor: <span class="thread-user">${t.user}</span> &nbsp;|&nbsp; ${t.date}</span>
+      <span class="thread-meta">autor: ${userHtml} &nbsp;|&nbsp; ${t.date}</span>
     </div>
     <div class="thread-body">${t.body}</div>
     <div class="thread-votes">
