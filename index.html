@@ -806,9 +806,32 @@
       max-width: min(60vh, 700px);
     }
   }
+
+  /* ═══════════════ WIN95 CURSOR ═══════════════ */
+  html, body, #stage, .content, * {
+    cursor: none !important;
+  }
+  #win95-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    z-index: 99999;
+    image-rendering: pixelated;
+    transform: translate(0, 0);
+    will-change: transform;
+  }
+  #win95-cursor.clicking {
+    transform: translate(1px, 1px);
+  }
 </style>
 </head>
 <body>
+
+
+<!-- WIN95 PIXEL CURSOR -->
+<canvas id="win95-cursor" width="20" height="20"></canvas>
 
 <div id="stage">
   <div id="glass"></div>
@@ -1385,6 +1408,112 @@ vid.addEventListener('error', () => {
 
 vid.addEventListener('waiting', () => { statusEl.textContent='ŁADOWANIE BUFORA...'; });
 vid.addEventListener('playing', () => { statusEl.textContent='ODTWARZANIE...'; });
+
+/* ═══════ WIN95 PIXEL CURSOR ═══════ */
+(function(){
+  const cur = document.getElementById('win95-cursor');
+  const cx = cur.getContext('2d');
+  cx.imageSmoothingEnabled = false;
+
+  // Win95 arrow cursor pixel map (20x20)
+  // B=black, W=white, T=transparent
+  const B='#000000', W='#ffffff', T=null;
+  // Classic Win95 arrow: points top-left, black outline, white interior
+  const A = [
+    B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,W,W,W,B,B,B,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,W,B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,W,B,T,B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,
+    B,W,B,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,T,T,
+    B,B,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,T,
+    B,T,T,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,B,W,B,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,B,B,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+  ];
+
+  // pointer/hand cursor for clickable elements (Win95 hand)
+  const H = [
+    T,T,T,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,B,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,B,W,B,B,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,B,W,B,W,B,B,T,T,T,T,T,T,T,T,T,T,
+    B,T,B,W,W,W,W,W,B,W,B,T,T,T,T,T,T,T,T,T,
+    B,B,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,B,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,B,B,B,B,B,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+  ];
+
+  function drawCursor(map){
+    cx.clearRect(0,0,20,20);
+    for(let i=0;i<map.length;i++){
+      const color = map[i];
+      if(!color) continue;
+      const row = Math.floor(i/20);
+      const col = i % 20;
+      cx.fillStyle = color;
+      cx.fillRect(col, row, 1, 1);
+    }
+  }
+
+  drawCursor(A);
+
+  let mx=0, my=0, isPointer=false;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    cur.style.transform = `translate(${mx}px,${my}px)`;
+
+    // Check if hovered element wants pointer
+    const el = document.elementFromPoint(mx, my);
+    const wantsPointer = el && (
+      el.tagName==='A' || el.tagName==='BUTTON' ||
+      el.tagName==='INPUT' || el.tagName==='TEXTAREA' ||
+      el.tagName==='SELECT' || el.tagName==='LABEL' ||
+      el.closest('a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn, .rp-btn, .node, .wp-tab, .login-x, #wiki-close')
+    );
+
+    if(wantsPointer !== isPointer){
+      isPointer = wantsPointer;
+      drawCursor(isPointer ? H : A);
+    }
+  });
+
+  document.addEventListener('mousedown', () => {
+    cur.style.transform = `translate(${mx+1}px,${my+1}px)`;
+  });
+  document.addEventListener('mouseup', () => {
+    cur.style.transform = `translate(${mx}px,${my}px)`;
+  });
+
+  // Hide when leaving window
+  document.addEventListener('mouseleave', () => { cur.style.opacity='0'; });
+  document.addEventListener('mouseenter', () => { cur.style.opacity='1'; });
+})();
+
 </script>
 </body>
 </html>
