@@ -825,6 +825,66 @@
   #win95-cursor.clicking {
     transform: translate(1px, 1px);
   }
+
+  @media (hover: none), (pointer: coarse) {
+    #win95-cursor { display: none !important; }
+    html, body, #stage, .content, * { cursor: auto !important; }
+    a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn,
+    .rp-btn, .node, .wp-tab, .login-x, #wiki-close { cursor: pointer !important; }
+  }
+
+  /* ══ HISTORIA TERMINAL ══ */
+  .hist-terminal {
+    border: 3px solid #333;
+    border-right-color: #aaa;
+    border-bottom-color: #aaa;
+    background: #0c0c0c;
+    font-family: 'VT323', monospace;
+    margin-top: 12px;
+  }
+  .hist-topbar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(5px, 1.1vmin, 8px);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .hist-dot {
+    width: 10px; height: 10px;
+    background: #c0c0c0;
+    border: 1px solid #888;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .hist-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hist-body {
+    padding: 12px 14px;
+    color: #d4f5c0;
+    font-size: clamp(12px, 2vmin, 18px);
+    line-height: 1.9;
+    min-height: 200px;
+  }
+  .hist-line { display: block; margin-bottom: 2px; }
+  .hist-line.sep { color: #3a6a2a; margin: 6px 0; }
+  .hist-line.del { color: #ff6060; }
+  .hist-line.edit { color: #d4f5c0; }
+  .hist-line.req { color: #80c0ff; }
+  .hist-line.sys { color: #ffff60; }
+  .hist-line.censor { color: #ff9900; }
+  .hist-stamp { color: #5a9a4a; margin-right: 6px; }
+  .hist-user { color: #80ff80; }
+  .hist-admin { color: #ff8080; }
+  .hist-cursor-blink::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    color: #d4f5c0;
+  }
 </style>
 </head>
 <body>
@@ -1048,20 +1108,61 @@
     <!-- ══ TAB: HISTORIA ══ -->
     <div id="tab-historia" class="tab-panel" style="display:none;">
       <h1>Historia edycji: <span>god.wifi</span></h1>
-      <div class="disc-locked" style="margin-top:16px;">
-        <div class="lock-icon">&#x1F512;</div>
-        <div class="lock-title">HISTORIA UKRYTA</div>
-        <div class="lock-sub">Historia edycji dostępna tylko dla zalogowanych użytkowników.</div>
-        <button class="lock-btn" onclick="alert('Rejestracja tymczasowo niedostępna.')">&#x25BA; ZALOGUJ SIĘ</button>
+
+      <div id="hist-locked" style="margin-top:16px;">
+        <div class="disc-locked">
+          <div class="lock-icon">&#x1F512;</div>
+          <div class="lock-title">HISTORIA UKRYTA</div>
+          <div class="lock-sub">Historia edycji dostępna tylko dla zalogowanych użytkowników.</div>
+          <button class="lock-btn" onclick="openHistLogin()">&#x25BA; ZALOGUJ SIĘ</button>
+        </div>
+      </div>
+
+      <div id="hist-content" style="display:none;">
+        <div class="hist-terminal">
+          <div class="hist-topbar">
+            <span class="hist-dot"></span><span class="hist-dot"></span><span class="hist-dot"></span>
+            <span class="hist-title">&#x25BA; LOG SYSTEMU – god.wifipedia :: historia_edycji.log</span>
+          </div>
+          <div class="hist-body" id="hist-body"></div>
+        </div>
       </div>
     </div><!-- /tab-historia -->
+
+    <!-- ══ HISTORIA LOGIN MODAL ══ -->
+    <div id="hist-login-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+      <div class="login-win">
+        <div class="login-titlebar">
+          <span>Logowanie – Panel Administracyjny</span>
+          <button class="login-x" onclick="closeHistLogin()">&#x2715;</button>
+        </div>
+        <div class="login-body">
+          <div class="login-icon">&#x1F6E1;</div>
+          <div class="login-field-wrap">
+            <label class="login-label">Login:</label>
+            <input class="login-input" id="hlgi-user" type="text" autocomplete="off" placeholder="login admina...">
+          </div>
+          <div class="login-field-wrap">
+            <label class="login-label">Hasło:</label>
+            <input class="login-input" id="hlgi-pass" type="password" autocomplete="off" placeholder="········">
+          </div>
+          <div class="login-err" id="hist-login-err" style="display:none;">&#x26A0; Brak dostępu</div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
+            <button class="lock-btn" onclick="doHistLogin()">&#x25BA; ZALOGUJ</button>
+            <button class="wp-btn" onclick="closeHistLogin()">ANULUJ</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /wp -->
 </div><!-- /wiki -->
 
 <script>
 /* ═══════ TIMER ═══════ */
-const START = new Date('2025-02-27T00:00:00');
+// Use Warsaw time (UTC+1 winter / UTC+2 summer)
+// 27.02.2025 was winter time (UTC+1), so midnight Warsaw = 23:00 UTC prev day
+const START = new Date('2025-02-26T23:00:00Z');
 function pad(n, w=2){ return String(n).padStart(w,'0'); }
 
 function tick(){
@@ -1513,6 +1614,96 @@ vid.addEventListener('playing', () => { statusEl.textContent='ODTWARZANIE...'; }
   document.addEventListener('mouseleave', () => { cur.style.opacity='0'; });
   document.addEventListener('mouseenter', () => { cur.style.opacity='1'; });
 })();
+
+
+/* ═══════ HISTORIA LOGIN ═══════ */
+const HIST_LOGIN = 'god.wifi';
+const HIST_PASS  = 'Kiedypłyta';
+
+function openHistLogin(){
+  document.getElementById('hist-login-modal').style.display='flex';
+  document.getElementById('hist-login-err').style.display='none';
+  document.getElementById('hlgi-user').value='';
+  document.getElementById('hlgi-pass').value='';
+  setTimeout(()=>document.getElementById('hlgi-user').focus(), 50);
+}
+function closeHistLogin(){
+  document.getElementById('hist-login-modal').style.display='none';
+}
+function doHistLogin(){
+  const u = document.getElementById('hlgi-user').value.trim();
+  const p = document.getElementById('hlgi-pass').value;
+  const err = document.getElementById('hist-login-err');
+  if(u === HIST_LOGIN && p === HIST_PASS){
+    closeHistLogin();
+    showHistoria();
+  } else {
+    err.style.display='block';
+    err.textContent='⚠ Brak dostępu. Dane nieprawidłowe.';
+  }
+}
+// allow Enter key in hist login
+document.addEventListener('keydown', e => {
+  if(e.key==='Enter' && document.getElementById('hist-login-modal').style.display==='flex'){
+    doHistLogin();
+  }
+});
+
+/* ═══════ HISTORIA LOG ═══════ */
+const HIST_ENTRIES = [
+  { cls:'sys',   stamp:'2025-02-27 · 00:00:01', text:'[SYSTEM] Artykuł "god.wifi" utworzony. Autor: god.wifi_bot.' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'edit',  stamp:'2025-02-27 · 11:34:22', text:'[EDYCJA] ➔ Rolka: Drobna korekta sekcji "Opis" – literówki, formatowanie.' },
+  { cls:'req',   stamp:'2025-02-28 · 09:12:04', text:'[PROŚBA] ➔ elmo2137: Prośba o aktualizację sekcji "Linki" – brakuje nowego linka do Soundcloud.' },
+  { cls:'edit',  stamp:'2025-03-01 · 14:55:37', text:'[EDYCJA] ➔ Rolka: Rozszerzona sekcja "Hipotezy zaginięcia" o 3 nowe punkty.' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'del',   stamp:'2025-03-04 · 02:17:49', text:'[USUNIETO] ➔ ADMIN: Usunięto komentarz od użytkownika anon_88 w dyskusji: "macie tutaj leak nowego utworu i okładki" [naruszenie §4 regulaminu – nieuprawnione rozpowszechnianie]' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'req',   stamp:'2025-03-07 · 18:03:11', text:'[PROŚBA] ➔ elmo2137: Prośba o dodanie sekcji "Dyskografia" – brak wzmianki o EP z 2023.' },
+  { cls:'edit',  stamp:'2025-03-08 · 20:44:00', text:'[EDYCJA] ➔ nocny_tryb404: Aktualizacja daty ostatniego sygnału w sekcji "Status poszukiwań".' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'del',   stamp:'2025-03-12 · 23:41:05', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji od nieznany_user_441: "Hej, dostałem informację że premiera singla będzie [**/**/****], nie mogę się doczekać." [naruszenie §7 – publikacja niepotwierdzonych dat wydania]' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'edit',  stamp:'2025-03-15 · 10:22:18', text:'[EDYCJA] ➔ Rolka: Poprawki gramatyczne w sekcji głównej i infoboxie.' },
+  { cls:'req',   stamp:'2025-03-19 · 16:07:55', text:'[PROŚBA] ➔ XVsia: Prośba o dodanie zdjęcia do artykułu – proponuje zdjęcie z ostatniego setu.' },
+  { cls:'censor',stamp:'2025-03-21 · 23:11:33', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji [treść ukryta przez system]. Autor: konto zawieszone.' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'req',   stamp:'2025-03-26 · 08:55:02', text:'[PROŚBA] ➔ elmo2137: Prośba o weryfikację sekcji "Linki zewnętrzne" – link do Discord wygasł.' },
+  { cls:'edit',  stamp:'2025-03-28 · 19:30:44', text:'[EDYCJA] ➔ Rolka: Aktualizacja linku Discord w sekcji "Linki zewnętrzne".' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'del',   stamp:'2025-04-01 · 11:59:02', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji od użytkownika [konto skasowane]: treść zawierała niezatwierdzone materiały promocyjne. [§4 + §9]' },
+  { cls:'sys',   stamp:'2025-04-02 · 03:18:11', text:'[SYSTEM] Wykryto nowy wątek od [ukryty użytkownik] – flagowanie automatyczne. Status: widoczny (brak naruszenia).' },
+  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
+  { cls:'sys',   stamp:'2025-04-06 · 00:00:00', text:'[SYSTEM] Licznik aktywny. Dni bez sygnału: ' + (()=>{const d=Math.floor((Date.now()-new Date('2025-02-26T23:00:00Z'))/86400000);return d;})() + '. Ostatnia aktywność administratora: właśnie teraz.' },
+];
+
+function showHistoria(){
+  document.getElementById('hist-locked').style.display='none';
+  document.getElementById('hist-content').style.display='block';
+  const body = document.getElementById('hist-body');
+  body.innerHTML='';
+  // Type out lines one by one with delay
+  let delay = 0;
+  HIST_ENTRIES.forEach((entry, i) => {
+    setTimeout(()=>{
+      const line = document.createElement('span');
+      line.className = 'hist-line ' + entry.cls;
+      if(entry.stamp){
+        line.innerHTML = '<span class="hist-stamp">[' + entry.stamp + ']</span> ' + entry.text;
+      } else {
+        line.textContent = entry.text;
+      }
+      // add blinking cursor to last line
+      if(i === HIST_ENTRIES.length - 1){
+        line.classList.add('hist-cursor-blink');
+      }
+      body.appendChild(line);
+      // auto-scroll
+      body.scrollTop = body.scrollHeight;
+    }, delay);
+    delay += entry.cls === 'sep' ? 30 : 80;
+  });
+}
 
 </script>
 </body>
