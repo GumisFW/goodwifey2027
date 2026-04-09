@@ -1866,6 +1866,7 @@ function showHistoria(){
 /* ═══════ NEWS OPEN/CLOSE ═══════ */
 function openNews(){
   document.getElementById('news-overlay').style.display='block';
+  drawAds();
 }
 function closeNews(){
   document.getElementById('news-overlay').style.display='none';
@@ -1924,10 +1925,7 @@ function closeNews(){
 })();
 
 /* ═══════ PIXEL ADS ═══════ */
-let adsDrawn = false;
-(function drawAds(){
-  if(adsDrawn) return;
-  adsDrawn = true;
+function drawAds(){
 
   // Ad 1 – vinyl/singiel promo
   const a1 = document.getElementById('ad1');
@@ -2024,7 +2022,7 @@ let adsDrawn = false;
     c.fillStyle='#0000cc'; c.font='bold 5px monospace';
     c.fillText('[ KLIKNIJ TU ]', 60, 112);
   }
-})();
+}
 
 </script>
 
