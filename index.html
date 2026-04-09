@@ -972,14 +972,13 @@
   /* layout */
   .news-layout {
     display: grid;
-    grid-template-columns: 130px 1fr 130px;
+    grid-template-columns: 140px 1fr 140px;
     gap: 0;
     align-items: start;
+    width: 100%;
   }
-  @media (max-width: 600px) {
-    .news-layout {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 680px) {
+    .news-layout { grid-template-columns: 1fr; }
     .news-ad { display: none; }
   }
 
@@ -993,20 +992,25 @@
     gap: 12px;
     background: #e8e5d8;
     min-height: 400px;
+    box-sizing: border-box;
   }
   .news-ad-right { border-right: none; border-left: 1px dashed #aaa; }
-  .ad-canvas { image-rendering: pixelated; display: block; border: 2px solid #888; }
+  .ad-canvas { image-rendering: pixelated; display: block; border: 2px solid #888; max-width: 120px; }
 
   /* article */
   .news-article {
     padding: 16px 20px;
     border-right: 1px dashed #aaa;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .news-headline {
     font-size: clamp(8px, 2vmin, 14px);
     color: #000;
     line-height: 1.7;
     margin-bottom: 8px;
+    text-align: left;
     border-bottom: 2px solid #000;
     padding-bottom: 8px;
   }
@@ -1022,7 +1026,7 @@
     margin: 10px 0;
   }
   .news-body {
-    font-size: clamp(5px, 1.2vmin, 8px);
+    font-size: clamp(7px, 1.5vmin, 10px);
     color: #111;
     line-height: 2.6;
     margin-bottom: 12px;
@@ -1926,106 +1930,110 @@ function closeNews(){
 
 /* ═══════ PIXEL ADS ═══════ */
 function drawAds(){
-
-  // Ad 1 – vinyl/singiel promo
-  const a1 = document.getElementById('ad1');
-  if(a1){
-    const c = a1.getContext('2d');
-    c.imageSmoothingEnabled = false;
-    c.fillStyle='#0a0010'; c.fillRect(0,0,120,240);
-    for(let i=0;i<60;i++){
-      c.fillStyle='rgba(255,255,255,'+(Math.random()*0.7+0.2)+')';
-      c.fillRect(Math.random()*118|0, Math.random()*238|0, 1, 1);
+  // ── AD 1: Vinyl promo (120×240) ──
+  var el1 = document.getElementById('ad1');
+  if(el1){
+    var x = el1.getContext('2d');
+    x.imageSmoothingEnabled = false;
+    // bg + stars
+    x.fillStyle='#080010'; x.fillRect(0,0,120,240);
+    for(var i=0;i<55;i++){
+      x.fillStyle='rgba(255,255,255,'+(0.2+Math.random()*0.7)+')';
+      x.fillRect(Math.random()*118|0, Math.random()*238|0, 1, 1);
     }
-    c.fillStyle='#cc00cc'; c.fillRect(0,0,120,18);
-    c.fillStyle='#ff44ff'; c.fillRect(0,0,120,2);
-    c.fillStyle='#fff'; c.font='bold 6px monospace'; c.textAlign='center';
-    c.fillText('* REKLAMA *', 60, 12);
-    c.fillStyle='#ff44ff'; c.font='bold 11px monospace';
-    c.fillText('NOWY', 60, 50);
-    c.fillText('SINGIEL', 60, 65);
-    c.fillStyle='#ffff00'; c.font='bold 8px monospace';
-    c.fillText('god.wifi', 60, 83);
-    const cx2=60, cy2=130, R=28;
-    c.beginPath(); c.arc(cx2,cy2,R,0,Math.PI*2); c.fillStyle='#111'; c.fill();
-    for(let rr=14;rr<=R-2;rr+=4){
-      c.beginPath(); c.arc(cx2,cy2,rr,0,Math.PI*2);
-      c.strokeStyle='#333'; c.lineWidth=1; c.stroke();
+    // header bar
+    x.fillStyle='#cc00cc'; x.fillRect(0,0,120,18);
+    x.fillStyle='#ff66ff'; x.fillRect(0,0,120,2);
+    x.fillStyle='#ffffff'; x.textAlign='center';
+    x.font='bold 6px monospace'; x.fillText('⚡ REKLAMA ⚡', 60, 12);
+    // title
+    x.fillStyle='#ff44ff';
+    x.font='bold 11px monospace'; x.fillText('NOWY', 60, 48);
+    x.fillText('SINGIEL', 60, 62);
+    x.fillStyle='#ffff00'; x.font='bold 8px monospace'; x.fillText('god.wifi', 60, 80);
+    // vinyl record
+    x.beginPath(); x.arc(60,130,28,0,Math.PI*2); x.fillStyle='#111'; x.fill();
+    x.beginPath(); x.arc(60,130,28,0,Math.PI*2); x.strokeStyle='#333'; x.lineWidth=2; x.stroke();
+    for(var r=14;r<=26;r+=4){
+      x.beginPath(); x.arc(60,130,r,0,Math.PI*2); x.strokeStyle='#2a2a2a'; x.lineWidth=1; x.stroke();
     }
-    c.beginPath(); c.arc(cx2,cy2,10,0,Math.PI*2); c.fillStyle='#9900cc'; c.fill();
-    c.beginPath(); c.arc(cx2,cy2,3,0,Math.PI*2); c.fillStyle='#111'; c.fill();
-    c.fillStyle='#cc88ff'; c.font='5px monospace'; c.textAlign='center';
-    c.fillText('FREE', cx2, cy2-2); c.fillText('WIF', cx2, cy2+7);
-    c.fillStyle='#888'; c.font='5px monospace';
-    c.fillText('bandcamp.com', 60, 192);
-    c.fillStyle='#cc00cc'; c.font='bold 6px monospace';
-    c.fillText('[ KUP TERAZ ]', 60, 208);
-    c.strokeStyle='#cc00cc'; c.lineWidth=2; c.strokeRect(1,1,118,238);
+    x.beginPath(); x.arc(60,130,11,0,Math.PI*2); x.fillStyle='#9900cc'; x.fill();
+    x.beginPath(); x.arc(60,130,4,0,Math.PI*2); x.fillStyle='#111'; x.fill();
+    x.fillStyle='#cc88ff'; x.font='5px monospace'; x.textAlign='center';
+    x.fillText('FREE', 60, 128); x.fillText('WIF', 60, 136);
+    // bottom
+    x.fillStyle='#888'; x.font='5px monospace';
+    x.fillText('bandcamp', 60, 192); x.fillText('/ soundcloud', 60, 204);
+    // border
+    x.strokeStyle='#cc00cc'; x.lineWidth=2; x.strokeRect(1,1,118,238);
   }
 
-  // Ad 2 – concert/event poster
-  const a2 = document.getElementById('ad2');
-  if(a2){
-    const c = a2.getContext('2d');
-    c.imageSmoothingEnabled = false;
-    c.fillStyle='#001400'; c.fillRect(0,0,120,240);
-    for(let y=0;y<240;y+=4){ c.fillStyle='rgba(0,0,0,0.3)'; c.fillRect(0,y,120,2); }
-    c.fillStyle='#004400'; c.fillRect(0,0,120,22);
-    c.fillStyle='#00ff44'; c.font='bold 7px monospace'; c.textAlign='center';
-    c.fillText('[ EVENT ]', 60, 14);
-    c.fillStyle='#00ff44'; c.font='bold 9px monospace';
-    c.fillText('9.04.2026', 60, 48);
-    c.fillStyle='#00aa22'; c.font='7px monospace';
-    c.fillText('POPKILLERY', 60, 63);
-    c.fillText('GALA', 60, 76);
-    c.fillStyle='#003300'; c.fillRect(20,100,80,50);
-    c.fillStyle='#004400'; c.fillRect(22,102,76,46);
-    c.fillStyle='#00ff44';
-    c.fillRect(56,108,8,6);
-    c.fillRect(54,114,12,16);
-    c.fillRect(52,130,5,12);
-    c.fillRect(63,130,5,12);
-    c.fillRect(44,115,10,4);
-    c.fillRect(66,115,10,4);
-    c.fillStyle='#888'; c.fillRect(60,105,2,8);
-    c.fillStyle='#00aa22'; c.font='6px monospace'; c.textAlign='center';
-    c.fillText('god.wifi', 60, 178);
-    c.fillStyle='#005500'; c.font='5px monospace';
-    c.fillText('w nominacjach', 60, 192);
-    c.fillStyle='#00ff44'; c.font='5px monospace';
-    c.fillText('youtube.com', 60, 212);
-    c.fillText('/popkiller', 60, 224);
-    c.strokeStyle='#00ff44'; c.lineWidth=2; c.strokeRect(1,1,118,238);
+  // ── AD 2: Concert poster (120×240) ──
+  var el2 = document.getElementById('ad2');
+  if(el2){
+    var y = el2.getContext('2d');
+    y.imageSmoothingEnabled = false;
+    y.fillStyle='#001400'; y.fillRect(0,0,120,240);
+    // scanlines
+    for(var s=0;s<240;s+=4){ y.fillStyle='rgba(0,0,0,0.25)'; y.fillRect(0,s,120,2); }
+    // header
+    y.fillStyle='#004400'; y.fillRect(0,0,120,22);
+    y.fillStyle='#00ff44'; y.font='bold 7px monospace'; y.textAlign='center';
+    y.fillText('[ EVENT ]', 60, 14);
+    y.fillStyle='#00ff44'; y.font='bold 9px monospace';
+    y.fillText('9.04.2026', 60, 46);
+    y.fillStyle='#00cc33'; y.font='6px monospace';
+    y.fillText('POPKILLERY', 60, 60);
+    y.fillText('GALA', 60, 72);
+    // stage
+    y.fillStyle='#003300'; y.fillRect(20,100,80,50);
+    y.fillStyle='#004400'; y.fillRect(22,102,76,46);
+    // spotlights
+    y.fillStyle='rgba(255,255,80,0.12)';
+    y.beginPath(); y.moveTo(35,100); y.lineTo(25,102); y.lineTo(45,102); y.closePath(); y.fill();
+    y.fillStyle='rgba(80,180,255,0.12)';
+    y.beginPath(); y.moveTo(85,100); y.lineTo(75,102); y.lineTo(95,102); y.closePath(); y.fill();
+    // figure
+    y.fillStyle='#00ff44';
+    y.fillRect(56,110,8,6); y.fillRect(54,116,12,16);
+    y.fillRect(52,132,5,12); y.fillRect(63,132,5,12);
+    y.fillRect(44,118,10,4); y.fillRect(66,118,10,4);
+    y.fillStyle='#aaa'; y.fillRect(60,108,2,7);
+    // footer
+    y.fillStyle='#00aa22'; y.font='5px monospace'; y.textAlign='center';
+    y.fillText('god.wifi', 60, 175);
+    y.fillStyle='#005500'; y.font='5px monospace';
+    y.fillText('w nominacjach', 60, 188);
+    y.fillStyle='#00aa22'; y.fillText('▶ youtube.com', 60, 210);
+    y.fillText('/popkiller', 60, 222);
+    y.strokeStyle='#00ff44'; y.lineWidth=2; y.strokeRect(1,1,118,238);
   }
 
-  // Ad 3 – Discord square
-  const a3 = document.getElementById('ad3');
-  if(a3){
-    const c = a3.getContext('2d');
-    c.imageSmoothingEnabled = false;
-    c.fillStyle='#f0ede0'; c.fillRect(0,0,120,120);
-    c.strokeStyle='#000'; c.lineWidth=2; c.strokeRect(1,1,118,118);
-    c.fillStyle='#000080'; c.fillRect(0,0,120,20);
-    c.fillStyle='#fff'; c.font='bold 5px monospace'; c.textAlign='center';
-    c.fillText('GOD.WIFI DISCORD', 60, 13);
-    c.fillStyle='#222'; c.font='5px monospace';
-    c.fillText('DOLACZ DO', 60, 40);
-    c.fillText('SPOLECZNOSCI', 60, 52);
-    c.strokeStyle='#0000cc'; c.lineWidth=3;
-    for(let i=3;i>=1;i--){
-      c.beginPath();
-      c.arc(60, 90, i*10, Math.PI*1.1, Math.PI*1.9);
-      c.stroke();
+  // ── AD 3: Discord square (120×120) ──
+  var el3 = document.getElementById('ad3');
+  if(el3){
+    var z = el3.getContext('2d');
+    z.imageSmoothingEnabled = false;
+    z.fillStyle='#f0ede0'; z.fillRect(0,0,120,120);
+    z.strokeStyle='#000'; z.lineWidth=2; z.strokeRect(1,1,118,118);
+    z.fillStyle='#000080'; z.fillRect(0,0,120,20);
+    z.fillStyle='#fff'; z.font='bold 5px monospace'; z.textAlign='center';
+    z.fillText('GOD.WIFI DISCORD', 60, 13);
+    // wifi arcs
+    z.strokeStyle='#0000cc'; z.lineWidth=2;
+    for(var a=3;a>=1;a--){
+      z.beginPath(); z.arc(60,82,a*11,Math.PI*1.15,Math.PI*1.85); z.stroke();
     }
-    c.fillStyle='#0000cc';
-    c.beginPath(); c.arc(60,90,4,0,Math.PI*2); c.fill();
-    c.fillStyle='#0000cc'; c.font='bold 5px monospace';
-    c.fillText('[ KLIKNIJ TU ]', 60, 112);
+    z.fillStyle='#0000cc'; z.beginPath(); z.arc(60,82,4,0,Math.PI*2); z.fill();
+    z.fillStyle='#000'; z.font='5px monospace'; z.textAlign='center';
+    z.fillText('DOŁĄCZ DO', 60, 42);
+    z.fillText('SPOŁECZNOŚCI', 60, 54);
+    z.fillStyle='#0000cc'; z.font='bold 5px monospace';
+    z.fillText('▶ KLIKNIJ TU', 60, 108);
   }
 }
 
 </script>
-
 
 <!-- ══════════════════════════════════════════
      GOD.WIFINEWS OVERLAY
@@ -2034,57 +2042,40 @@ function drawAds(){
   <button id="news-close" onclick="closeNews()" style="position:fixed;top:10px;right:10px;background:#c00;color:#fff;border:2px solid #800;font-family:'Press Start 2P',monospace;font-size:clamp(6px,1.5vw,10px);padding:5px 10px;cursor:pointer;box-shadow:3px 3px 0 #400;z-index:201;">X ZAMKNIJ</button>
 
   <div class="news-page">
-
-    <!-- MASTHEAD -->
     <div class="news-masthead">
       <div class="news-logo">GOD.<span>wifi</span>NEWS</div>
       <div class="news-meta">wydanie specjalne &nbsp;|&nbsp; 9 KWIETNIA 2026 &nbsp;|&nbsp; ISSN 404-NOT-FOUND</div>
     </div>
 
-    <!-- TICKER -->
     <div class="news-ticker-wrap">
       <span class="news-ticker-label">&#x25BA; BREAKING</span>
       <div class="news-ticker-track">
-        <span class="news-ticker-inner">
-          POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY
-        </span>
+        <span class="news-ticker-inner">POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY</span>
       </div>
     </div>
 
-    <!-- CONTENT WITH SIDE ADS -->
     <div class="news-layout">
-
-      <!-- LEFT AD -->
       <div class="news-ad news-ad-left">
         <canvas class="ad-canvas" id="ad1" width="120" height="240"></canvas>
       </div>
 
-      <!-- MAIN ARTICLE -->
       <div class="news-article">
         <h1 class="news-headline">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</h1>
         <div class="news-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 9 kwietnia 2026, 00:01</div>
         <div class="news-divider"></div>
-
         <p class="news-body">Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
-
         <p class="news-body">W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom. To właśnie ta wyrazistość i konsekwencja w budowaniu własnego języka artystycznego sprawiają, że jej nazwisko coraz częściej pojawia się w kontekście najciekawszych postaci młodego pokolenia.</p>
-
         <p class="news-body">Twórczość god.wifi wpisuje się w nurt artystów, którzy stawiają na autentyczność, atmosferę i silną tożsamość artystyczną, a nie wyłącznie na chwilowy trend. Dzięki temu zyskuje ona coraz większe zainteresowanie odbiorców poszukujących muzyki świeżej, świadomej i estetycznie dopracowanej.</p>
-
-        <p class="news-body">Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@PopkillerTV/" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
-
+        <p class="news-body">Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
         <p class="news-body">Dla god.wifi obecność wśród wyróżnionych nazwisk to kolejny istotny moment w rozwoju kariery — a dla słuchaczy i obserwatorów sceny, sygnał, że warto uważnie śledzić jej dalsze artystyczne ruchy.</p>
-
         <div class="news-divider"></div>
         <div class="news-footer">© 2026 god.wifiNEWS &nbsp;·&nbsp; Wszelkie prawa zastrzeżone &nbsp;·&nbsp; Redakcja nie ponosi odpowiedzialności za brak sygnału</div>
       </div>
 
-      <!-- RIGHT AD -->
       <div class="news-ad news-ad-right">
         <canvas class="ad-canvas" id="ad2" width="120" height="240"></canvas>
         <canvas class="ad-canvas" id="ad3" width="120" height="120" style="margin-top:16px;"></canvas>
       </div>
-
     </div>
   </div>
 </div>
