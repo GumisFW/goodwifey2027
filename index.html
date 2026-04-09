@@ -1863,7 +1863,171 @@ function showHistoria(){
   });
 }
 
+/* ═══════ NEWS OPEN/CLOSE ═══════ */
+function openNews(){
+  document.getElementById('news-overlay').style.display='block';
+}
+function closeNews(){
+  document.getElementById('news-overlay').style.display='none';
+}
+
+/* ═══════ NEWS ICON (Win95 newspaper) ═══════ */
+(function drawNewsIcon(){
+  const c = document.getElementById('news-icon');
+  if(!c) return;
+  const cx = c.getContext('2d');
+  cx.imageSmoothingEnabled = false;
+  const SZ = 64;
+  const B='#000000', W='#ffffff', G='#808080', LG='#c0c0c0', T=null,
+        N='#f0ede0', R='#cc0000';
+  const P = [
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,N,B,T,T,T,T,T,T,
+    T,T,B,N,R,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,R,N,B,T,T,T,T,T,T,
+    T,T,B,N,R,W,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,W,R,N,B,T,T,T,T,T,T,
+    T,T,B,N,R,W,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,W,R,N,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,B,N,N,B,B,B,B,B,B,B,N,N,B,B,B,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,B,B,B,B,B,N,N,B,B,B,B,B,B,B,B,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,N,N,B,B,B,B,B,B,B,N,N,B,B,B,B,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,N,N,B,B,T,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,N,B,T,T,T,T,T,
+    T,T,B,N,B,B,B,B,B,N,B,B,B,B,B,B,B,B,B,N,B,B,B,N,B,N,N,B,T,T,T,T,
+    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,N,N,B,T,T,T,T,
+    T,T,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,T,N,B,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,T,N,B,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,N,N,B,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,B,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
+  ];
+  const px = SZ/32;
+  for(let r=0;r<32;r++){
+    for(let col=0;col<32;col++){
+      const color = P[r*32+col];
+      if(color){ cx.fillStyle=color; cx.fillRect(col*px, r*px, px, px); }
+    }
+  }
+})();
+
+/* ═══════ PIXEL ADS ═══════ */
+let adsDrawn = false;
+(function drawAds(){
+  if(adsDrawn) return;
+  adsDrawn = true;
+
+  // Ad 1 – vinyl/singiel promo
+  const a1 = document.getElementById('ad1');
+  if(a1){
+    const c = a1.getContext('2d');
+    c.imageSmoothingEnabled = false;
+    c.fillStyle='#0a0010'; c.fillRect(0,0,120,240);
+    for(let i=0;i<60;i++){
+      c.fillStyle='rgba(255,255,255,'+(Math.random()*0.7+0.2)+')';
+      c.fillRect(Math.random()*118|0, Math.random()*238|0, 1, 1);
+    }
+    c.fillStyle='#cc00cc'; c.fillRect(0,0,120,18);
+    c.fillStyle='#ff44ff'; c.fillRect(0,0,120,2);
+    c.fillStyle='#fff'; c.font='bold 6px monospace'; c.textAlign='center';
+    c.fillText('* REKLAMA *', 60, 12);
+    c.fillStyle='#ff44ff'; c.font='bold 11px monospace';
+    c.fillText('NOWY', 60, 50);
+    c.fillText('SINGIEL', 60, 65);
+    c.fillStyle='#ffff00'; c.font='bold 8px monospace';
+    c.fillText('god.wifi', 60, 83);
+    const cx2=60, cy2=130, R=28;
+    c.beginPath(); c.arc(cx2,cy2,R,0,Math.PI*2); c.fillStyle='#111'; c.fill();
+    for(let rr=14;rr<=R-2;rr+=4){
+      c.beginPath(); c.arc(cx2,cy2,rr,0,Math.PI*2);
+      c.strokeStyle='#333'; c.lineWidth=1; c.stroke();
+    }
+    c.beginPath(); c.arc(cx2,cy2,10,0,Math.PI*2); c.fillStyle='#9900cc'; c.fill();
+    c.beginPath(); c.arc(cx2,cy2,3,0,Math.PI*2); c.fillStyle='#111'; c.fill();
+    c.fillStyle='#cc88ff'; c.font='5px monospace'; c.textAlign='center';
+    c.fillText('FREE', cx2, cy2-2); c.fillText('WIF', cx2, cy2+7);
+    c.fillStyle='#888'; c.font='5px monospace';
+    c.fillText('bandcamp.com', 60, 192);
+    c.fillStyle='#cc00cc'; c.font='bold 6px monospace';
+    c.fillText('[ KUP TERAZ ]', 60, 208);
+    c.strokeStyle='#cc00cc'; c.lineWidth=2; c.strokeRect(1,1,118,238);
+  }
+
+  // Ad 2 – concert/event poster
+  const a2 = document.getElementById('ad2');
+  if(a2){
+    const c = a2.getContext('2d');
+    c.imageSmoothingEnabled = false;
+    c.fillStyle='#001400'; c.fillRect(0,0,120,240);
+    for(let y=0;y<240;y+=4){ c.fillStyle='rgba(0,0,0,0.3)'; c.fillRect(0,y,120,2); }
+    c.fillStyle='#004400'; c.fillRect(0,0,120,22);
+    c.fillStyle='#00ff44'; c.font='bold 7px monospace'; c.textAlign='center';
+    c.fillText('[ EVENT ]', 60, 14);
+    c.fillStyle='#00ff44'; c.font='bold 9px monospace';
+    c.fillText('9.04.2026', 60, 48);
+    c.fillStyle='#00aa22'; c.font='7px monospace';
+    c.fillText('POPKILLERY', 60, 63);
+    c.fillText('GALA', 60, 76);
+    c.fillStyle='#003300'; c.fillRect(20,100,80,50);
+    c.fillStyle='#004400'; c.fillRect(22,102,76,46);
+    c.fillStyle='#00ff44';
+    c.fillRect(56,108,8,6);
+    c.fillRect(54,114,12,16);
+    c.fillRect(52,130,5,12);
+    c.fillRect(63,130,5,12);
+    c.fillRect(44,115,10,4);
+    c.fillRect(66,115,10,4);
+    c.fillStyle='#888'; c.fillRect(60,105,2,8);
+    c.fillStyle='#00aa22'; c.font='6px monospace'; c.textAlign='center';
+    c.fillText('god.wifi', 60, 178);
+    c.fillStyle='#005500'; c.font='5px monospace';
+    c.fillText('w nominacjach', 60, 192);
+    c.fillStyle='#00ff44'; c.font='5px monospace';
+    c.fillText('youtube.com', 60, 212);
+    c.fillText('/popkiller', 60, 224);
+    c.strokeStyle='#00ff44'; c.lineWidth=2; c.strokeRect(1,1,118,238);
+  }
+
+  // Ad 3 – Discord square
+  const a3 = document.getElementById('ad3');
+  if(a3){
+    const c = a3.getContext('2d');
+    c.imageSmoothingEnabled = false;
+    c.fillStyle='#f0ede0'; c.fillRect(0,0,120,120);
+    c.strokeStyle='#000'; c.lineWidth=2; c.strokeRect(1,1,118,118);
+    c.fillStyle='#000080'; c.fillRect(0,0,120,20);
+    c.fillStyle='#fff'; c.font='bold 5px monospace'; c.textAlign='center';
+    c.fillText('GOD.WIFI DISCORD', 60, 13);
+    c.fillStyle='#222'; c.font='5px monospace';
+    c.fillText('DOLACZ DO', 60, 40);
+    c.fillText('SPOLECZNOSCI', 60, 52);
+    c.strokeStyle='#0000cc'; c.lineWidth=3;
+    for(let i=3;i>=1;i--){
+      c.beginPath();
+      c.arc(60, 90, i*10, Math.PI*1.1, Math.PI*1.9);
+      c.stroke();
+    }
+    c.fillStyle='#0000cc';
+    c.beginPath(); c.arc(60,90,4,0,Math.PI*2); c.fill();
+    c.fillStyle='#0000cc'; c.font='bold 5px monospace';
+    c.fillText('[ KLIKNIJ TU ]', 60, 112);
+  }
+})();
+
 </script>
+
 
 <!-- ══════════════════════════════════════════
      GOD.WIFINEWS OVERLAY
