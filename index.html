@@ -885,6 +885,158 @@
     animation: blink 1s step-end infinite;
     color: #d4f5c0;
   }
+
+  .icon-row {
+    display: flex;
+    gap: clamp(16px, 5vmin, 48px);
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ══════════════ GOD.WIFINEWS ══════════════ */
+  .news-page {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #f0ede0;
+    border: 3px solid #444;
+    box-shadow: 6px 6px 0 #000;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+  }
+
+  /* masthead */
+  .news-masthead {
+    background: #f0ede0;
+    border-bottom: 4px solid #000;
+    padding: 10px 16px 8px;
+    text-align: center;
+  }
+  .news-logo {
+    font-size: clamp(14px, 4vmin, 32px);
+    color: #000;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+  .news-logo span { color: #0000cc; }
+  .news-meta {
+    font-size: clamp(4px, 1vmin, 7px);
+    color: #555;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ticker */
+  .news-ticker-wrap {
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    height: 28px;
+    border-bottom: 3px solid #000;
+  }
+  .news-ticker-label {
+    font-size: clamp(5px, 1.2vmin, 8px);
+    background: #cc0000;
+    color: #fff;
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-right: 2px solid #ff4444;
+    letter-spacing: 0.1em;
+  }
+  .news-ticker-track {
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .news-ticker-inner {
+    font-size: clamp(5px, 1.2vmin, 8px);
+    white-space: nowrap;
+    display: inline-block;
+    animation: tickerScroll 28s linear infinite;
+    letter-spacing: 0.08em;
+    padding-left: 100%;
+  }
+  @keyframes tickerScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* layout */
+  .news-layout {
+    display: grid;
+    grid-template-columns: 130px 1fr 130px;
+    gap: 0;
+    align-items: start;
+  }
+  @media (max-width: 600px) {
+    .news-layout {
+      grid-template-columns: 1fr;
+    }
+    .news-ad { display: none; }
+  }
+
+  /* ads */
+  .news-ad {
+    padding: 12px 8px;
+    border-right: 1px dashed #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: #e8e5d8;
+    min-height: 400px;
+  }
+  .news-ad-right { border-right: none; border-left: 1px dashed #aaa; }
+  .ad-canvas { image-rendering: pixelated; display: block; border: 2px solid #888; }
+
+  /* article */
+  .news-article {
+    padding: 16px 20px;
+    border-right: 1px dashed #aaa;
+  }
+  .news-headline {
+    font-size: clamp(8px, 2vmin, 14px);
+    color: #000;
+    line-height: 1.7;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+  }
+  .news-byline {
+    font-size: clamp(4px, 1vmin, 6px);
+    color: #666;
+    margin-bottom: 6px;
+    letter-spacing: 0.08em;
+  }
+  .news-divider {
+    border: none;
+    border-top: 1px solid #bbb;
+    margin: 10px 0;
+  }
+  .news-body {
+    font-size: clamp(5px, 1.2vmin, 8px);
+    color: #111;
+    line-height: 2.6;
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+  .news-body a { color: #0000cc; text-decoration: underline; }
+  .news-body b { font-weight: 700; }
+  .news-footer {
+    font-size: clamp(4px, 0.9vmin, 6px);
+    color: #888;
+    text-align: center;
+    letter-spacing: 0.06em;
+    line-height: 2;
+  }
 </style>
 </head>
 <body>
@@ -916,12 +1068,18 @@
       </div>
     </div>
 
-    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 28.02.2025 00:00:00</div>
+    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 27.02.2025 00:00:00</div>
 
-    <a class="wiki-link" onclick="openWiki()">
-      <canvas id="ie-icon" width="64" height="64"></canvas>
-      <span class="wiki-label">&#x25BA; GOD.WIFIPEDIA</span>
-    </a>
+    <div class="icon-row">
+      <a class="wiki-link" onclick="openWiki()">
+        <canvas id="ie-icon" width="64" height="64"></canvas>
+        <span class="wiki-label">&#x25BA; GOD.WIFIPEDIA</span>
+      </a>
+      <a class="wiki-link" onclick="openNews()">
+        <canvas id="news-icon" width="64" height="64"></canvas>
+        <span class="wiki-label">&#x25BA; GOD.WIFINEWS</span>
+      </a>
+    </div>
 
   </div>
 </div>
@@ -948,7 +1106,7 @@
       <div class="ib-title">GOD.WIFI<br>Wiktoria Maciuk</div>
       <table class="ib-table">
         <tr><td>STATUS</td><td>ZAGINIONA</td></tr>
-        <tr><td>OD</td><td>28.02.2025</td></tr>
+        <tr><td>OD</td><td>27.02.2025</td></tr>
         <tr><td>ZAWÓD</td><td>DJ / FOTO / VJ</td></tr>
         <tr><td>SYGNAŁ</td><td>BRAK</td></tr>
         <tr><td>PING</td><td>TIMEOUT</td></tr>
@@ -1162,7 +1320,7 @@
 /* ═══════ TIMER ═══════ */
 // Use Warsaw time (UTC+1 winter / UTC+2 summer)
 // 27.02.2025 was winter time (UTC+1), so midnight Warsaw = 23:00 UTC prev day
-const START = new Date('2025-02-27T24:00:00Z');
+const START = new Date('2025-02-26T23:00:00Z');
 function pad(n, w=2){ return String(n).padStart(w,'0'); }
 
 function tick(){
@@ -1594,7 +1752,7 @@ vid.addEventListener('playing', () => { statusEl.textContent='ODTWARZANIE...'; }
       el.tagName==='A' || el.tagName==='BUTTON' ||
       el.tagName==='INPUT' || el.tagName==='TEXTAREA' ||
       el.tagName==='SELECT' || el.tagName==='LABEL' ||
-      el.closest('a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn, .rp-btn, .node, .wp-tab, .login-x, #wiki-close')
+      el.closest('a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn, .rp-btn, .node, .wp-tab, .login-x, #wiki-close, #news-close')
     );
 
     if(wantsPointer !== isPointer){
@@ -1706,5 +1864,68 @@ function showHistoria(){
 }
 
 </script>
+
+<!-- ══════════════════════════════════════════
+     GOD.WIFINEWS OVERLAY
+══════════════════════════════════════════ -->
+<div id="news-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);overflow-y:auto;padding:24px 16px;">
+  <button id="news-close" onclick="closeNews()" style="position:fixed;top:10px;right:10px;background:#c00;color:#fff;border:2px solid #800;font-family:'Press Start 2P',monospace;font-size:clamp(6px,1.5vw,10px);padding:5px 10px;cursor:pointer;box-shadow:3px 3px 0 #400;z-index:201;">X ZAMKNIJ</button>
+
+  <div class="news-page">
+
+    <!-- MASTHEAD -->
+    <div class="news-masthead">
+      <div class="news-logo">GOD.<span>wifi</span>NEWS</div>
+      <div class="news-meta">wydanie specjalne &nbsp;|&nbsp; 9 KWIETNIA 2026 &nbsp;|&nbsp; ISSN 404-NOT-FOUND</div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="news-ticker-wrap">
+      <span class="news-ticker-label">&#x25BA; BREAKING</span>
+      <div class="news-ticker-track">
+        <span class="news-ticker-inner">
+          POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY
+        </span>
+      </div>
+    </div>
+
+    <!-- CONTENT WITH SIDE ADS -->
+    <div class="news-layout">
+
+      <!-- LEFT AD -->
+      <div class="news-ad news-ad-left">
+        <canvas class="ad-canvas" id="ad1" width="120" height="240"></canvas>
+      </div>
+
+      <!-- MAIN ARTICLE -->
+      <div class="news-article">
+        <h1 class="news-headline">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</h1>
+        <div class="news-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 9 kwietnia 2026, 00:01</div>
+        <div class="news-divider"></div>
+
+        <p class="news-body">Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
+
+        <p class="news-body">W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom. To właśnie ta wyrazistość i konsekwencja w budowaniu własnego języka artystycznego sprawiają, że jej nazwisko coraz częściej pojawia się w kontekście najciekawszych postaci młodego pokolenia.</p>
+
+        <p class="news-body">Twórczość god.wifi wpisuje się w nurt artystów, którzy stawiają na autentyczność, atmosferę i silną tożsamość artystyczną, a nie wyłącznie na chwilowy trend. Dzięki temu zyskuje ona coraz większe zainteresowanie odbiorców poszukujących muzyki świeżej, świadomej i estetycznie dopracowanej.</p>
+
+        <p class="news-body">Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
+
+        <p class="news-body">Dla god.wifi obecność wśród wyróżnionych nazwisk to kolejny istotny moment w rozwoju kariery — a dla słuchaczy i obserwatorów sceny, sygnał, że warto uważnie śledzić jej dalsze artystyczne ruchy.</p>
+
+        <div class="news-divider"></div>
+        <div class="news-footer">© 2026 god.wifiNEWS &nbsp;·&nbsp; Wszelkie prawa zastrzeżone &nbsp;·&nbsp; Redakcja nie ponosi odpowiedzialności za brak sygnału</div>
+      </div>
+
+      <!-- RIGHT AD -->
+      <div class="news-ad news-ad-right">
+        <canvas class="ad-canvas" id="ad2" width="120" height="240"></canvas>
+        <canvas class="ad-canvas" id="ad3" width="120" height="120" style="margin-top:16px;"></canvas>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
