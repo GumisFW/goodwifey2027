@@ -970,16 +970,8 @@
   }
 
   /* layout */
-  .news-layout {
-    display: grid;
-    grid-template-columns: 140px 1fr 140px;
-    gap: 0;
-    align-items: start;
-    width: 100%;
-  }
+
   @media (max-width: 680px) {
-    .news-layout { grid-template-columns: 1fr; }
-    .news-ad { display: none; }
   }
 
   /* ads */
@@ -1041,6 +1033,66 @@
     letter-spacing: 0.06em;
     line-height: 2;
   }
+
+  /* ── ARTICLE CHOOSER ── */
+  .news-chooser{padding:12px 14px;border-bottom:3px solid #000;background:#e8e5d8;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .news-chooser-label{font-size:clamp(4px,1vmin,7px);color:#444;letter-spacing:0.1em;flex-shrink:0;}
+  .news-art-btn{font-family:'Press Start 2P',monospace;font-size:clamp(4px,1vmin,7px);background:#d4d0c8;border:2px solid #fff;border-right-color:#444;border-bottom-color:#444;padding:5px 10px;cursor:pointer;color:#000;text-align:left;line-height:1.8;}
+  .news-art-btn:hover{background:#c0bdb5;}
+  .news-art-btn.active{background:#f0ede0;border-color:#444;border-right-color:#fff;border-bottom-color:#fff;color:#000080;}
+
+  /* ── NEWS LAYOUT FIX ── */
+  .news-page .news-layout{display:grid;grid-template-columns:148px 1fr 148px;gap:0;align-items:start;width:100%;box-sizing:border-box;}
+  @media(max-width:700px){.news-page .news-layout{grid-template-columns:1fr}.news-ad{display:none!important}}
+  .news-page .news-ad{width:148px;min-width:148px;max-width:148px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;background:#e8e5d8;box-sizing:border-box;align-self:stretch;}
+  .news-page .news-ad-left{border-right:1px dashed #aaa;}
+  .news-page .news-ad-right{border-left:1px dashed #aaa;}
+  .news-page .news-article{padding:16px 20px;min-width:0;overflow-wrap:break-word;word-break:break-word;box-sizing:border-box;}
+
+  /* ── CONGRATS ADS ── */
+  .congrats-ad{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;font-family:'Press Start 2P',monospace;font-size:clamp(4px,0.9vmin,6px);color:#000;text-align:center;line-height:2;}
+  .congrats-section-label{font-size:clamp(4px,0.9vmin,6px);color:#000080;}
+  .congrats-card{border:2px solid #888;background:#f0ede0;padding:5px 6px;width:118px;box-sizing:border-box;}
+  .congrats-card-name{color:#000080;font-size:clamp(4px,1vmin,7px);margin-bottom:2px;}
+  .congrats-card-award{color:#cc6600;font-size:clamp(3px,0.8vmin,5px);line-height:1.8;}
+  .congrats-trophy{font-size:20px;}
+
+  /* ── CONFETTI ── */
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;}
+
+  /* ── NEWS SUBHEAD / QUOTE ── */
+  .news-subhead{font-size:clamp(6px,1.4vmin,9px);color:#000080;border-left:3px solid #000080;padding-left:8px;margin:14px 0 8px;line-height:1.8;}
+  .news-quote{border-left:3px solid #888;padding:6px 10px;margin:10px 0;background:#e8e5d8;font-size:clamp(6px,1.3vmin,9px);color:#333;line-height:2.4;font-style:italic;}
+
+  /* ── MEDIA PLAYER ── */
+  .news-media-section{border-top:3px solid #000;background:#e8e5d8;padding:14px 16px;}
+  .news-media-header{font-family:'Press Start 2P',monospace;font-size:clamp(5px,1.2vmin,9px);color:#000080;letter-spacing:0.08em;margin-bottom:12px;border-bottom:1px solid #999;padding-bottom:6px;}
+  .news-media-layout{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+  .news-media-player{flex:1;min-width:240px;border:3px solid #444;border-right-color:#aaa;border-bottom-color:#aaa;background:#c0c0c0;font-family:'Press Start 2P',monospace;}
+  .nmp-titlebar{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;padding:4px 8px;font-size:clamp(5px,1.1vmin,7px);display:flex;align-items:center;gap:5px;user-select:none;}
+  .nmp-dot{width:10px;height:10px;background:#c0c0c0;border:1px solid #888;border-right-color:#fff;border-bottom-color:#fff;display:inline-block;flex-shrink:0;}
+  .nmp-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nmp-screen{background:#000;position:relative;aspect-ratio:16/9;overflow:hidden;border:3px inset #888;margin:6px;}
+  .nmp-screen video{width:100%;height:100%;object-fit:contain;display:block;}
+  .nmp-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);cursor:pointer;transition:opacity 0.2s;}
+  .nmp-overlay.hidden{opacity:0;pointer-events:none;}
+  .nmp-play-big{font-size:clamp(20px,5vmin,40px);color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.7);}
+  .nmp-controls{display:flex;align-items:center;gap:4px;padding:5px 8px;border-bottom:1px solid #999;}
+  .nmp-btn{font-family:'Press Start 2P',monospace;font-size:clamp(5px,1.1vmin,8px);background:#d4d0c8;border:2px solid #fff;border-right-color:#444;border-bottom-color:#444;padding:3px 6px;cursor:pointer;color:#000;flex-shrink:0;}
+  .nmp-btn:active{border-color:#444;border-right-color:#fff;border-bottom-color:#fff;}
+  .nmp-progress-wrap{flex:1;height:12px;background:#888;border:2px inset #666;cursor:pointer;position:relative;overflow:hidden;}
+  .nmp-progress-bar{height:100%;background:#000080;width:0%;transition:width 0.3s linear;pointer-events:none;}
+  .nmp-time{font-size:clamp(4px,0.9vmin,6px);color:#000;white-space:nowrap;flex-shrink:0;min-width:70px;text-align:right;}
+  .nmp-statusbar{background:#d4d0c8;border-top:1px solid #fff;padding:3px 8px;font-size:clamp(4px,0.9vmin,6px);color:#000;letter-spacing:0.06em;}
+  .news-media-playlist{width:200px;flex-shrink:0;border:2px solid #888;background:#f0ede0;font-family:'Press Start 2P',monospace;}
+  .nmp-playlist-header{background:#000080;color:#fff;padding:5px 8px;font-size:clamp(4px,1vmin,7px);letter-spacing:0.08em;}
+  .nmp-playlist-item{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;cursor:pointer;border-bottom:1px solid #ccc;}
+  .nmp-playlist-item:hover{background:#ddd8c8;}
+  .nmp-playlist-item.active{background:#d4d0c8;border-left:3px solid #000080;}
+  .pl-num{font-size:clamp(4px,1vmin,7px);color:#888;flex-shrink:0;margin-top:2px;}
+  .pl-info{font-size:clamp(4px,1vmin,7px);color:#000;line-height:2;}
+  .pl-info b{color:#000080;}
+  .pl-sub{font-size:clamp(3px,0.8vmin,5px);color:#666;}
 </style>
 </head>
 <body>
@@ -1870,10 +1922,12 @@ function showHistoria(){
 /* ═══════ NEWS OPEN/CLOSE ═══════ */
 function openNews(){
   document.getElementById('news-overlay').style.display='block';
+  showArticle(1);
   drawAds();
 }
 function closeNews(){
   document.getElementById('news-overlay').style.display='none';
+  stopConfetti();
 }
 
 /* ═══════ NEWS ICON (Win95 newspaper) ═══════ */
@@ -2033,13 +2087,80 @@ function drawAds(){
   }
 }
 
+
+/* ARTICLE SWITCHER */
+function showArticle(n){
+  document.getElementById('news-art1').style.display=n===1?'grid':'none';
+  document.getElementById('news-art2').style.display=n===2?'grid':'none';
+  document.querySelectorAll('.news-art-btn').forEach(function(b,i){b.classList.toggle('active',i===n-1);});
+  if(n===2){startConfetti();drawAds();}else{stopConfetti();}
+}
+
+/* CONFETTI */
+var confettiAnim=null,confettiParts=[];
+var CCOLORS=['#ff4444','#ffcc00','#44ff88','#44aaff','#ff44ff','#ff8800','#00ffcc','#ffffff','#66ff66'];
+function startConfetti(){
+  var cv=document.getElementById('confetti-canvas');
+  cv.style.display='block';cv.width=window.innerWidth;cv.height=window.innerHeight;confettiParts=[];
+  for(var i=0;i<140;i++) confettiParts.push({x:Math.random()*cv.width,y:Math.random()*cv.height-cv.height,w:Math.floor(Math.random()*7)+3,h:Math.floor(Math.random()*5)+3,color:CCOLORS[Math.floor(Math.random()*CCOLORS.length)],speed:Math.random()*3+1.5,wx:Math.random()*1.5-0.75,rot:Math.random()*Math.PI*2,rv:Math.random()*0.08-0.04});
+  if(confettiAnim) cancelAnimationFrame(confettiAnim);
+  (function loop(){var cctx=cv.getContext('2d');cctx.clearRect(0,0,cv.width,cv.height);var alive=false;confettiParts.forEach(function(p){p.y+=p.speed;p.x+=p.wx;p.rot+=p.rv;if(p.y<cv.height+20)alive=true;cctx.save();cctx.translate(p.x+p.w/2,p.y+p.h/2);cctx.rotate(p.rot);cctx.fillStyle=p.color;cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cctx.restore();});if(alive)confettiAnim=requestAnimationFrame(loop);else stopConfetti();})();
+}
+function stopConfetti(){if(confettiAnim){cancelAnimationFrame(confettiAnim);confettiAnim=null;}var cv=document.getElementById('confetti-canvas');if(cv){cv.style.display='none';cv.getContext('2d').clearRect(0,0,cv.width,cv.height);}}
+
+/* UPDATE openNews to use showArticle */
+/* NMP MEDIA PLAYER */
+var NMP_TRACKS=[
+  {src:'media/videos/koncert1.mp4',label:'KONCERT1 - GOD.WIFI LIVE'},
+  {src:'media/videos/koncert2.mp4',label:'KONCERT2 - GOD.WIFI LIVE'}
+];
+var nmpCurrent=-1;
+function nmpLoad(idx){
+  var vid=document.getElementById('nmp-video');
+  if(nmpCurrent>=0){var old=document.getElementById('pl-'+nmpCurrent);if(old)old.classList.remove('active');}
+  nmpCurrent=idx;
+  var item=document.getElementById('pl-'+idx);if(item)item.classList.add('active');
+  vid.src=NMP_TRACKS[idx].src;
+  document.getElementById('nmp-title').textContent='> '+NMP_TRACKS[idx].label;
+  document.getElementById('nmp-status').textContent='LADOWANIE...';
+  document.getElementById('nmp-bar').style.width='0%';
+  document.getElementById('nmp-time').textContent='0:00 / 0:00';
+  document.getElementById('nmp-overlay').classList.remove('hidden');
+  document.getElementById('nmp-playbtn').textContent='>';
+  vid.load();
+}
+function nmpPlay(){var vid=document.getElementById('nmp-video');if(nmpCurrent<0)nmpLoad(0);vid.play();document.getElementById('nmp-overlay').classList.add('hidden');document.getElementById('nmp-status').textContent='ODTWARZANIE...';}
+function nmpToggle(){var vid=document.getElementById('nmp-video');if(nmpCurrent<0){nmpLoad(0);return;}if(vid.paused){vid.play();document.getElementById('nmp-overlay').classList.add('hidden');document.getElementById('nmp-playbtn').textContent='||';document.getElementById('nmp-status').textContent='ODTWARZANIE...';}else{vid.pause();document.getElementById('nmp-playbtn').textContent='>';document.getElementById('nmp-status').textContent='PAUZA';}}
+function nmpRewind(){var vid=document.getElementById('nmp-video');vid.currentTime=Math.max(0,vid.currentTime-10);}
+function nmpMute(){var vid=document.getElementById('nmp-video');vid.muted=!vid.muted;document.getElementById('nmp-mutebtn').textContent=vid.muted?'[X]':'[S]';}
+function nmpSeek(e){var vid=document.getElementById('nmp-video');var rect=e.currentTarget.getBoundingClientRect();var pct=(e.clientX-rect.left)/rect.width;if(vid.duration)vid.currentTime=pct*vid.duration;}
+function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+(function(){
+  var vid=document.getElementById('nmp-video');if(!vid)return;
+  vid.addEventListener('timeupdate',function(){var pct=vid.duration?(vid.currentTime/vid.duration)*100:0;document.getElementById('nmp-bar').style.width=pct+'%';document.getElementById('nmp-time').textContent=nmpFmt(vid.currentTime)+' / '+nmpFmt(vid.duration);});
+  vid.addEventListener('ended',function(){document.getElementById('nmp-overlay').classList.remove('hidden');document.getElementById('nmp-playbtn').textContent='>';document.getElementById('nmp-status').textContent='KONIEC';var next=nmpCurrent+1;if(next<NMP_TRACKS.length)setTimeout(function(){nmpLoad(next);nmpPlay();},800);});
+  vid.addEventListener('error',function(){document.getElementById('nmp-status').textContent='BLAD: PLIK NIEDOSTEPNY';});
+  vid.addEventListener('waiting',function(){document.getElementById('nmp-status').textContent='LADOWANIE...';});
+  vid.addEventListener('playing',function(){document.getElementById('nmp-status').textContent='ODTWARZANIE...';});
+
+  /* DRAW CONGRATS ADS */
+  setTimeout(function(){
+    var ecl=document.getElementById('ad-congrats-left');
+    if(ecl&&!ecl._d){ecl._d=1;var cl=ecl.getContext('2d');cl.fillStyle='#fffbe8';cl.fillRect(0,0,120,70);cl.fillStyle='#cc8800';cl.fillRect(0,0,120,14);cl.fillStyle='#fff';cl.font='bold 5px monospace';cl.textAlign='center';cl.fillText('GRATULACJE 2026',60,10);var sc2=['#ff4444','#ffaa00','#44ff88','#44aaff','#ff44ff'];for(var si=0;si<16;si++){cl.fillStyle=sc2[si%5];cl.fillRect(Math.random()*114|0,16+Math.random()*50|0,4,4);}cl.fillStyle='#cc8800';cl.font='bold 7px monospace';cl.textAlign='center';cl.fillText('POPKILLERY',60,46);cl.fillText('2026',60,58);cl.strokeStyle='#cc8800';cl.lineWidth=2;cl.strokeRect(1,1,118,68);}
+    var ecr=document.getElementById('ad-congrats-right');
+    if(ecr&&!ecr._d){ecr._d=1;var cr=ecr.getContext('2d');cr.fillStyle='#f0f8ff';cr.fillRect(0,0,120,70);cr.fillStyle='#000080';cr.fillRect(0,0,120,14);cr.fillStyle='#fff';cr.font='bold 5px monospace';cr.textAlign='center';cr.fillText('GOD.WIFI NEWS',60,10);cr.fillStyle='#000080';cr.font='6px monospace';cr.textAlign='center';cr.fillText('SLEDZMY',60,34);cr.fillText('CO BEDZIE',60,46);cr.fillText('DALEJ...',60,58);cr.strokeStyle='#000080';cr.lineWidth=2;cr.strokeRect(1,1,118,68);}
+  },100);
+})();
 </script>
 
 <!-- ══════════════════════════════════════════
      GOD.WIFINEWS OVERLAY
-══════════════════════════════════════════ -->
+══════════════════════════════════════════ --
+
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;"></canvas>
+
 <div id="news-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);overflow-y:auto;padding:24px 16px;">
-  <button id="news-close" onclick="closeNews()" style="position:fixed;top:10px;right:10px;background:#c00;color:#fff;border:2px solid #800;font-family:'Press Start 2P',monospace;font-size:clamp(6px,1.5vw,10px);padding:5px 10px;cursor:pointer;box-shadow:3px 3px 0 #400;z-index:201;">X ZAMKNIJ</button>
+  <button id="news-close" onclick="closeNews()" style="position:fixed;top:10px;right:10px;background:#c00;color:#fff;border:2px solid #800;font-family:'Press Start 2P',monospace;font-size:clamp(6px,1.5vmin,10px);padding:5px 10px;cursor:pointer;box-shadow:3px 3px 0 #400;z-index:201;">X ZAMKNIJ</button>
 
   <div class="news-page">
     <div class="news-masthead">
@@ -2050,33 +2171,147 @@ function drawAds(){
     <div class="news-ticker-wrap">
       <span class="news-ticker-label">&#x25BA; BREAKING</span>
       <div class="news-ticker-track">
-        <span class="news-ticker-inner">POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY JUŻ DZISIAJ!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI W GRONIE NOMINOWANYCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYGNAŁ WCIĄŻ NIEOSIĄGALNY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PING: TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJEKT #PARTY AKTYWNY</span>
+        <span class="news-ticker-inner">GOD.WIFI OKRADZIONA?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY USTAWIONE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;KTO NAPRAWD&#x118; NAPISA&#x141; FAKTY?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&#x17B;ABSON POTWIERDZA&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI &ndash; NOWA P&#x141;YTA W DRODZE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;SKANDAL NA GALI?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;G&#x141;OSOWANIE NIEUCZCIWE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GRATULACJE DLA NAGRODZONYCH&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI OKRADZIONA?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY USTAWIONE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;KTO NAPRAWD&#x118; NAPISA&#x141; FAKTY?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&#x17B;ABSON POTWIERDZA&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI &ndash; NOWA P&#x141;YTA W DRODZE?</span>
       </div>
     </div>
 
-    <div class="news-layout">
+    <!-- ARTICLE CHOOSER -->
+    <div class="news-chooser">
+      <span class="news-chooser-label">&#x25BA; ARTYKULY:</span>
+      <button class="news-art-btn active" onclick="showArticle(1)">[1] Popkillery 2026 juz dzis<br>god.wifi w gronie nominowanych</button>
+      <button class="news-art-btn" onclick="showArticle(2)">[2] 10.04 &ndash; &#x17B;abson w centrum<br>GOD.WIFI w sercu dyskusji</button>
+    </div>
+
+    <!-- ARTICLE 1 -->
+    <div id="news-art1" class="news-layout">
       <div class="news-ad news-ad-left">
         <canvas class="ad-canvas" id="ad1" width="120" height="240"></canvas>
       </div>
-
       <div class="news-article">
-        <h1 class="news-headline">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</h1>
+        <h1 class="news-headline">Popkillery 2026 juz dzis. god.wifi w gronie artystow z szansa na statuetki</h1>
         <div class="news-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 9 kwietnia 2026, 00:01</div>
         <div class="news-divider"></div>
-        <p class="news-body">Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
-        <p class="news-body">W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom. To właśnie ta wyrazistość i konsekwencja w budowaniu własnego języka artystycznego sprawiają, że jej nazwisko coraz częściej pojawia się w kontekście najciekawszych postaci młodego pokolenia.</p>
-        <p class="news-body">Twórczość god.wifi wpisuje się w nurt artystów, którzy stawiają na autentyczność, atmosferę i silną tożsamość artystyczną, a nie wyłącznie na chwilowy trend. Dzięki temu zyskuje ona coraz większe zainteresowanie odbiorców poszukujących muzyki świeżej, świadomej i estetycznie dopracowanej.</p>
-        <p class="news-body">Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
-        <p class="news-body">Dla god.wifi obecność wśród wyróżnionych nazwisk to kolejny istotny moment w rozwoju kariery — a dla słuchaczy i obserwatorów sceny, sygnał, że warto uważnie śledzić jej dalsze artystyczne ruchy.</p>
+        <p class="news-body">Juz dzisiaj, <b>9 kwietnia 2026 roku</b>, odbedzie sie gala <b>Popkillery</b> &mdash; jedno z najwazniejszych wydarzen wyrozniajacych tworcow wspolczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciaga uwage zarowno sluchaczy, jak i przedstawicieli branzy, stajac sie przestrzenia do docenienia najciekawszych artystow, albumow i muzycznych zjawisk ostatnich miesiecy.</p>
+        <p class="news-body">W gronie tworcow, ktorzy maja szanse na tegoroczne wyroznienia, znalazla sie rowniez <b>god.wifi</b> &mdash; artystka coraz wyrazniej zaznaczajaca swoja obecnosc na nowej scenie muzycznej. Jej dzialalnosc artystyczna zwraca uwage spojna estetyka, emocjonalnym przekazem oraz nowoczesnym podejsciem do brzmienia, ktore wymyka sie prostym gatunkowym klasyfikacjom.</p>
+        <p class="news-body">Tworczosc god.wifi wpisuje sie w nurt artystow, ktorzy stawiaja na autentycznosc, atmosfere i silna tozsamosc artystyczna, a nie wylacznie na chwilowy trend. Tegoroczna gale Popkillery 2026 bedzie mozna sledzic na zywo juz dzis za posrednictwem oficjalnego kanalu <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>.</p>
+        <p class="news-body">Dla god.wifi obecnosc wsrod wyroznionnych nazwisk to kolejny istotny moment w rozwoju kariery &mdash; a dla sluchaczy i obserwatorow sceny, sygnal, ze warto uwazanie sledzic jej dalsze artystyczne ruchy.</p>
         <div class="news-divider"></div>
-        <div class="news-footer">© 2026 god.wifiNEWS &nbsp;·&nbsp; Wszelkie prawa zastrzeżone &nbsp;·&nbsp; Redakcja nie ponosi odpowiedzialności za brak sygnału</div>
+        <div class="news-footer">&copy; 2026 god.wifiNEWS &nbsp;&middot;&nbsp; Wszelkie prawa zastrzezone &nbsp;&middot;&nbsp; Redakcja nie ponosi odpowiedzialnosci za brak sygnalu</div>
+      </div>
+      <div class="news-ad news-ad-right">
+        <canvas class="ad-canvas" id="ad2" width="120" height="240"></canvas>
+        <canvas class="ad-canvas" id="ad3" width="120" height="120" style="margin-top:12px;"></canvas>
+      </div>
+    </div>
+
+    <!-- ARTICLE 2 -->
+    <div id="news-art2" class="news-layout" style="display:none;">
+      <div class="news-ad news-ad-left">
+        <div class="congrats-ad">
+          <div class="congrats-trophy">&#x1F3C6;</div>
+          <div class="congrats-section-label">NAGRODZENI</div>
+          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Raper Roku<br>Trendsetter Roku<br>Album Roku</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">GOD.WIFI</div><div class="congrats-card-award">Kooperacja Roku<br>&bdquo;Fakty&rdquo;</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">OKI</div><div class="congrats-card-award">Kooperacja Roku</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">M&#x141;ODY WEST</div><div class="congrats-card-award">Kooperacja Roku</div></div>
+          <canvas id="ad-congrats-left" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;margin-top:4px;"></canvas>
+        </div>
+      </div>
+
+      <div class="news-article">
+        <h1 class="news-headline">Popkillery 2026: &#x17B;abson w centrum wydarze&#x144;, GOD.WIFI w sercu dyskusji</h1>
+        <div class="news-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 10 kwietnia 2026, 15:00</div>
+        <div class="news-divider"></div>
+
+        <p class="news-body">Tegoroczna gala Popkiller&oacute;w przynios&#x142;a sporo emocji &ndash; zar&oacute;wno na scenie, jak i poza ni&#x105;. Cho&#x107; nagrody trafi&#x142;y do wielu artyst&oacute;w, trudno nie odnie&#x15B;&#x107; wra&#x17C;enia, &#x17C;e narracj&#x119; ca&#x142;ego wydarzenia zdominowa&#x142;y dwie postacie: <b>&#x17B;abson</b> oraz <b>GOD.WIFI</b>.</p>
+
+        <div class="news-subhead">&#x17B;abson &ndash; lider, trendsetter i showman</div>
+        <p class="news-body">&#x17B;abson bezsprzecznie by&#x142; jedn&#x105; z najwa&#x17C;niejszych postaci gali. Zdoby&#x142; tytu&#x142; <b>Rapera Roku</b> (publiczno&#x15B;&#x107;), <b>Trendsettera Roku</b> oraz nagrod&#x119; za <b>Album Roku</b> publiczno&#x15B;ci (&bdquo;Hollywood Smile&rdquo;). Jego pozycja na scenie wydaje si&#x119; dzi&#x15B; niepodwa&#x17C;alna.</p>
+        <p class="news-body">Jednak nie tylko statuetki zrobi&#x142;y wra&#x17C;enie. Kr&oacute;tki koncert &#x17B;absona wraz z ekip&#x105; by&#x142; jednym z najmocniejszych moment&oacute;w ca&#x142;ego wydarzenia. Artysta wcign&#x105;&#x142; publiczno&#x15B;&#x107; w imprezowy klimat, skutecznie &bdquo;rozrusza&#x142;&rdquo; ca&#x142;&#x105; sal&#x119; i pokaza&#x142;, &#x17C;e sceniczna energia to jego ogromny atut.</p>
+        <p class="news-body">Szczeg&oacute;lnie wyr&oacute;&#x17C;ni&#x142;o si&#x119; wykonanie utworu <b>&bdquo;Pingwin&rdquo;</b> &ndash; dynamiczne, pe&#x142;ne ruchu i autentycznej energii. Na scenie dzia&#x142;o si&#x119; du&#x17C;o: taniec, interakcja z publik&#x105; i wyra&#x17A;na chemia mi&#x119;dzy cz&#x142;onkami ekipy. To by&#x142; moment, kt&oacute;ry przypomnia&#x142;, &#x17C;e hip-hop to nie tylko liczby i nagrody, ale te&#x17C; &#x17C;ywe do&#x15B;wiadczenie.</p>
+
+        <div class="news-subhead">&bdquo;Fakty&rdquo; &ndash; kulisy, kt&oacute;re wysz&#x142;y na jaw</div>
+        <p class="news-body">Jednym z najbardziej komentowanych punkt&oacute;w gali by&#x142;a nagroda za <b>Kooperacj&#x119; Roku</b> dla utworu &bdquo;Fakty&rdquo; (&#x17B;abson x Oki x GOD.WIFI x M&#x142;ody West). Wok&oacute;&#x142; tego numeru pojawi&#x142;o si&#x119; sporo spekulacji &ndash; i, co ciekawe, cz&#x119;&#x15B;&#x107; z nich zosta&#x142;a p&oacute;&#x17A;niej potwierdzona.</p>
+        <p class="news-body">Z nieoficjalnych informacji kr&#x105;&#x17C;&#x105;cych wcze&#x15B;niej w &#x15B;rodowisku wynika&#x142;o, &#x17C;e utw&oacute;r pierwotnie by&#x142; w ca&#x142;o&#x15B;ci nagrany przez GOD.WIFI. Wed&#x142;ug tych doniesie&#x144;, &#x17B;abson po us&#x142;yszeniu numeru mia&#x142; uzna&#x107;, &#x17C;e jest na tyle mocny, &#x17C;e chce w&#x142;&#x105;czy&#x107; go do swojego projektu &ndash; a nast&#x119;pnie dogra&#x142; si&#x119; do niego wraz z zaproszonymi go&#x15B;&#x107;mi.</p>
+        <p class="news-body">Podczas gali &#x17B;abson odni&oacute;s&#x142; si&#x119; do tej sytuacji, w praktyce potwierdzaj&#x105;c kr&#x105;&#x17C;&#x105;ce wcze&#x15B;niej informacje. To rzuca zupe&#x142;nie inne &#x15B;wiat&#x142;o na odbi&oacute;r &bdquo;Fakt&oacute;w&rdquo; i jasno wskazuje, jak du&#x17C;y by&#x142; wk&#x142;ad GOD.WIFI w powstanie tego utworu.</p>
+
+        <div class="news-subhead">GOD.WIFI &ndash; niedosyt nagr&oacute;d, du&#x17C;y potencja&#x142;</div>
+        <p class="news-body">Warto to powiedzie&#x107; wprost: gratulacje dla GOD.WIFI za nominacje i nagrod&#x119; przy &bdquo;Faktach&rdquo;. Nawet je&#x15B;li formalnie to kooperacja, wiele wskazuje na to, &#x17C;e jej rola by&#x142;a fundamentem tego numeru.</p>
+        <p class="news-body">Nie dziwi wi&#x119;c, &#x17C;e w&#x15B;r&oacute;d fan&oacute;w pojawi&#x142;o si&#x119; poczucie niedosytu. Cz&#x119;&#x15B;&#x107; spo&#x142;eczno&#x15B;ci uwa&#x17C;a, &#x17C;e artystka zosta&#x142;a pomini&#x119;ta w innych kategoriach i nie otrzyma&#x142;a pe&#x142;nego uznania, na jakie zas&#x142;u&#x17C;y&#x142;a. Pojawi&#x142;y si&#x119; te&#x17C; g&#x142;osy o mo&#x17C;liwych niejasno&#x15B;ciach w procesie g&#x142;osowania i wezwania do wi&#x119;kszej transparentno&#x15B;ci wynik&oacute;w.</p>
+        <p class="news-body">Jednocze&#x15B;nie jedno jest pewne &ndash; GOD.WIFI jest dzi&#x15B; na radarze s&#x142;uchaczy i &#x15B;rodowiska. A to cz&#x119;sto wa&#x17C;niejsze ni&#x17C; pojedyncze statuetki.</p>
+
+        <div class="news-subhead">Co dalej?</div>
+        <p class="news-body">Z naszych informacji wynika, &#x17C;e GOD.WIFI intensywnie pracuje nad now&#x105; muzyk&#x105;. Trwaj&#x105; przygotowania do kolejnych singli oraz albumu, a poziom materia&#x142;u ma by&#x107; bardzo wysoki.</p>
+        <p class="news-body">Je&#x15B;li te zapowiedzi si&#x119; potwierdzn, przysz&#x142;oroczna gala mo&#x17C;e wygl&#x105;da&#x107; zupe&#x142;nie inaczej. Wszystko wskazuje na to, &#x17C;e artystka dopiero buduje swoj&#x105; pozycj&#x119; i w najbli&#x17C;szym czasie mo&#x17C;e zrobi&#x107; jeszcze wi&#x119;kszy ruch.</p>
+
+        <div class="news-subhead">G&#x142;os z miejsca wydarze&#x144;</div>
+        <p class="news-body">Nie zabrak&#x142;o te&#x17C; opinii naszych korespondent&oacute;w. Wiktorialean Jakpodaje przyzna&#x142;a, &#x17C;e gala mia&#x142;a lu&#x17A;n&#x105;, imprezow&#x105; atmosfer&#x119; &ndash; cho&#x107; sama, jak relacjonowa&#x142;a, troch&#x119; za bardzo wczu&#x142;a si&#x119; w klimat wydarzenia. Mimo tego oceni&#x142;a inicjatyw&#x119; pozytywnie.</p>
+        <p class="news-body">Drugi z korespondent&oacute;w zwr&oacute;ci&#x142; uwag&#x119; na niedoci&#x105;gni&#x119;cia organizacyjne:</p>
+        <div class="news-quote">&bdquo;By&#x142;y problemy, szczeg&oacute;lnie techniczne, ale og&oacute;lnie gala by&#x142;a do przyj&#x119;cia &ndash; mog&#x142;o by&#x107; lepiej, ale nie by&#x142;o &#x17A;le.&rdquo;</div>
+
+        <div class="news-subhead">Problemy techniczne i odbi&oacute;r gali</div>
+        <p class="news-body">Najwi&#x119;ksze zastrze&#x17C;enia dotyczy&#x142;y transmisji na &#x17C;ywo. Problemy z d&#x17A;wi&#x119;kiem momentami utrudnia&#x142;y odbi&oacute;r, co przy wydarzeniu tej skali nie powinno mie&#x107; miejsca.</p>
+
+        <div class="news-subhead">Podsumowanie</div>
+        <p class="news-body">Popkillery 2026 to gala pe&#x142;na kontrast&oacute;w &ndash; z jednej strony mocna dominacja &#x17B;absona i &#x15B;wietny wyst&#x119;p na scenie, z drugiej kontrowersje wok&oacute;&#x142; GOD.WIFI i pytania o transparentno&#x15B;&#x107; wynik&oacute;w.</p>
+        <p class="news-body">Jedno jest pewne: &#x17B;abson potwierdza swoj&#x105; pozycj&#x119; lidera, a <b>GOD.WIFI buduje napi&#x119;cie przed kolejnymi ruchami</b>. Gratulujemy wszystkim nagrodzonym &ndash; i uwa&#x17C;nie obserwujemy, co wydarzy si&#x119; dalej.</p>
+
+        <div class="news-divider"></div>
+        <div class="news-footer">&copy; 2026 god.wifiNEWS &nbsp;&middot;&nbsp; Wszelkie prawa zastrze&#x17C;one &nbsp;&middot;&nbsp; Redakcja nie ponosi odpowiedzialno&#x15B;ci za brak sygna&#x142;u</div>
       </div>
 
       <div class="news-ad news-ad-right">
-        <canvas class="ad-canvas" id="ad2" width="120" height="240"></canvas>
-        <canvas class="ad-canvas" id="ad3" width="120" height="120" style="margin-top:16px;"></canvas>
+        <div class="congrats-ad">
+          <div class="congrats-trophy">&#x2B50;</div>
+          <div class="congrats-section-label" style="color:#006600;">GRATULACJE!</div>
+          <div class="congrats-card" style="background:#fff8e0;border-color:#cc8800;"><div class="congrats-card-name" style="color:#cc6600;">GOD.WIFI</div><div class="congrats-card-award">Tw&oacute;j wk&#x142;ad<br>by&#x142; fundamentem.<br>Wiemy to.</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Hollywood Smile<br>Album Roku &#x1F3C6;</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">SCENA PL</div><div class="congrats-card-award">wci&#x105;&#x17C; ro&#x15B;nie.<br>Obserwujemy.</div></div>
+          <canvas id="ad-congrats-right" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;margin-top:4px;"></canvas>
+        </div>
       </div>
     </div>
+
+    <!-- MEDIA PLAYER -->
+    <div class="news-media-section">
+      <div class="news-media-header">&#x25BA; ARCHIWUM WIDEO &nbsp;|&nbsp; GOD.WIFI LIVE</div>
+      <div class="news-media-layout">
+        <div class="news-media-player">
+          <div class="nmp-titlebar">
+            <span class="nmp-dot"></span><span class="nmp-dot"></span><span class="nmp-dot"></span>
+            <span class="nmp-title" id="nmp-title">&#x25BA; MEDIA PLAYER v1.0</span>
+          </div>
+          <div class="nmp-screen">
+            <video id="nmp-video" preload="metadata" playsinline></video>
+            <div class="nmp-overlay" id="nmp-overlay">
+              <div class="nmp-play-big" onclick="nmpPlay()">&#x25BA;</div>
+            </div>
+          </div>
+          <div class="nmp-controls">
+            <button class="nmp-btn" id="nmp-playbtn" onclick="nmpToggle()">&#x25BA;</button>
+            <button class="nmp-btn" onclick="nmpRewind()">&#x25C4;&#x25C4;</button>
+            <div class="nmp-progress-wrap" onclick="nmpSeek(event)">
+              <div class="nmp-progress-bar" id="nmp-bar"></div>
+            </div>
+            <span class="nmp-time" id="nmp-time">0:00 / 0:00</span>
+            <button class="nmp-btn" id="nmp-mutebtn" onclick="nmpMute()">[S]</button>
+          </div>
+          <div class="nmp-statusbar"><span id="nmp-status">WYBIERZ NAGRANIE Z LISTY &#x25BA;</span></div>
+        </div>
+        <div class="news-media-playlist">
+          <div class="nmp-playlist-header">&#x25A0; PLAYLIST</div>
+          <div class="nmp-playlist-item" id="pl-0" onclick="nmpLoad(0)">
+            <span class="pl-num">01</span>
+            <span class="pl-info"><b>koncert1</b><br><span class="pl-sub">god.wifi live set</span></span>
+          </div>
+          <div class="nmp-playlist-item" id="pl-1" onclick="nmpLoad(1)">
+            <span class="pl-num">02</span>
+            <span class="pl-info"><b>koncert2</b><br><span class="pl-sub">god.wifi live set</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
