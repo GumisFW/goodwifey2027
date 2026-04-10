@@ -1285,6 +1285,24 @@
 
   /* confetti */
   #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:9999; display:none; }
+
+  .nrd-article-single { padding: 16px 20px; overflow-wrap: break-word; word-break: break-word; }
+  .nrd-congrats-row { display: flex; border-top: 2px solid #bbb; background: #e8e5d8; }
+  .nrd-congrats-half { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: 'Press Start 2P', monospace; text-align: center; }
+  .congrats-label-top { font-size: clamp(5px,1.1vmin,8px); color: #000080; margin-bottom: 4px; letter-spacing: 0.06em; }
+
+  #news-back-btn {
+    position: fixed; top: 46px; right: 10px;
+    background: #000080; color: #fff;
+    border: 2px solid #000040;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px,1.5vmin,10px);
+    padding: 5px 10px; cursor: pointer;
+    box-shadow: 3px 3px 0 #000020; z-index: 201;
+    display: none;
+  }
+  #news-back-btn.visible { display: block; }
+  #news-back-btn:active { box-shadow:none; transform:translate(3px,3px); }
 </style>
 </head>
 <body>
@@ -2369,8 +2387,9 @@ function openArticle(key){
   reader.classList.add('open');
   // Show/hide panels by ID
   document.getElementById('nrd-panel-art1').style.display = art.id === 'art1' ? 'grid' : 'none';
-  document.getElementById('nrd-panel-art2').style.display = art.id === 'art2' ? 'grid' : 'none';
+  document.getElementById('nrd-panel-art2').style.display = art.id === 'art2' ? 'block' : 'none';
   document.getElementById('nrd-panel-media').style.display = art.id === 'art2' ? 'block' : 'none';
+  document.getElementById('news-back-btn').classList.add('visible');
   if(art.confetti) startConfetti(); else stopConfetti();
   setTimeout(drawAds, 80);
   reader.scrollIntoView({behavior:'smooth', block:'start'});
@@ -2380,6 +2399,7 @@ function backToCalendar(){
   document.getElementById('news-reader').classList.remove('open');
   document.getElementById('news-calendar').style.display = 'block';
   document.getElementById('nrd-panel-media').style.display = 'none';
+  document.getElementById('news-back-btn').classList.remove('visible');
   stopConfetti();
 }
 
@@ -2442,6 +2462,7 @@ function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math
 
 <div id="news-overlay">
   <button id="news-close-btn" onclick="closeNews()">X ZAMKNIJ</button>
+  <button id="news-back-btn" onclick="backToCalendar()">&#x25C4; POWROT DO KALENDARZA</button>
 
   <!-- CALENDAR -->
   <div id="news-calendar">
@@ -2509,21 +2530,9 @@ function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math
     </div>
 
     <!-- ARTICLE 2: 10.04 -->
-    <div id="nrd-panel-art2" class="nrd-layout" style="display:none;">
-      <div class="nrd-side nrd-side-left">
-        <div class="nrd-ad-panel" data-ad="congrats-left" style="width:100%;">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;font-family:'Press Start 2P',monospace;font-size:clamp(4px,0.9vmin,6px);text-align:center;">
-            <div style="font-size:20px;">&#x1F3C6;</div>
-            <div style="color:#000080;">NAGRODZENI</div>
-            <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Raper Roku<br>Trendsetter Roku<br>Album Roku</div></div>
-            <div class="congrats-card"><div class="congrats-card-name">GOD.WIFI</div><div class="congrats-card-award">Kooperacja Roku<br>&bdquo;Fakty&rdquo;</div></div>
-            <div class="congrats-card"><div class="congrats-card-name">OKI</div><div class="congrats-card-award">Kooperacja Roku</div></div>
-            <div class="congrats-card"><div class="congrats-card-name">M&#x141;ODY WEST</div><div class="congrats-card-award">Kooperacja Roku</div></div>
-            <canvas id="ad-congrats-left" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="nrd-article-content">
+    <div id="nrd-panel-art2" style="display:none;">
+      <!-- Article content -->
+      <div class="nrd-article-single">
         <div class="nrd-content">
           <h1 class="nrd-headline">Popkillery 2026: &#x17B;abson w centrum wydarze&#x144;, GOD.WIFI w sercu dyskusji</h1>
           <div class="nrd-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 10 kwietnia 2026, 15:00</div>
@@ -2546,22 +2555,26 @@ function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math
           <p class="nrd-body">Popkillery 2026 to gala pe&#x142;na kontrast&oacute;w. <b>GOD.WIFI buduje napi&#x119;cie przed kolejnymi ruchami</b>. Gratulujemy wszystkim nagrodzonym.</p>
           <div class="nrd-divider"></div>
           <div class="nrd-footer">&copy; 2026 god.wifiNEWS</div>
-        </div>
       </div>
-      <div class="nrd-side nrd-side-right">
-        <div class="nrd-ad-panel" data-ad="congrats-right" style="width:100%;">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;font-family:'Press Start 2P',monospace;font-size:clamp(4px,0.9vmin,6px);text-align:center;">
-            <div style="font-size:20px;">&#x2B50;</div>
-            <div style="color:#006600;">GRATULACJE!</div>
-            <div class="congrats-card" style="background:#fff8e0;border-color:#cc8800;"><div class="congrats-card-name" style="color:#cc6600;">GOD.WIFI</div><div class="congrats-card-award">Tw&oacute;j wk&#x142;ad<br>by&#x142; fundamentem.<br>Wiemy to.</div></div>
-            <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Hollywood Smile<br>Album Roku &#x1F3C6;</div></div>
-            <div class="congrats-card"><div class="congrats-card-name">SCENA PL</div><div class="congrats-card-award">wci&#x105;&#x17C; ro&#x15B;nie.<br>Obserwujemy.</div></div>
-            <canvas id="ad-congrats-right" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-          </div>
+      <!-- Congrats panels side by side below article -->
+      <div class="nrd-congrats-row">
+        <div class="nrd-congrats-half">
+          <div class="congrats-label-top">&#x1F3C6; NAGRODZENI</div>
+          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Raper Roku<br>Trendsetter Roku<br>Album Roku</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">GOD.WIFI</div><div class="congrats-card-award">Kooperacja Roku<br>&bdquo;Fakty&rdquo;</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">OKI</div><div class="congrats-card-award">Kooperacja Roku</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">M&#x141;ODY WEST</div><div class="congrats-card-award">Kooperacja Roku</div></div>
+          <canvas id="ad-congrats-left" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;display:block;margin:6px auto 0;"></canvas>
+        </div>
+        <div class="nrd-congrats-half" style="border-left:1px dashed #aaa;">
+          <div class="congrats-label-top" style="color:#006600;">&#x2B50; GRATULACJE!</div>
+          <div class="congrats-card" style="background:#fff8e0;border-color:#cc8800;"><div class="congrats-card-name" style="color:#cc6600;">GOD.WIFI</div><div class="congrats-card-award">Tw&oacute;j wk&#x142;ad<br>by&#x142; fundamentem.<br>Wiemy to.</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Hollywood Smile<br>Album Roku &#x1F3C6;</div></div>
+          <div class="congrats-card"><div class="congrats-card-name">SCENA PL</div><div class="congrats-card-award">wci&#x105;&#x17C; ro&#x15B;nie.<br>Obserwujemy.</div></div>
+          <canvas id="ad-congrats-right" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;display:block;margin:6px auto 0;"></canvas>
         </div>
       </div>
     </div>
-
 
 
     <!-- MEDIA PLAYER (art2 only) -->
