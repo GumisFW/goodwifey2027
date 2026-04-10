@@ -1047,7 +1047,7 @@
     overflow-y: auto;
     font-family: 'Press Start 2P', monospace;
   }
-  #news-overlay.open { display: flex; }
+  #news-overlay.open { display: block; }
 
   #news-close-btn {
     position: fixed; top: 10px; right: 10px;
@@ -1066,6 +1066,7 @@
     background: #f0ede0;
     border: 3px solid #444;
     box-shadow: 6px 6px 0 #000;
+    margin: 0 auto;
   }
   .ncal-header {
     background: linear-gradient(90deg,#000080,#1084d0);
@@ -1194,6 +1195,7 @@
     background: #f0ede0;
     border: 3px solid #444;
     box-shadow: 6px 6px 0 #000;
+    margin: 0 auto;
   }
   #news-reader.open { display: block; }
   .nrd-topbar {
@@ -1215,9 +1217,11 @@
     display: grid;
     grid-template-columns: 140px 1fr 140px;
     align-items: start;
+    background: #f0ede0;
   }
   @media(max-width:600px){ .nrd-layout{grid-template-columns:1fr} .nrd-side{display:none!important} }
   .nrd-side {
+    background: #e8e5d8;
     padding: 12px 8px;
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     background: #e8e5d8;
@@ -1230,6 +1234,7 @@
   .nrd-side-right { border-left: 1px dashed #aaa; }
   .nrd-content {
     padding: 16px 20px;
+    background: #f0ede0;
     min-width: 0;
     overflow-wrap: break-word;
     word-break: break-word;
@@ -2387,18 +2392,29 @@ function openArticle(key){
   reader.classList.add('open');
   // Show/hide panels by ID
   document.getElementById('nrd-panel-art1').style.display = art.id === 'art1' ? 'grid' : 'none';
-  document.getElementById('nrd-panel-art2').style.display = art.id === 'art2' ? 'block' : 'none';
+  document.getElementById('nrd-panel-art2').style.display = art.id === 'art2' ? 'grid' : 'none';
   document.getElementById('nrd-panel-media').style.display = art.id === 'art2' ? 'block' : 'none';
   document.getElementById('news-back-btn').classList.add('visible');
+  // Reset art2 canvas _d flags so they draw after panel is visible
+  if(art.id === 'art2'){
+    var _c1 = document.getElementById('ad-congrats-left');
+    var _c2 = document.getElementById('ad-congrats-right');
+    if(_c1) _c1._d = 0;
+    if(_c2) _c2._d = 0;
+  }
   if(art.confetti) startConfetti(); else stopConfetti();
-  setTimeout(drawAds, 80);
-  reader.scrollIntoView({behavior:'smooth', block:'start'});
+  setTimeout(drawAds, 100);
+  window.scrollTo(0, 0);
 }
 
 function backToCalendar(){
+  // Hide all article panels first
+  document.getElementById('nrd-panel-art1').style.display = 'none';
+  document.getElementById('nrd-panel-art2').style.display = 'none';
+  document.getElementById('nrd-panel-media').style.display = 'none';
+  // Hide reader, show calendar
   document.getElementById('news-reader').classList.remove('open');
   document.getElementById('news-calendar').style.display = 'block';
-  document.getElementById('nrd-panel-media').style.display = 'none';
   document.getElementById('news-back-btn').classList.remove('visible');
   stopConfetti();
 }
@@ -2422,9 +2438,71 @@ function drawAds(){
   var el2=document.getElementById('ad2');
   if(el2&&!el2._d){el2._d=1;var y=el2.getContext('2d');y.imageSmoothingEnabled=false;y.fillStyle='#001400';y.fillRect(0,0,120,240);for(var s=0;s<240;s+=4){y.fillStyle='rgba(0,0,0,0.22)';y.fillRect(0,s,120,2);}y.fillStyle='#004400';y.fillRect(0,0,120,22);y.fillStyle='#00ff44';y.font='bold 7px monospace';y.textAlign='center';y.fillText('[ EVENT ]',60,14);y.fillStyle='#00ff44';y.font='bold 9px monospace';y.fillText('9.04.2026',60,46);y.fillStyle='#00cc33';y.font='6px monospace';y.fillText('POPKILLERY',60,60);y.fillText('GALA',60,72);y.fillStyle='#003300';y.fillRect(20,100,80,50);y.fillStyle='#004400';y.fillRect(22,102,76,46);y.fillStyle='#00ff44';y.fillRect(56,110,8,6);y.fillRect(54,116,12,16);y.fillRect(52,132,5,12);y.fillRect(63,132,5,12);y.fillRect(44,118,10,4);y.fillRect(66,118,10,4);y.fillStyle='#aaa';y.fillRect(60,108,2,7);y.fillStyle='#00aa22';y.font='5px monospace';y.textAlign='center';y.fillText('god.wifi',60,175);y.fillStyle='#005500';y.font='5px monospace';y.fillText('w nominacjach',60,188);y.fillText('youtube.com',60,210);y.fillText('/popkiller',60,222);y.strokeStyle='#00ff44';y.lineWidth=2;y.strokeRect(1,1,118,238);}
   var ecl=document.getElementById('ad-congrats-left');
-  if(ecl&&!ecl._d){ecl._d=1;var cl=ecl.getContext('2d');cl.fillStyle='#fffbe8';cl.fillRect(0,0,120,70);cl.fillStyle='#cc8800';cl.fillRect(0,0,120,14);cl.fillStyle='#fff';cl.font='bold 5px monospace';cl.textAlign='center';cl.fillText('GRATULACJE 2026',60,10);var sc2=['#ff4444','#ffaa00','#44ff88','#44aaff','#ff44ff'];for(var si=0;si<16;si++){cl.fillStyle=sc2[si%5];cl.fillRect(Math.random()*114|0,16+Math.random()*50|0,4,4);}cl.fillStyle='#cc8800';cl.font='bold 7px monospace';cl.textAlign='center';cl.fillText('POPKILLERY',60,46);cl.fillText('2026',60,58);cl.strokeStyle='#cc8800';cl.lineWidth=2;cl.strokeRect(1,1,118,68);}
+  if(ecl&&!ecl._d){ecl._d=1;
+    var cl=ecl.getContext('2d'); cl.imageSmoothingEnabled=false;
+    // Gold/trophy background
+    cl.fillStyle='#1a0a00'; cl.fillRect(0,0,120,240);
+    // Stars
+    for(var si=0;si<40;si++){cl.fillStyle='rgba(255,220,50,'+(0.3+Math.random()*0.7)+')';cl.fillRect(Math.random()*118|0,Math.random()*238|0,Math.random()<0.5?1:2,Math.random()<0.5?1:2);}
+    // Header
+    cl.fillStyle='#cc8800'; cl.fillRect(0,0,120,22);
+    cl.fillStyle='#ffe066'; cl.fillRect(0,0,120,2);
+    cl.fillStyle='#fff'; cl.textAlign='center'; cl.font='bold 6px monospace'; cl.fillText('NAGRODZENI',60,14);
+    // Trophy pixel
+    cl.fillStyle='#ffd700';
+    cl.fillRect(50,30,20,14); cl.fillRect(46,30,4,8); cl.fillRect(70,30,4,8);
+    cl.fillRect(54,44,12,4); cl.fillRect(50,48,20,4); cl.fillRect(46,52,28,4);
+    // Names
+    var names=[['ZABSON','#ffd700'],['GOD.WIFI','#ff88ff'],['OKI','#88ffaa'],['MLODY WEST','#88ccff']];
+    var y2=66;
+    names.forEach(function(n){
+      cl.fillStyle='#222'; cl.fillRect(8,y2,104,18);
+      cl.strokeStyle=n[1]; cl.lineWidth=1; cl.strokeRect(8,y2,104,18);
+      cl.fillStyle=n[1]; cl.font='bold 6px monospace'; cl.textAlign='center'; cl.fillText(n[0],60,y2+12);
+      y2+=24;
+    });
+    // Confetti pixels
+    var cols2=['#ff4444','#ffcc00','#44ff88','#44aaff','#ff44ff'];
+    for(var ci=0;ci<20;ci++){cl.fillStyle=cols2[ci%5];cl.fillRect(Math.random()*116|0,y2+Math.random()*(238-y2)|0,4,4);}
+    cl.fillStyle='#cc8800'; cl.font='bold 7px monospace'; cl.textAlign='center'; cl.fillText('POPKILLERY',60,220); cl.fillText('2026',60,232);
+    cl.strokeStyle='#cc8800'; cl.lineWidth=2; cl.strokeRect(1,1,118,238);
+  }
   var ecr=document.getElementById('ad-congrats-right');
-  if(ecr&&!ecr._d){ecr._d=1;var cr=ecr.getContext('2d');cr.fillStyle='#f0f8ff';cr.fillRect(0,0,120,70);cr.fillStyle='#000080';cr.fillRect(0,0,120,14);cr.fillStyle='#fff';cr.font='bold 5px monospace';cr.textAlign='center';cr.fillText('GOD.WIFI NEWS',60,10);cr.fillStyle='#000080';cr.font='6px monospace';cr.textAlign='center';cr.fillText('SLEDZMY',60,34);cr.fillText('CO BEDZIE',60,46);cr.fillText('DALEJ...',60,58);cr.strokeStyle='#000080';cr.lineWidth=2;cr.strokeRect(1,1,118,68);}
+  if(ecr&&!ecr._d){ecr._d=1;
+    var cr=ecr.getContext('2d'); cr.imageSmoothingEnabled=false;
+    // Dark bg with gradient feel
+    cr.fillStyle='#000814'; cr.fillRect(0,0,120,240);
+    for(var si2=0;si2<35;si2++){cr.fillStyle='rgba(255,255,255,'+(0.1+Math.random()*0.4)+')';cr.fillRect(Math.random()*118|0,Math.random()*238|0,1,1);}
+    // Header
+    cr.fillStyle='#000080'; cr.fillRect(0,0,120,22);
+    cr.fillStyle='#88aaff'; cr.fillRect(0,0,120,2);
+    cr.fillStyle='#fff'; cr.textAlign='center'; cr.font='bold 5px monospace'; cr.fillText('GRATULACJE!',60,14);
+    // Star burst pixel art
+    cr.fillStyle='#ffff00';
+    var cx2=60,cy2=60;
+    [[0,-18],[0,18],[-18,0],[18,0],[-13,-13],[13,-13],[-13,13],[13,13]].forEach(function(p){
+      cr.fillRect(cx2+p[0]-1,cy2+p[1]-1,3,3);
+    });
+    cr.fillRect(cx2-4,cy2-4,9,9); // center
+    // GOD.WIFI box
+    cr.fillStyle='#cc00cc'; cr.fillRect(10,90,100,36);
+    cr.strokeStyle='#ff66ff'; cr.lineWidth=2; cr.strokeRect(10,90,100,36);
+    cr.fillStyle='#fff'; cr.font='bold 7px monospace'; cr.textAlign='center'; cr.fillText('GOD.WIFI',60,104);
+    cr.fillStyle='#ffccff'; cr.font='5px monospace'; cr.fillText('fundamentem',60,118);
+    // ZABSON box
+    cr.fillStyle='#004400'; cr.fillRect(10,136,100,28);
+    cr.strokeStyle='#00ff44'; cr.lineWidth=1; cr.strokeRect(10,136,100,28);
+    cr.fillStyle='#00ff44'; cr.font='bold 6px monospace'; cr.textAlign='center'; cr.fillText('ZABSON',60,147);
+    cr.fillStyle='#88ffaa'; cr.font='5px monospace'; cr.fillText('Hollywood Smile',60,159);
+    // Scena PL
+    cr.fillStyle='#1a1a3a'; cr.fillRect(10,174,100,28);
+    cr.strokeStyle='#4488ff'; cr.lineWidth=1; cr.strokeRect(10,174,100,28);
+    cr.fillStyle='#88aaff'; cr.font='bold 5px monospace'; cr.textAlign='center'; cr.fillText('SCENA PL',60,185);
+    cr.fillStyle='#6688cc'; cr.font='5px monospace'; cr.fillText('wciaz rosnie',60,197);
+    // Footer
+    cr.fillStyle='#333355'; cr.font='5px monospace'; cr.textAlign='center'; cr.fillText('god.wifiNEWS',60,220); cr.fillText('obserwuje',60,232);
+    cr.strokeStyle='#000080'; cr.lineWidth=2; cr.strokeRect(1,1,118,238);
+  }
 }
 
 /* MEDIA PLAYER */
@@ -2530,9 +2608,11 @@ function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math
     </div>
 
     <!-- ARTICLE 2: 10.04 -->
-    <div id="nrd-panel-art2" style="display:none;">
-      <!-- Article content -->
-      <div class="nrd-article-single">
+    <div id="nrd-panel-art2" class="nrd-layout" style="display:none;">
+      <div class="nrd-side nrd-side-left">
+        <canvas id="ad-congrats-left" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
+      </div>
+      <div class="nrd-article-content">
         <div class="nrd-content">
           <h1 class="nrd-headline">Popkillery 2026: &#x17B;abson w centrum wydarze&#x144;, GOD.WIFI w sercu dyskusji</h1>
           <div class="nrd-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 10 kwietnia 2026, 15:00</div>
@@ -2540,42 +2620,36 @@ function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math
           <p class="nrd-body">Tegoroczna gala Popkiller&oacute;w przynios&#x142;a sporo emocji &ndash; zar&oacute;wno na scenie, jak i poza ni&#x105;. Cho&#x107; nagrody trafi&#x142;y do wielu artyst&oacute;w, trudno nie odnie&#x15B;&#x107; wra&#x17C;enia, &#x17C;e narracj&#x119; ca&#x142;ego wydarzenia zdominowa&#x142;y dwie postacie: <b>&#x17B;abson</b> oraz <b>GOD.WIFI</b>.</p>
           <div class="nrd-subhead">&#x17B;abson &ndash; lider, trendsetter i showman</div>
           <p class="nrd-body">&#x17B;abson bezsprzecznie by&#x142; jedn&#x105; z najwa&#x17C;niejszych postaci gali. Zdoby&#x142; tytu&#x142; <b>Rapera Roku</b> (publiczno&#x15B;&#x107;), <b>Trendsettera Roku</b> oraz nagrod&#x119; za <b>Album Roku</b> publiczno&#x15B;ci (&bdquo;Hollywood Smile&rdquo;). Jego pozycja na scenie wydaje si&#x119; dzi&#x15B; niepodwa&#x17C;alna.</p>
-          <p class="nrd-body">Jednak nie tylko statuetki zrobi&#x142;y wra&#x17C;enie. Kr&oacute;tki koncert &#x17B;absona wraz z ekip&#x105; by&#x142; jednym z najmocniejszych moment&oacute;w. Szczeg&oacute;lnie wyr&oacute;&#x17C;ni&#x142;o si&#x119; wykonanie <b>&bdquo;Pingwina&rdquo;</b> &ndash; dynamiczne, pe&#x142;ne ruchu i autentycznej energii.</p>
+          <p class="nrd-body">Jednak nie tylko statuetki zrobi&#x142;y wra&#x17C;enie. Kr&oacute;tki koncert &#x17B;absona wraz z ekip&#x105; by&#x142; jednym z najmocniejszych moment&oacute;w ca&#x142;ego wydarzenia. Artysta wcign&#x105;&#x142; publiczno&#x15B;&#x107; w imprezowy klimat, skutecznie &bdquo;rozrusza&#x142;&rdquo; ca&#x142;&#x105; sal&#x119; i pokaza&#x142;, &#x17C;e sceniczna energia to jego ogromny atut.</p>
+          <p class="nrd-body">Szczeg&oacute;lnie wyr&oacute;&#x17C;ni&#x142;o si&#x119; wykonanie utworu <b>&bdquo;Pingwin&rdquo;</b> &ndash; dynamiczne, pe&#x142;ne ruchu i autentycznej energii. Na scenie dzia&#x142;o si&#x119; du&#x17C;o: taniec, interakcja z publik&#x105; i wyra&#x17A;na chemia mi&#x119;dzy cz&#x142;onkami ekipy. To by&#x142; moment, kt&oacute;ry przypomnia&#x142;, &#x17C;e hip-hop to nie tylko liczby i nagrody, ale te&#x17C; &#x17C;ywe do&#x15B;wiadczenie.</p>
           <div class="nrd-subhead">&bdquo;Fakty&rdquo; &ndash; kulisy, kt&oacute;re wysz&#x142;y na jaw</div>
-          <p class="nrd-body">Jednym z najbardziej komentowanych punkt&oacute;w gali by&#x142;a nagroda za <b>Kooperacj&#x119; Roku</b> dla &bdquo;Fakty&rdquo; (&#x17B;abson x Oki x GOD.WIFI x M&#x142;ody West). Z nieoficjalnych informacji wynika&#x142;o, &#x17C;e utw&oacute;r pierwotnie by&#x142; w ca&#x142;o&#x15B;ci nagrany przez GOD.WIFI. &#x17B;abson po us&#x142;yszeniu numeru mia&#x142; uzna&#x107;, &#x17C;e jest na tyle mocny, &#x17C;e chce w&#x142;&#x105;czy&#x107; go do swojego projektu.</p>
-          <p class="nrd-body">Podczas gali &#x17B;abson odni&oacute;s&#x142; si&#x119; do tej sytuacji, w praktyce potwierdzaj&#x105;c kr&#x105;&#x17C;&#x105;ce wcze&#x15B;niej informacje. To rzuca zupe&#x142;nie inne &#x15B;wiat&#x142;o na odbi&oacute;r &bdquo;Fakt&oacute;w&rdquo;.</p>
+          <p class="nrd-body">Jednym z najbardziej komentowanych punkt&oacute;w gali by&#x142;a nagroda za <b>Kooperacj&#x119; Roku</b> dla utworu &bdquo;Fakty&rdquo; (&#x17B;abson x Oki x GOD.WIFI x M&#x142;ody West). Wok&oacute;&#x142; tego numeru pojawi&#x142;o si&#x119; sporo spekulacji &ndash; i, co ciekawe, cz&#x119;&#x15B;&#x107; z nich zosta&#x142;a p&oacute;&#x17A;niej potwierdzona.</p>
+          <p class="nrd-body">Z nieoficjalnych informacji kr&#x105;&#x17C;&#x105;cych wcze&#x15B;niej w &#x15B;rodowisku wynika&#x142;o, &#x17C;e utw&oacute;r pierwotnie by&#x142; w ca&#x142;o&#x15B;ci nagrany przez GOD.WIFI. Wed&#x142;ug tych doniesie&#x144;, &#x17B;abson po us&#x142;yszeniu numeru mia&#x142; uzna&#x107;, &#x17C;e jest na tyle mocny, &#x17C;e chce w&#x142;&#x105;czy&#x107; go do swojego projektu &ndash; a nast&#x119;pnie dogra&#x142; si&#x119; do niego wraz z zaproszonymi go&#x15B;&#x107;mi.</p>
+          <p class="nrd-body">Podczas gali &#x17B;abson odni&oacute;s&#x142; si&#x119; do tej sytuacji, w praktyce potwierdzaj&#x105;c kr&#x105;&#x17C;&#x105;ce wcze&#x15B;niej informacje. To rzuca zupe&#x142;nie inne &#x15B;wiat&#x142;o na odbi&oacute;r &bdquo;Fakt&oacute;w&rdquo; i jasno wskazuje, jak du&#x17C;y by&#x142; wk&#x142;ad GOD.WIFI w powstanie tego utworu.</p>
           <div class="nrd-subhead">GOD.WIFI &ndash; niedosyt nagr&oacute;d, du&#x17C;y potencja&#x142;</div>
-          <p class="nrd-body">Warto to powiedzie&#x107; wprost: gratulacje dla GOD.WIFI za nominacje i nagrod&#x119; przy &bdquo;Faktach&rdquo;. Nawet je&#x15B;li formalnie to kooperacja, wiele wskazuje na to, &#x17C;e jej rola by&#x142;a fundamentem tego numeru. GOD.WIFI jest dzi&#x15B; na radarze s&#x142;uchaczy i &#x15B;rodowiska.</p>
+          <p class="nrd-body">Warto to powiedzie&#x107; wprost: gratulacje dla GOD.WIFI za nominacje i nagrod&#x119; przy &bdquo;Faktach&rdquo;. Nawet je&#x15B;li formalnie to kooperacja, wiele wskazuje na to, &#x17C;e jej rola by&#x142;a fundamentem tego numeru.</p>
+          <p class="nrd-body">Nie dziwi wi&#x119;c, &#x17C;e w&#x15B;r&oacute;d fan&oacute;w pojawi&#x142;o si&#x119; poczucie niedosytu. Cz&#x119;&#x15B;&#x107; spo&#x142;eczno&#x15B;ci uwa&#x17C;a, &#x17C;e artystka zosta&#x142;a pomini&#x119;ta w innych kategoriach i nie otrzyma&#x142;a pe&#x142;nego uznania, na jakie zas&#x142;u&#x17C;y&#x142;a. Pojawi&#x142;y si&#x119; te&#x17C; g&#x142;osy o mo&#x17C;liwych niejasno&#x15B;ciach w procesie g&#x142;osowania i wezwania do wi&#x119;kszej transparentno&#x15B;ci wynik&oacute;w.</p>
+          <p class="nrd-body">Jednocze&#x15B;nie jedno jest pewne &ndash; GOD.WIFI jest dzi&#x15B; na radarze s&#x142;uchaczy i &#x15B;rodowiska. A to cz&#x119;sto wa&#x17C;niejsze ni&#x17C; pojedyncze statuetki.</p>
           <div class="nrd-subhead">Co dalej?</div>
-          <p class="nrd-body">GOD.WIFI intensywnie pracuje nad now&#x105; muzyk&#x105;. Trwaj&#x105; przygotowania do kolejnych singli oraz albumu, a poziom materia&#x142;u ma by&#x107; bardzo wysoki.</p>
+          <p class="nrd-body">Z naszych informacji wynika, &#x17C;e GOD.WIFI intensywnie pracuje nad now&#x105; muzyk&#x105;. Trwaj&#x105; przygotowania do kolejnych singli oraz albumu, a poziom materia&#x142;u ma by&#x107; bardzo wysoki.</p>
+          <p class="nrd-body">Je&#x15B;li te zapowiedzi si&#x119; potwierdzn, przysz&#x142;oroczna gala mo&#x17C;e wygl&#x105;da&#x107; zupe&#x142;nie inaczej. Wszystko wskazuje na to, &#x17C;e artystka dopiero buduje swoj&#x105; pozycj&#x119; i w najbli&#x17C;szym czasie mo&#x17C;e zrobi&#x107; jeszcze wi&#x119;kszy ruch.</p>
           <div class="nrd-subhead">G&#x142;os z miejsca wydarze&#x144;</div>
-          <p class="nrd-body">Wiktorialean Jakpodaje przyzna&#x142;a, &#x17C;e gala mia&#x142;a lu&#x17A;n&#x105;, imprezow&#x105; atmosfer&#x119;. Oceni&#x142;a inicjatyw&#x119; pozytywnie. Drugi korespondent zwr&oacute;ci&#x142; uwag&#x119; na niedoci&#x105;gni&#x119;cia organizacyjne:</p>
+          <p class="nrd-body">Nie zabrak&#x142;o te&#x17C; opinii naszych korespondent&oacute;w. Wiktorialean Jakpodaje przyzna&#x142;a, &#x17C;e gala mia&#x142;a lu&#x17A;n&#x105;, imprezow&#x105; atmosfer&#x119; &ndash; cho&#x107; sama, jak relacjonowa&#x142;a, troch&#x119; za bardzo wczu&#x142;a si&#x119; w klimat wydarzenia. Mimo tego oceni&#x142;a inicjatyw&#x119; pozytywnie.</p>
+          <p class="nrd-body">Drugi z korespondent&oacute;w zwr&oacute;ci&#x142; uwag&#x119; na niedoci&#x105;gni&#x119;cia organizacyjne:</p>
           <div class="nrd-quote">&bdquo;By&#x142;y problemy, szczeg&oacute;lnie techniczne, ale og&oacute;lnie gala by&#x142;a do przyj&#x119;cia &ndash; mog&#x142;o by&#x107; lepiej, ale nie by&#x142;o &#x17A;le.&rdquo;</div>
+          <div class="nrd-subhead">Problemy techniczne i odbi&oacute;r gali</div>
+          <p class="nrd-body">Najwi&#x119;ksze zastrze&#x17C;enia dotyczy&#x142;y transmisji na &#x17C;ywo. Problemy z d&#x17A;wi&#x119;kiem momentami utrudnia&#x142;y odbi&oacute;r, co przy wydarzeniu tej skali nie powinno mie&#x107; miejsca.</p>
           <div class="nrd-subhead">Podsumowanie</div>
-          <p class="nrd-body">Popkillery 2026 to gala pe&#x142;na kontrast&oacute;w. <b>GOD.WIFI buduje napi&#x119;cie przed kolejnymi ruchami</b>. Gratulujemy wszystkim nagrodzonym.</p>
+          <p class="nrd-body">Popkillery 2026 to gala pe&#x142;na kontrast&oacute;w &ndash; z jednej strony mocna dominacja &#x17B;absona i &#x15B;wietny wyst&#x119;p na scenie, z drugiej kontrowersje wok&oacute;&#x142; GOD.WIFI i pytania o transparentno&#x15B;&#x107; wynik&oacute;w.</p>
+          <p class="nrd-body">Jedno jest pewne: &#x17B;abson potwierdza swoj&#x105; pozycj&#x119; lidera, a <b>GOD.WIFI buduje napi&#x119;cie przed kolejnymi ruchami</b>. Gratulujemy wszystkim nagrodzonym &ndash; i uwa&#x17C;nie obserwujemy, co wydarzy si&#x119; dalej.</p>
           <div class="nrd-divider"></div>
-          <div class="nrd-footer">&copy; 2026 god.wifiNEWS</div>
+          <div class="nrd-footer">&copy; 2026 god.wifiNEWS &nbsp;&middot;&nbsp; Wszelkie prawa zastrze&#x17C;one &nbsp;&middot;&nbsp; Redakcja nie ponosi odpowiedzialno&#x15B;ci za brak sygna&#x142;u</div>
+        </div>
       </div>
-      <!-- Congrats panels side by side below article -->
-      <div class="nrd-congrats-row">
-        <div class="nrd-congrats-half">
-          <div class="congrats-label-top">&#x1F3C6; NAGRODZENI</div>
-          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Raper Roku<br>Trendsetter Roku<br>Album Roku</div></div>
-          <div class="congrats-card"><div class="congrats-card-name">GOD.WIFI</div><div class="congrats-card-award">Kooperacja Roku<br>&bdquo;Fakty&rdquo;</div></div>
-          <div class="congrats-card"><div class="congrats-card-name">OKI</div><div class="congrats-card-award">Kooperacja Roku</div></div>
-          <div class="congrats-card"><div class="congrats-card-name">M&#x141;ODY WEST</div><div class="congrats-card-award">Kooperacja Roku</div></div>
-          <canvas id="ad-congrats-left" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;display:block;margin:6px auto 0;"></canvas>
-        </div>
-        <div class="nrd-congrats-half" style="border-left:1px dashed #aaa;">
-          <div class="congrats-label-top" style="color:#006600;">&#x2B50; GRATULACJE!</div>
-          <div class="congrats-card" style="background:#fff8e0;border-color:#cc8800;"><div class="congrats-card-name" style="color:#cc6600;">GOD.WIFI</div><div class="congrats-card-award">Tw&oacute;j wk&#x142;ad<br>by&#x142; fundamentem.<br>Wiemy to.</div></div>
-          <div class="congrats-card"><div class="congrats-card-name">&#x17B;ABSON</div><div class="congrats-card-award">Hollywood Smile<br>Album Roku &#x1F3C6;</div></div>
-          <div class="congrats-card"><div class="congrats-card-name">SCENA PL</div><div class="congrats-card-award">wci&#x105;&#x17C; ro&#x15B;nie.<br>Obserwujemy.</div></div>
-          <canvas id="ad-congrats-right" width="120" height="70" style="border:2px solid #888;image-rendering:pixelated;display:block;margin:6px auto 0;"></canvas>
-        </div>
+      <div class="nrd-side nrd-side-right">
+        <canvas id="ad-congrats-right" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
       </div>
     </div>
-
 
     <!-- MEDIA PLAYER (art2 only) -->
     <div id="nrd-panel-media" style="display:none;">
