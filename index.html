@@ -7,10 +7,19 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
 
+  /* Domyślny motyw (Ciemny) */
   :root {
     --bg-color: #0a0a0a;
     --text-color: #ffffff;
     --transition-speed: 0.5s;
+  }
+
+  /* Motyw Jasny (uruchamia się, gdy użytkownik ma jasny motyw w systemie/przeglądarce) */
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #0a0a0a;
+    }
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,6 +31,7 @@
     overflow: hidden;
     height: 100vh;
     width: 100vw;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
   /* ═════════ EKRAN STARTOWY ═════════ */
@@ -46,26 +56,44 @@
 
   .main-title strong { font-weight: 700; }
 
-  .timer-container {
-    font-size: clamp(3rem, 10vw, 10rem);
+  /* Układ licznika */
+  .timer-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 6vh;
+  }
+
+  .time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: clamp(3rem, 9vw, 8rem);
+  }
+
+  .time-value {
+    font-size: clamp(3.5rem, 10vw, 10rem);
     font-weight: 700;
     letter-spacing: -0.05em;
     font-variant-numeric: tabular-nums;
-    margin-bottom: 6vh;
-    text-align: center;
     line-height: 1;
   }
 
-  .timer-labels {
-    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
-    font-weight: 300;
+  .time-separator {
+    font-size: clamp(3.5rem, 10vw, 10rem);
+    font-weight: 700;
+    line-height: 0.9;
+    margin: 0 clamp(0.2rem, 1vw, 1rem);
+    opacity: 0.8;
+  }
+
+  .time-label {
+    font-size: clamp(0.7rem, 1.2vw, 1rem);
+    font-weight: 400;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     opacity: 0.5;
     margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    gap: clamp(1rem, 6vw, 4rem);
   }
 
   .btn-next, .btn-back {
@@ -110,7 +138,7 @@
     justify-content: center;
     cursor: pointer;
     transition: background 0.4s ease, color 0.4s ease;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(128, 128, 128, 0.2);
   }
   .menu-half:last-child { border-right: none; }
 
@@ -127,6 +155,28 @@
   }
   .menu-half:hover .menu-title {
     transform: scale(1.05);
+  }
+
+  /* Przycisk powrotu na środku ekranu podziału */
+  .btn-split-back {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    z-index: 10;
+  }
+  .btn-split-back:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
   }
 
   /* ═════════ WIDOKI PEŁNOEKRANOWE (WIKI / NEWS) ═════════ */
@@ -152,7 +202,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 50px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
     padding-bottom: 20px;
   }
 
@@ -304,7 +354,7 @@
     letter-spacing: 0.1em;
     opacity: 0.5;
     margin-bottom: 50px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(128,128,128,0.2);
     padding-bottom: 20px;
   }
   #modal-body {
@@ -346,10 +396,10 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
-    background: #111;
+    background: #000; /* Zawsze czarne tłło dla wideo */
     overflow: hidden;
     margin-bottom: 15px;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(128,128,128,0.2);
   }
   .mp-video-wrap video {
     width: 100%;
@@ -379,7 +429,7 @@
   .mp-progress {
     flex: 1;
     height: 6px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(128,128,128,0.2);
     cursor: pointer;
     position: relative;
   }
@@ -402,7 +452,7 @@
   .mp-track {
     font-size: 0.8rem;
     padding: 5px 10px;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(128,128,128,0.3);
     cursor: pointer;
     opacity: 0.6;
     transition: 0.3s;
@@ -415,7 +465,8 @@
   /* RWD */
   @media (max-width: 900px) {
     #split-screen { flex-direction: column; }
-    .menu-half { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .menu-half { border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); }
+    .btn-split-back { bottom: 20px; }
     .wiki-infobox { float: none; width: 100%; margin: 0 0 30px 0; }
     .fullscreen-view { padding: 30px 20px 100px; }
     .top-bar { flex-direction: column; gap: 20px; align-items: flex-start; }
@@ -428,14 +479,29 @@
   <!-- EKRAN STARTOWY -->
   <div id="intro-screen">
     <div class="main-title">gdzie jest <strong>god.wifi?</strong> Zaginęła:</div>
-    <div>
-      <div class="timer-container" id="counter">
-        <span id="d">000</span>:<span id="h">00</span>:<span id="m">00</span>:<span id="s">00</span>
+    
+    <div class="timer-wrapper">
+      <div class="time-unit">
+        <div class="time-value" id="d">000</div>
+        <div class="time-label">DNI</div>
       </div>
-      <div class="timer-labels">
-        <span>DNI</span><span>GODZ</span><span>MIN</span><span>SEK</span>
+      <div class="time-separator">:</div>
+      <div class="time-unit">
+        <div class="time-value" id="h">00</div>
+        <div class="time-label">GODZ</div>
+      </div>
+      <div class="time-separator">:</div>
+      <div class="time-unit">
+        <div class="time-value" id="m">00</div>
+        <div class="time-label">MIN</div>
+      </div>
+      <div class="time-separator">:</div>
+      <div class="time-unit">
+        <div class="time-value" id="s">00</div>
+        <div class="time-label">SEK</div>
       </div>
     </div>
+
     <button class="btn-next" onclick="showSplitScreen()">DALEJ</button>
   </div>
 
@@ -447,6 +513,8 @@
     <div class="menu-half" onclick="openFullscreen('news')">
       <div class="menu-title">god.wifi news</div>
     </div>
+    <!-- Nowy przycisk powrotu -->
+    <button class="btn-split-back" onclick="backToIntro()">WRÓĆ</button>
   </div>
 
   <!-- WIDOK: WIKIPEDIA -->
@@ -570,6 +638,16 @@
     setTimeout(() => { split.classList.add('active'); }, 400);
   }
 
+  function backToIntro() {
+    const intro = document.getElementById('intro-screen');
+    const split = document.getElementById('split-screen');
+    split.classList.remove('active');
+    setTimeout(() => { 
+      intro.style.opacity = '1';
+      intro.style.pointerEvents = 'auto';
+    }, 400);
+  }
+
   function openFullscreen(type) {
     const split = document.getElementById('split-screen');
     const view = document.getElementById(`${type}-view`);
@@ -659,7 +737,6 @@
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Inicjalizacja odtwarzacza, jeśli artykuł go zawiera
       if(document.getElementById('mp-video')) {
         initPlayer();
       }
@@ -669,7 +746,6 @@
   function closeArticle() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
-    // Zatrzymanie wideo przy zamykaniu
     const video = document.getElementById('mp-video');
     if(video) video.pause();
   }
