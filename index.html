@@ -396,7 +396,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
-    background: #000; /* Zawsze czarne tłło dla wideo */
+    background: #000;
     overflow: hidden;
     margin-bottom: 15px;
     border: 1px solid rgba(128,128,128,0.2);
@@ -513,7 +513,6 @@
     <div class="menu-half" onclick="openFullscreen('news')">
       <div class="menu-title">god.wifi news</div>
     </div>
-    <!-- Nowy przycisk powrotu -->
     <button class="btn-split-back" onclick="backToIntro()">WRÓĆ</button>
   </div>
 
@@ -573,26 +572,38 @@
     <div class="content-wrapper">
       <div class="news-calendar-bar">
         <div class="date-selector">
-          <span class="date-dot active">KWIECIEŃ 2026</span>
+          <span class="date-dot active">ARCHIWUM 2026</span>
         </div>
         <div style="font-size: 0.8rem; text-transform: uppercase;">Wybierz artykuł</div>
       </div>
+
+      <!-- NOWY ARTYKUŁ -->
+      <div class="news-item" onclick="openArticle('art3')">
+        <div class="news-meta">6 CZERWCA 2026 | REDAKCJA</div>
+        <div class="news-title">Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej</div>
+        <div class="news-excerpt">
+          Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album... [Czytaj dalej]
+        </div>
+      </div>
+
+      <div class="border-line" style="margin-bottom:50px;"></div>
+
+      <!-- ARTYKUŁY Z KWIETNIA -->
+      <div class="news-item" onclick="openArticle('art2')">
+        <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
+        <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
+        <div class="news-excerpt">
+          Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]
+        </div>
+      </div>
+
+      <div class="border-line" style="margin-bottom:50px;"></div>
 
       <div class="news-item" onclick="openArticle('art1')">
         <div class="news-meta">9 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</div>
         <div class="news-excerpt">
           Już dzisiaj odbędzie się gala Popkillery — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. W gronie nominowanych znalazła się również god.wifi... [Czytaj dalej]
-        </div>
-      </div>
-
-      <div class="border-line" style="margin-bottom:50px;"></div>
-
-      <div class="news-item" onclick="openArticle('art2')">
-        <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
-        <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
-        <div class="news-excerpt">
-          Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]
         </div>
       </div>
     </div>
@@ -693,6 +704,35 @@
   `;
 
   const articlesData = {
+    art3: {
+      title: "Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej",
+      meta: "REDAKCJA | 6 CZERWCA 2026",
+      body: `
+        <p>Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album artystki zbliża się do premiery, a wszystko może przebiegać zgodnie z planem przedstawionym wcześniej przez Internaziomale.</p>
+        
+        <h2>Harmonogram nadal wydaje się aktualny</h2>
+        <p>Na początku roku Internaziomale opublikowało listę najważniejszych projektów zaplanowanych na 2026 rok. Wśród nich znalazł się również drugi studyjny album god.wifi, zapowiadany jako bardziej świadoma i rozwinięta odsłona jej charakterystycznego trapowo-elektronicznego brzmienia.</p>
+        <p>Od tamtej pory nie pojawiły się żadne komunikaty sugerujące przesunięcie premiery czy problemy z realizacją projektu. Wręcz przeciwnie — wszystko wskazuje na to, że prace przebiegają zgodnie z założonym harmonogramem.</p>
+        
+        <h2>Cisza przed premierą?</h2>
+        <p>Choć sama artystka nie publikuje wielu informacji dotyczących albumu, jej aktywność w ostatnich tygodniach może sugerować, że zbliżamy się do momentu rozpoczęcia właściwej kampanii promocyjnej.</p>
+        <p>W świecie muzyki okres poprzedzający premierę często wygląda właśnie w ten sposób twórcy ograniczają komunikację do minimum, pozostawiając fanom pojedyncze wskazówki i sygnały sugerujące nadchodzące ogłoszenia.</p>
+        
+        <h2>„Lada moment 💗”</h2>
+        <p>Najwięcej emocji wywołała najnowsza relacja opublikowana przez god.wifi na Instagramie.</p>
+        <p>Artystka udostępniła prosty komunikat:</p>
+        <div class="nrd-quote">lada moment 💗</div>
+        <p>Bez dodatkowego kontekstu, dat czy wyjaśnień.</p>
+        <p>To krótka wiadomość, ale trudno przejść obok niej obojętnie. Biorąc pod uwagę wcześniejsze zapowiedzi albumu oraz fakt, że od dawna nie otrzymaliśmy żadnych większych aktualizacji dotyczących projektu, wielu fanów interpretuje relację jako zapowiedź zbliżającego się ogłoszenia.</p>
+        <p>Czy chodzi o pierwszy singiel? Datę premiery? Okładkę albumu? A może start preorderu? Na razie pozostaje to tajemnicą.</p>
+        
+        <h2>Album coraz bliżej?</h2>
+        <p>Na ten moment nie ma oficjalnego potwierdzenia żadnej z teorii. Jednak patrząc na wszystkie dostępne informacje, trudno nie odnieść wrażenia, że wokół god.wifi zaczyna dziać się coraz więcej.</p>
+        <p>Album nadal figuruje w planach Internaziomale na 2026 rok, nie pojawiły się żadne informacje o zmianach harmonogramu, a sama artystka po raz pierwszy od dłuższego czasu zdecydowała się na tajemniczą zapowiedź skierowaną do swoich odbiorców.</p>
+        <p>Jeżeli wszystko rzeczywiście przebiega zgodnie z planem, odpowiedzi na najważniejsze pytania możemy poznać już w najbliższych tygodniach.</p>
+        <p>Jedno jest pewne po długim okresie oczekiwania fani god.wifi mają coraz więcej powodów, by uważnie śledzić każdy kolejny ruch artystki.</p>
+      `
+    },
     art1: {
       title: "Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki",
       meta: "REDAKCJA | 9 KWIETNIA 2026",
