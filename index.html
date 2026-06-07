@@ -68,7 +68,7 @@
     gap: clamp(1rem, 6vw, 4rem);
   }
 
-  .btn-next {
+  .btn-next, .btn-back {
     background: transparent;
     color: var(--text-color);
     border: 1px solid var(--text-color);
@@ -81,12 +81,12 @@
     transition: background 0.3s, color 0.3s;
   }
 
-  .btn-next:hover {
+  .btn-next:hover, .btn-back:hover {
     background: var(--text-color);
     color: var(--bg-color);
   }
 
-  /* ═════════ EKRAN PODZIAŁU ═════════ */
+  /* ═════════ EKRAN PODZIAŁU (MENU) ═════════ */
   #split-screen {
     position: absolute;
     inset: 0;
@@ -102,48 +102,77 @@
     pointer-events: auto;
   }
 
-  .half {
+  .menu-half {
     flex: 1;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    padding: 60px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     transition: background 0.4s ease, color 0.4s ease;
-    overflow-y: auto;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
   }
+  .menu-half:last-child { border-right: none; }
 
-  .half:last-child { border-right: none; }
+  .menu-title {
+    font-size: clamp(2rem, 4vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    transition: transform 0.4s ease;
+  }
 
-  .half:hover {
+  .menu-half:hover {
     background: var(--text-color);
     color: var(--bg-color);
   }
-  .half:hover .border-line { border-color: var(--bg-color); }
-  .half:hover .date-dot { color: var(--bg-color); }
-
-  /* WSPÓLNE ELEMENTY */
-  .section-header {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -0.03em;
-    text-transform: lowercase;
+  .menu-half:hover .menu-title {
+    transform: scale(1.05);
   }
 
-  .border-line {
+  /* ═════════ WIDOKI PEŁNOEKRANOWE (WIKI / NEWS) ═════════ */
+  .fullscreen-view {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed);
+    z-index: 20;
+    overflow-y: auto;
+    padding: 40px 60px 100px;
+  }
+
+  .fullscreen-view.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 40px;
-    transition: border-color 0.4s;
+    padding-bottom: 20px;
+  }
+
+  .view-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .content-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
   }
 
   /* ═════════ WIKIPEDIA ═════════ */
   .wiki-content {
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1.7;
     font-weight: 300;
   }
-
   .wiki-content h2 {
     font-size: 1.4rem;
     font-weight: 700;
@@ -151,7 +180,6 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
   .wiki-content p { margin-bottom: 20px; }
   .wiki-content ul { margin-bottom: 20px; padding-left: 20px; }
   .wiki-content li { margin-bottom: 10px; }
@@ -159,20 +187,18 @@
 
   .wiki-infobox {
     float: right;
-    width: 300px;
-    border: 1px solid currentColor;
+    width: 320px;
+    border: 1px solid var(--text-color);
     padding: 25px;
     margin: 0 0 30px 40px;
     font-size: 0.9rem;
   }
-
   .wiki-infobox h3 {
     font-size: 1.2rem;
     margin-bottom: 20px;
-    border-bottom: 1px solid currentColor;
+    border-bottom: 1px solid var(--text-color);
     padding-bottom: 10px;
   }
-
   .wiki-infobox ul { list-style: none; padding: 0; }
   .wiki-infobox li { display: flex; justify-content: space-between; margin-bottom: 12px; }
   .wiki-infobox strong { font-weight: 700; opacity: 0.6; }
@@ -182,37 +208,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid currentColor;
+    border-bottom: 1px solid var(--text-color);
     padding-bottom: 15px;
     margin-bottom: 40px;
   }
 
   .date-selector { display: flex; gap: 20px; }
   .date-dot {
-    cursor: pointer;
     font-size: 1rem;
     font-weight: 700;
     opacity: 0.4;
-    transition: opacity 0.3s;
   }
-  .date-dot:hover, .date-dot.active { opacity: 1; }
+  .date-dot.active { opacity: 1; }
 
   .news-item {
     margin-bottom: 50px;
     cursor: pointer;
-    group: article;
   }
-
   .news-item:hover .news-title { text-decoration: underline; }
 
   .news-title {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: -0.03em;
     margin-bottom: 10px;
     line-height: 1.2;
   }
-
   .news-meta {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -220,9 +241,8 @@
     opacity: 0.5;
     margin-bottom: 15px;
   }
-
   .news-excerpt {
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1.6;
     font-weight: 300;
     opacity: 0.8;
@@ -241,7 +261,6 @@
     transition: opacity 0.4s ease;
     padding: 0 20px;
   }
-
   #article-modal.active {
     opacity: 1;
     pointer-events: auto;
@@ -262,7 +281,6 @@
     transition: all 0.3s;
     z-index: 101;
   }
-
   .modal-close:hover {
     background: var(--text-color);
     color: var(--bg-color);
@@ -280,7 +298,6 @@
     letter-spacing: -0.03em;
     margin-bottom: 20px;
   }
-
   #modal-meta {
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -290,16 +307,14 @@
     border-bottom: 1px solid rgba(255,255,255,0.2);
     padding-bottom: 20px;
   }
-
   #modal-body {
     font-size: 1.1rem;
     line-height: 1.8;
     font-weight: 300;
   }
-
   #modal-body p { margin-bottom: 25px; }
   #modal-body b, #modal-body strong { font-weight: 700; }
-  #modal-body h2, #modal-body .nrd-subhead {
+  #modal-body h2 {
     font-size: 1.5rem;
     font-weight: 700;
     margin: 40px 0 20px;
@@ -311,18 +326,106 @@
     font-style: italic;
     opacity: 0.8;
   }
-  #modal-body a { color: inherit; text-decoration: underline; }
+
+  /* ═════════ MEDIA PLAYER MINIMALISTYCZNY ═════════ */
+  .minimal-player-container {
+    margin: 50px 0;
+    border: 1px solid var(--text-color);
+    padding: 20px;
+  }
+  .mp-header {
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+  }
+  .mp-video-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #111;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .mp-video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mp-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .mp-btn {
+    background: transparent;
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    padding: 8px 15px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+  }
+  .mp-btn:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+  }
+  .mp-progress {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    position: relative;
+  }
+  .mp-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--text-color);
+    pointer-events: none;
+    transition: width 0.1s linear;
+  }
+  .mp-time {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .mp-playlist {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+  }
+  .mp-track {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+  }
+  .mp-track:hover, .mp-track.active {
+    opacity: 1;
+    border-color: var(--text-color);
+  }
 
   /* RWD */
   @media (max-width: 900px) {
     #split-screen { flex-direction: column; }
-    .half { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 40px 20px; }
+    .menu-half { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .wiki-infobox { float: none; width: 100%; margin: 0 0 30px 0; }
+    .fullscreen-view { padding: 30px 20px 100px; }
+    .top-bar { flex-direction: column; gap: 20px; align-items: flex-start; }
+    .btn-back { padding: 10px 20px; font-size: 1rem; }
   }
 </style>
 </head>
 <body>
 
+  <!-- EKRAN STARTOWY -->
   <div id="intro-screen">
     <div class="main-title">gdzie jest <strong>god.wifi?</strong> Zaginęła:</div>
     <div>
@@ -336,12 +439,23 @@
     <button class="btn-next" onclick="showSplitScreen()">DALEJ</button>
   </div>
 
+  <!-- EKRAN PODZIAŁU (MENU) -->
   <div id="split-screen">
-    
-    <div class="half" id="wiki-side">
-      <div class="section-header">godwifipedia</div>
-      <div class="border-line"></div>
-      
+    <div class="menu-half" onclick="openFullscreen('wiki')">
+      <div class="menu-title">god.wifipedia</div>
+    </div>
+    <div class="menu-half" onclick="openFullscreen('news')">
+      <div class="menu-title">god.wifi news</div>
+    </div>
+  </div>
+
+  <!-- WIDOK: WIKIPEDIA -->
+  <div id="wiki-view" class="fullscreen-view">
+    <div class="top-bar">
+      <div class="view-title">god.wifipedia</div>
+      <button class="btn-back" onclick="backToMenu()">WRÓĆ DO MENU</button>
+    </div>
+    <div class="content-wrapper">
       <div class="wiki-content">
         <div class="wiki-infobox">
           <h3>god.wifi (Wiktoria Maciuk)</h3>
@@ -368,12 +482,10 @@
           <li>Przejście w tryb nocny i utrata kompatybilności z porankami</li>
           <li>Zalogowanie się do alternatywnej rzeczywistości po secie</li>
           <li>Ostatni pociąg / ostatni Uber / ostatnia decyzja, która zmieniła wszystko</li>
-          <li>Tymczasowe porzucenie internetu na rzecz realnego życia (wersja najmniej prawdopodobna)</li>
         </ul>
 
         <h2>STATUS POSZUKIWAŃ</h2>
         <p>Sygnał god.wifi bywa nadal wykrywany w niestabilnych warunkach, głównie po północy, przy odpowiednim poziomie głośności oraz podczas nieautoryzowanych aktywacji projektu #party. Odnotowano możliwe ślady obecności w stories wrzucanych bez kontekstu i krótkich odpowiedziach typu „jestem zaraz".</p>
-        <p>Eksperci zalecają dalsze wysyłanie pingów, cierpliwość oraz regularne sprawdzanie, czy przypadkiem nie wróciła dokładnie wtedy, kiedy nikt już się tego nie spodziewa.</p>
 
         <h2>LINKI ZEWNĘTRZNE</h2>
         <ul>
@@ -382,10 +494,15 @@
         </ul>
       </div>
     </div>
+  </div>
 
-    <div class="half" id="news-side">
-      <div class="section-header">god.wifi news</div>
-      
+  <!-- WIDOK: NEWSY -->
+  <div id="news-view" class="fullscreen-view">
+    <div class="top-bar">
+      <div class="view-title">god.wifi news</div>
+      <button class="btn-back" onclick="backToMenu()">WRÓĆ DO MENU</button>
+    </div>
+    <div class="content-wrapper">
       <div class="news-calendar-bar">
         <div class="date-selector">
           <span class="date-dot active">KWIECIEŃ 2026</span>
@@ -401,7 +518,7 @@
         </div>
       </div>
 
-      <div class="border-line"></div>
+      <div class="border-line" style="margin-bottom:50px;"></div>
 
       <div class="news-item" onclick="openArticle('art2')">
         <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
@@ -410,10 +527,10 @@
           Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]
         </div>
       </div>
-
     </div>
   </div>
 
+  <!-- MODAL Z ARTYKUŁEM -->
   <div id="article-modal">
     <button class="modal-close" onclick="closeArticle()">X ZAMKNIJ</button>
     <div class="modal-content">
@@ -442,35 +559,69 @@
     document.getElementById('m').textContent = pad(m);
     document.getElementById('s').textContent = pad(s);
   }
-  
-  tick(); 
-  setInterval(tick, 1000);
+  tick(); setInterval(tick, 1000);
 
-  /* ═════════ PRZEJŚCIE DALEJ ═════════ */
+  /* ═════════ NAWIGACJA: EKRANY ═════════ */
   function showSplitScreen() {
     const intro = document.getElementById('intro-screen');
     const split = document.getElementById('split-screen');
-
     intro.style.opacity = '0';
-    intro.style.transform = 'scale(0.98)';
     intro.style.pointerEvents = 'none';
-
-    setTimeout(() => {
-      split.classList.add('active');
-    }, 400);
+    setTimeout(() => { split.classList.add('active'); }, 400);
   }
 
-  /* ═════════ BAZA ARTYKUŁÓW ═════════ */
+  function openFullscreen(type) {
+    const split = document.getElementById('split-screen');
+    const view = document.getElementById(`${type}-view`);
+    split.classList.remove('active');
+    setTimeout(() => { view.classList.add('active'); }, 400);
+  }
+
+  function backToMenu() {
+    const wiki = document.getElementById('wiki-view');
+    const news = document.getElementById('news-view');
+    const split = document.getElementById('split-screen');
+    
+    wiki.classList.remove('active');
+    news.classList.remove('active');
+    setTimeout(() => { split.classList.add('active'); }, 400);
+  }
+
+  /* ═════════ BAZA ARTYKUŁÓW I MEDIA PLAYER ═════════ */
+  const playerHTML = `
+    <div class="minimal-player-container">
+      <div class="mp-header">
+        <span>Archiwum Wideo | GOD.WIFI LIVE</span>
+        <span id="mp-status-text">Gotowy</span>
+      </div>
+      <div class="mp-video-wrap">
+        <video id="mp-video" playsinline preload="metadata">
+          <source src="media/videos/koncert1.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="mp-controls">
+        <button class="mp-btn" id="mp-play-btn" onclick="togglePlay()">PLAY</button>
+        <div class="mp-progress" onclick="seekVideo(event)">
+          <div class="mp-bar" id="mp-bar"></div>
+        </div>
+        <span class="mp-time" id="mp-time">0:00 / 0:00</span>
+        <button class="mp-btn" onclick="toggleMute()" id="mp-mute-btn">MUTE</button>
+      </div>
+      <div class="mp-playlist">
+        <div class="mp-track active" id="track-1" onclick="loadTrack(1, 'media/videos/koncert1.mp4')">01. Koncert 1</div>
+        <div class="mp-track" id="track-2" onclick="loadTrack(2, 'media/videos/koncert2.mp4')">02. Koncert 2</div>
+      </div>
+    </div>
+  `;
+
   const articlesData = {
     art1: {
       title: "Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki",
       meta: "REDAKCJA | 9 KWIETNIA 2026",
       body: `
         <p>Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
-        <p>W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom. To właśnie ta wyrazistość i konsekwencja w budowaniu własnego języka artystycznego sprawiają, że jej nazwisko coraz częściej pojawia się w kontekście najciekawszych postaci młodego pokolenia.</p>
-        <p>Twórczość god.wifi wpisuje się w nurt artystów, którzy stawiają na autentyczność, atmosferę i silną tożsamość artystyczną, a nie wyłącznie na chwilowy trend. Dzięki temu zyskuje ona coraz większe zainteresowanie odbiorców poszukujących muzyki świeżej, świadomej i estetycznie dopracowanej.</p>
-        <p>Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
-        <p>Dla god.wifi obecność wśród wyróżnionych nazwisk to kolejny istotny moment w rozwoju kariery — a dla słuchaczy i obserwatorów sceny, sygnał, że warto uważnie śledzić jej dalsze artystyczne ruchy.</p>
+        <p>W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom.</p>
+        <p>Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś za pośrednictwem oficjalnego kanału YouTube.</p>
       `
     },
     art2: {
@@ -481,48 +632,115 @@
         
         <h2>Żabson – lider, trendsetter i showman</h2>
         <p>Żabson bezsprzecznie był jedną z najważniejszych postaci gali. Zdobył tytuł <b>Rapera Roku</b> (publiczność), <b>Trendsettera Roku</b> oraz nagrodę za <b>Album Roku</b> publiczności („Hollywood Smile”). Jego pozycja na scenie wydaje się dziś niepodważalna.</p>
-        <p>Jednak nie tylko statuetki zrobiły wrażenie. Krótki koncert Żabsona wraz z ekipą był jednym z najmocniejszych momentów całego wydarzenia. Artysta wciągnął publiczność w imprezowy klimat, skutecznie „rozruszał” całą salę i pokazał, że sceniczna energia to jego ogromny atut.</p>
         
         <h2>„Fakty” – kulisy, które wyszły na jaw</h2>
-        <p>Jednym z najbardziej komentowanych punktów gali była nagroda za <b>Kooperację Roku</b> dla utworu „Fakty” (Żabson x Oki x Pezet x GOD.WIFI x Młody West). Wokół tego numeru pojawiło się sporo spekulacji – i, co ciekawe, część z nich została później potwierdzona.</p>
-        <p>Z nieoficjalnych informacji krążących wcześniej w środowisku wynikało, że utwór pierwotnie był w całości nagrany przez GOD.WIFI. Według tych doniesień, Żabson po usłyszeniu numeru miał uznać, że jest na tyle mocny, że chce włączyć go do swojego projektu – a następnie dograł się do niego wraz z zaproszonymi gośćmi.</p>
+        <p>Jednym z najbardziej komentowanych punktów gali była nagroda za <b>Kooperację Roku</b> dla utworu „Fakty” (Żabson x Oki x Pezet x GOD.WIFI x Młody West). Z nieoficjalnych informacji krążących wcześniej w środowisku wynikało, że utwór pierwotnie był w całości nagrany przez GOD.WIFI.</p>
         <p>Podczas gali Żabson odniósł się do tej sytuacji, w praktyce potwierdzając krążące wcześniej informacje. To rzuca zupełnie inne światło na odbiór „Faktów” i jasno wskazuje, jak duży był wkład GOD.WIFI w powstanie tego utworu.</p>
         
-        <h2>GOD.WIFI – niedosyt nagród, duży potencjał</h2>
-        <p>Warto to powiedzieć wprost: gratulacje dla GOD.WIFI za nominacje i nagrodę przy „Faktach”. Nawet jeśli formalnie to kooperacja, wiele wskazuje na to, że jej rola była fundamentem tego numeru.</p>
-        <p>Nie dziwi więc, że wśród fanów pojawiło się poczucie niedosytu. Część społeczności uważa, że artystka została pominięta w innych kategoriach i nie otrzymała pełnego uznania, na jakie zasłużyła.</p>
-        
-        <h2>Co dalej?</h2>
-        <p>Z naszych informacji wynika, że GOD.WIFI intensywnie pracuje nad nową muzyką. Trwają przygotowania do kolejnych singli oraz albumu, a poziom materiału ma być bardzo wysoki.</p>
-        <p>Jeśli te zapowiedzi się potwierdzą, przyszłoroczna gala może wyglądać zupełnie inaczej. Wszystko wskazuje na to, że artystka dopiero buduje swoją pozycję i w najbliższym czasie może zrobić jeszcze większy ruch.</p>
-        
         <div class="nrd-quote">„Były problemy, szczególnie techniczne, ale ogólnie gala była do przyjęcia – mogło być lepiej, ale nie było źle.” – relacjonuje nasz korespondent.</div>
+
+        <h2>Zarejestrowane materiały</h2>
+        <p>Poniżej znajduje się oficjalny zapis archiwalny z ostatnich aktywności god.wifi uchwyconych podczas live setów.</p>
+        
+        ${playerHTML}
       `
     }
   };
 
-  /* ═════════ LOGIKA MODALA ═════════ */
   const modal = document.getElementById('article-modal');
-  const mTitle = document.getElementById('modal-title');
-  const mMeta = document.getElementById('modal-meta');
-  const mBody = document.getElementById('modal-body');
 
   function openArticle(id) {
     const data = articlesData[id];
     if(data) {
-      mTitle.innerHTML = data.title;
-      mMeta.innerHTML = data.meta;
-      mBody.innerHTML = data.body;
+      document.getElementById('modal-title').innerHTML = data.title;
+      document.getElementById('modal-meta').innerHTML = data.meta;
+      document.getElementById('modal-body').innerHTML = data.body;
       
       modal.classList.add('active');
-      // Zapobiega scrollowaniu tła, gdy modal jest otwarty
       document.body.style.overflow = 'hidden';
+
+      // Inicjalizacja odtwarzacza, jeśli artykuł go zawiera
+      if(document.getElementById('mp-video')) {
+        initPlayer();
+      }
     }
   }
 
   function closeArticle() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
+    // Zatrzymanie wideo przy zamykaniu
+    const video = document.getElementById('mp-video');
+    if(video) video.pause();
+  }
+
+  /* ═════════ LOGIKA ODTWARZACZA ═════════ */
+  function formatTime(sec) {
+    if(isNaN(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function initPlayer() {
+    const video = document.getElementById('mp-video');
+    const bar = document.getElementById('mp-bar');
+    const timeEl = document.getElementById('mp-time');
+    const status = document.getElementById('mp-status-text');
+
+    video.addEventListener('timeupdate', () => {
+      const pct = (video.currentTime / video.duration) * 100 || 0;
+      bar.style.width = pct + '%';
+      timeEl.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+    });
+
+    video.addEventListener('ended', () => {
+      document.getElementById('mp-play-btn').textContent = 'PLAY';
+      status.textContent = 'Zakończono';
+    });
+
+    video.addEventListener('playing', () => { status.textContent = 'Odtwarzanie...'; });
+    video.addEventListener('waiting', () => { status.textContent = 'Buforowanie...'; });
+  }
+
+  function togglePlay() {
+    const video = document.getElementById('mp-video');
+    const btn = document.getElementById('mp-play-btn');
+    if(video.paused) {
+      video.play();
+      btn.textContent = 'PAUSE';
+    } else {
+      video.pause();
+      btn.textContent = 'PLAY';
+      document.getElementById('mp-status-text').textContent = 'Pauza';
+    }
+  }
+
+  function toggleMute() {
+    const video = document.getElementById('mp-video');
+    const btn = document.getElementById('mp-mute-btn');
+    video.muted = !video.muted;
+    btn.textContent = video.muted ? 'UNMUTE' : 'MUTE';
+  }
+
+  function seekVideo(e) {
+    const video = document.getElementById('mp-video');
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if(video.duration) {
+      video.currentTime = pct * video.duration;
+    }
+  }
+
+  function loadTrack(id, src) {
+    const video = document.getElementById('mp-video');
+    document.querySelectorAll('.mp-track').forEach(el => el.classList.remove('active'));
+    document.getElementById(`track-${id}`).classList.add('active');
+    
+    video.src = src;
+    video.load();
+    video.play();
+    document.getElementById('mp-play-btn').textContent = 'PAUSE';
   }
 </script>
 
