@@ -404,12 +404,18 @@
   .mp-video-wrap video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+  }
+  .mp-video-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   .mp-controls {
     display: flex;
     align-items: center;
     gap: 15px;
+    transition: opacity 0.3s ease;
   }
   .mp-btn {
     background: transparent;
@@ -447,6 +453,7 @@
   .mp-playlist {
     margin-top: 15px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
   }
   .mp-track {
@@ -577,7 +584,7 @@
         <div style="font-size: 0.8rem; text-transform: uppercase;">Wybierz artykuł</div>
       </div>
 
-      <!-- NOWY ARTYKUŁ -->
+      <!-- NOWY ARTYKUŁ Z 06.06.2026 -->
       <div class="news-item" onclick="openArticle('art3')">
         <div class="news-meta">6 CZERWCA 2026 | REDAKCJA</div>
         <div class="news-title">Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej</div>
@@ -588,7 +595,6 @@
 
       <div class="border-line" style="margin-bottom:50px;"></div>
 
-      <!-- ARTYKUŁY Z KWIETNIA -->
       <div class="news-item" onclick="openArticle('art2')">
         <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
@@ -677,7 +683,7 @@
   }
 
   /* ═════════ BAZA ARTYKUŁÓW I MEDIA PLAYER ═════════ */
-  const playerHTML = `
+  const playerHTML2 = `
     <div class="minimal-player-container">
       <div class="mp-header">
         <span>Archiwum Wideo | GOD.WIFI LIVE</span>
@@ -703,6 +709,34 @@
     </div>
   `;
 
+  const playerHTML3 = `
+    <div class="minimal-player-container" id="player-art3">
+      <div class="mp-header">
+        <span>DOWODY RZECZOWE | MEDIA</span>
+        <span id="mp-status-text-3">Wybierz plik</span>
+      </div>
+      <div class="mp-video-wrap">
+        <video id="mp-video-3" playsinline preload="metadata" style="display:none;">
+          <source src="" type="video/mp4">
+        </video>
+        <img id="mp-img-3" src="media/photos/internaziomaleplan.jpeg" style="width:100%; height:100%; object-fit:contain; display:block;">
+      </div>
+      <div class="mp-controls" id="mp-controls-3" style="opacity: 0; pointer-events: none;">
+        <button class="mp-btn" id="mp-play-btn-3" onclick="togglePlay3()">PLAY</button>
+        <div class="mp-progress" onclick="seekVideo3(event)">
+          <div class="mp-bar" id="mp-bar-3"></div>
+        </div>
+        <span class="mp-time" id="mp-time-3">0:00 / 0:00</span>
+        <button class="mp-btn" onclick="toggleMute3()" id="mp-mute-btn-3">MUTE</button>
+      </div>
+      <div class="mp-playlist">
+        <div class="mp-track active" id="track-3-1" onclick="loadMedia3(1, 'image', 'media/photos/internaziomaleplan.jpeg')">01. Plany wydawnicze</div>
+        <div class="mp-track" id="track-3-2" onclick="loadMedia3(2, 'image', 'media/photos/ladamoment.jpeg')">02. Stories "lada moment"</div>
+        <div class="mp-track" id="track-3-3" onclick="loadMedia3(3, 'video', 'media/videos/technologiesnippet.mp4')">03. Snippet "Technologia"</div>
+      </div>
+    </div>
+  `;
+
   const articlesData = {
     art3: {
       title: "Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej",
@@ -716,7 +750,7 @@
         
         <h2>Cisza przed premierą?</h2>
         <p>Choć sama artystka nie publikuje wielu informacji dotyczących albumu, jej aktywność w ostatnich tygodniach może sugerować, że zbliżamy się do momentu rozpoczęcia właściwej kampanii promocyjnej.</p>
-        <p>W świecie muzyki okres poprzedzający premierę często wygląda właśnie w ten sposób twórcy ograniczają komunikację do minimum, pozostawiając fanom pojedyncze wskazówki i sygnały sugerujące nadchodzące ogłoszenia.</p>
+        <p>W świecie muzyki okres poprzedzający premierę często wygląda właśnie w ten sposób — twórcy ograniczają komunikację do minimum, pozostawiając fanom pojedyncze wskazówki i sygnały sugerujące nadchodzące ogłoszenia.</p>
         
         <h2>„Lada moment 💗”</h2>
         <p>Najwięcej emocji wywołała najnowsza relacja opublikowana przez god.wifi na Instagramie.</p>
@@ -726,11 +760,11 @@
         <p>To krótka wiadomość, ale trudno przejść obok niej obojętnie. Biorąc pod uwagę wcześniejsze zapowiedzi albumu oraz fakt, że od dawna nie otrzymaliśmy żadnych większych aktualizacji dotyczących projektu, wielu fanów interpretuje relację jako zapowiedź zbliżającego się ogłoszenia.</p>
         <p>Czy chodzi o pierwszy singiel? Datę premiery? Okładkę albumu? A może start preorderu? Na razie pozostaje to tajemnicą.</p>
         
-        <h2>Album coraz bliżej?</h2>
-        <p>Na ten moment nie ma oficjalnego potwierdzenia żadnej z teorii. Jednak patrząc na wszystkie dostępne informacje, trudno nie odnieść wrażenia, że wokół god.wifi zaczyna dziać się coraz więcej.</p>
-        <p>Album nadal figuruje w planach Internaziomale na 2026 rok, nie pojawiły się żadne informacje o zmianach harmonogramu, a sama artystka po raz pierwszy od dłuższego czasu zdecydowała się na tajemniczą zapowiedź skierowaną do swoich odbiorców.</p>
-        <p>Jeżeli wszystko rzeczywiście przebiega zgodnie z planem, odpowiedzi na najważniejsze pytania możemy poznać już w najbliższych tygodniach.</p>
-        <p>Jedno jest pewne po długim okresie oczekiwania fani god.wifi mają coraz więcej powodów, by uważnie śledzić każdy kolejny ruch artystki.</p>
+        <h2>Wyciek z głębokiej sieci</h2>
+        <p>Jednak na samej aktywności w social mediach się nie kończy. Nasza redakcja dotarła do czegoś znacznie bardziej namacalnego. Dzięki zaszyfrowanym kanałom i nieoficjalnym kontaktom blisko studia nagraniowego, weszliśmy w posiadanie surowego nagrania audio — wyciekł krótki snippet utworu noszącego roboczy tytuł <b>„technologia”</b>.</p>
+        <p>To zaledwie kilkanaście sekund, ale mówi wszystko: brzmienie jest gęste, syntezatory są agresywne, a całość nosi znamiona gigantycznej ewolucji. Choć to tylko spekulacje i wycieki (a może to w pełni kontrolowany ruch szachowy przed startem machiny promocyjnej?), wniosek jest prosty. God.wifi spędza długie, nocne godziny pod powierzchnią, szlifując swój materiał. Poniższy materiał to czysty dowód, że nowa era nadchodzi znacznie szybciej, niż ktokolwiek zakładał.</p>
+
+        ${playerHTML3}
       `
     },
     art1: {
@@ -760,7 +794,7 @@
         <h2>Zarejestrowane materiały</h2>
         <p>Poniżej znajduje się oficjalny zapis archiwalny z ostatnich aktywności god.wifi uchwyconych podczas live setów.</p>
         
-        ${playerHTML}
+        ${playerHTML2}
       `
     }
   };
@@ -777,20 +811,24 @@
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      if(document.getElementById('mp-video')) {
-        initPlayer();
-      }
+      // Uruchomienie odtwarzacza w zależności od artykułu
+      if(id === 'art2') initPlayer();
+      if(id === 'art3') initPlayer3();
     }
   }
 
   function closeArticle() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
+    
+    // Zatrzymanie wszelkich wideo
     const video = document.getElementById('mp-video');
+    const video3 = document.getElementById('mp-video-3');
     if(video) video.pause();
+    if(video3) video3.pause();
   }
 
-  /* ═════════ LOGIKA ODTWARZACZA ═════════ */
+  /* ═════════ LOGIKA ODTWARZACZA (ART 2) ═════════ */
   function formatTime(sec) {
     if(isNaN(sec)) return "0:00";
     const m = Math.floor(sec / 60);
@@ -804,6 +842,8 @@
     const timeEl = document.getElementById('mp-time');
     const status = document.getElementById('mp-status-text');
 
+    if(!video) return;
+
     video.addEventListener('timeupdate', () => {
       const pct = (video.currentTime / video.duration) * 100 || 0;
       bar.style.width = pct + '%';
@@ -814,9 +854,6 @@
       document.getElementById('mp-play-btn').textContent = 'PLAY';
       status.textContent = 'Zakończono';
     });
-
-    video.addEventListener('playing', () => { status.textContent = 'Odtwarzanie...'; });
-    video.addEventListener('waiting', () => { status.textContent = 'Buforowanie...'; });
   }
 
   function togglePlay() {
@@ -825,6 +862,7 @@
     if(video.paused) {
       video.play();
       btn.textContent = 'PAUSE';
+      document.getElementById('mp-status-text').textContent = 'Odtwarzanie...';
     } else {
       video.pause();
       btn.textContent = 'PLAY';
@@ -857,6 +895,87 @@
     video.load();
     video.play();
     document.getElementById('mp-play-btn').textContent = 'PAUSE';
+  }
+
+  /* ═════════ LOGIKA ZAAWANSOWANEGO ODTWARZACZA (ART 3) ═════════ */
+  function initPlayer3() {
+    const video = document.getElementById('mp-video-3');
+    const bar = document.getElementById('mp-bar-3');
+    const timeEl = document.getElementById('mp-time-3');
+    const status = document.getElementById('mp-status-text-3');
+
+    if(!video) return;
+
+    video.addEventListener('timeupdate', () => {
+      const pct = (video.currentTime / video.duration) * 100 || 0;
+      bar.style.width = pct + '%';
+      timeEl.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+    });
+
+    video.addEventListener('ended', () => {
+      document.getElementById('mp-play-btn-3').textContent = 'PLAY';
+      status.textContent = 'Zakończono';
+    });
+  }
+
+  function loadMedia3(id, type, src) {
+    const video = document.getElementById('mp-video-3');
+    const img = document.getElementById('mp-img-3');
+    const controls = document.getElementById('mp-controls-3');
+    const status = document.getElementById('mp-status-text-3');
+    
+    document.querySelectorAll('#player-art3 .mp-track').forEach(el => el.classList.remove('active'));
+    document.getElementById(`track-3-${id}`).classList.add('active');
+    
+    if (type === 'image') {
+      video.style.display = 'none';
+      video.pause();
+      img.style.display = 'block';
+      img.src = src;
+      controls.style.opacity = '0';
+      controls.style.pointerEvents = 'none';
+      status.textContent = 'Zdjęcie';
+    } else if (type === 'video') {
+      img.style.display = 'none';
+      video.style.display = 'block';
+      video.src = src;
+      controls.style.opacity = '1';
+      controls.style.pointerEvents = 'auto';
+      video.load();
+      video.play();
+      document.getElementById('mp-play-btn-3').textContent = 'PAUSE';
+      status.textContent = 'Odtwarzanie...';
+    }
+  }
+
+  function togglePlay3() {
+    const video = document.getElementById('mp-video-3');
+    const btn = document.getElementById('mp-play-btn-3');
+    if(video.paused) {
+      video.play();
+      btn.textContent = 'PAUSE';
+      document.getElementById('mp-status-text-3').textContent = 'Odtwarzanie...';
+    } else {
+      video.pause();
+      btn.textContent = 'PLAY';
+      document.getElementById('mp-status-text-3').textContent = 'Pauza';
+    }
+  }
+
+  function toggleMute3() {
+    const video = document.getElementById('mp-video-3');
+    const btn = document.getElementById('mp-mute-btn-3');
+    video.muted = !video.muted;
+    btn.textContent = video.muted ? 'UNMUTE' : 'MUTE';
+  }
+
+  function seekVideo3(e) {
+    const video = document.getElementById('mp-video-3');
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if(video.duration) {
+      video.currentTime = pct * video.duration;
+    }
   }
 </script>
 
