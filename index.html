@@ -5,2683 +5,526 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gdzie jest god.wifi?</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
-
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
 
   :root {
-    --phosphor: #d4f5c0;
-    --phosphor-bright: #eeffdd;
-    --phosphor-dim: #7ab86a;
-    --phosphor-dark: #1a3012;
-    --bg: #040804;
+    --bg-color: #0a0a0a;
+    --text-color: #ffffff;
+    --transition-speed: 0.5s;
   }
 
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ═══════════════ CRT BASE ═══════════════ */
   body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'VT323', monospace;
-    /* CRT curvature via transform */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
   }
 
-  /* ═══════════════ MAIN STAGE ═══════════════ */
-  #stage {
-    position: relative;
-    width: 100vw; height: 100vh;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 4vmin, 40px);
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  /* ═══════════════ SCANLINES ═══════════════ */
-  #stage::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0) 0px,
-      rgba(0,0,0,0) 2px,
-      rgba(0,0,0,0.38) 2px,
-      rgba(0,0,0,0.38) 4px
-    );
-    pointer-events: none;
-    z-index: 20;
-  }
-
-  /* ═══════════════ VIGNETTE ═══════════════ */
-  #stage::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: radial-gradient(
-      ellipse at 50% 50%,
-      transparent 40%,
-      rgba(0,0,0,0.55) 75%,
-      rgba(0,0,0,0.9) 100%
-    );
-    pointer-events: none;
-    z-index: 21;
-  }
-
-  /* ═══════════════ GLASS REFLECTION ═══════════════ */
-  #glass {
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.04) 0%, transparent 40%),
-      radial-gradient(ellipse at 72% 82%, rgba(0,0,0,0.3) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 22;
-  }
-
-  /* ═══════════════ NOISE / GRAIN ═══════════════ */
-  #noise {
-    position: fixed; inset: 0;
-    pointer-events: none;
-    z-index: 23;
-    opacity: 0.055;
-  }
-
-  /* ═══════════════ HORIZONTAL INTERFERENCE ═══════════════ */
-  #hline {
-    position: fixed;
-    left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, rgba(200,255,180,0.18), transparent);
-    pointer-events: none;
-    z-index: 24;
-    animation: sweep 14s linear infinite;
-    top: -3px;
-  }
-
-  @keyframes sweep {
-    0%   { top: -3px; opacity: 0; }
-    2%   { opacity: 1; }
-    95%  { opacity: 0.6; }
-    100% { top: 103vh; opacity: 0; }
-  }
-
-  /* ═══════════════ CONTENT ═══════════════ */
-  .content {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(8px, 3vmin, 28px);
-    animation: screenFlicker 9s infinite;
-    width: min(96vw, 96vh);
-    max-width: 700px;
-    padding: 0 clamp(8px, 3vmin, 24px);
-  }
-
-  @keyframes screenFlicker {
-    0%,100% { opacity:1; filter: brightness(1); }
-    91%  { opacity:1; filter: brightness(1); }
-    92%  { opacity:0.75; filter: brightness(0.9); }
-    93%  { opacity:1; filter: brightness(1.05); }
-    96%  { opacity:0.88; filter: brightness(0.95); }
-    97%  { opacity:1; filter: brightness(1); }
-  }
-
-  /* ═══════════════ TITLE ═══════════════ */
-  .title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(10px, 2.8vmin, 22px);
-    color: var(--phosphor-bright);
-    text-align: center;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
-    text-shadow:
-      0 0 4px var(--phosphor),
-      0 0 12px rgba(180,255,150,0.5),
-      0 0 24px rgba(140,220,110,0.25);
-  }
-
-  .title .highlight {
-    color: #ffffff;
-    text-shadow:
-      0 0 4px #fff,
-      0 0 12px rgba(255,255,255,0.7),
-      0 0 28px rgba(200,255,180,0.4);
-  }
-
-  /* ═══════════════ BLINK CURSOR ═══════════════ */
-  .cursor-line {
-    font-family: 'VT323', monospace;
-    font-size: clamp(14px, 3.5vmin, 28px);
-    color: var(--phosphor-dim);
-    text-shadow: 0 0 6px var(--phosphor-dim);
-    letter-spacing: 0.12em;
-  }
-
-  .cursor-line::after {
-    content: '█';
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-  }
-
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  /* ═══════════════ ZAGINĘŁA LABEL ═══════════════ */
-  .missing {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(8px, 2.2vmin, 18px);
-    color: var(--phosphor);
-    text-shadow: 0 0 6px var(--phosphor), 0 0 16px rgba(180,255,150,0.3);
-    letter-spacing: 0.06em;
-  }
-
-  /* ═══════════════ COUNTER BOX ═══════════════ */
-  .counter-wrap {
-    position: relative;
-    padding: clamp(6px,2vmin,18px) clamp(8px,3vmin,28px);
-    border: 2px solid var(--phosphor-dim);
-    max-width: 100%;
-    box-shadow:
-      0 0 10px rgba(150,230,120,0.2),
-      inset 0 0 12px rgba(0,0,0,0.5);
-  }
-
-  /* corner crosses */
-  .counter-wrap::before,
-  .counter-wrap::after {
-    font-family: 'VT323', monospace;
-    font-size: 16px;
-    color: var(--phosphor-dim);
+  /* ═════════ EKRAN STARTOWY ═════════ */
+  #intro-screen {
     position: absolute;
-  }
-  .counter-wrap::before { content:'┼'; top:-9px; left:-5px; }
-  .counter-wrap::after  { content:'┼'; bottom:-9px; right:-5px; }
-
-  #counter {
-    font-family: 'VT323', monospace;
-    font-size: clamp(14px, 6vmin, 56px);
-    color: var(--phosphor-bright);
-    text-shadow:
-      0 0 6px var(--phosphor),
-      0 0 18px rgba(180,255,150,0.45);
-    letter-spacing: 0.04em;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  #counter .days-n {
-    color: #f0f0f0;
-    text-shadow: 0 0 8px #fff, 0 0 20px rgba(255,255,255,0.5);
-  }
-
-  #counter .sep { color: var(--phosphor-dim); }
-
-  /* ═══════════════ SINCE ═══════════════ */
-  .since {
-    font-family: 'VT323', monospace;
-    font-size: clamp(12px, 2.8vmin, 22px);
-    color: var(--phosphor-dim);
-    text-shadow: 0 0 4px rgba(100,180,80,0.4);
-    letter-spacing: 0.12em;
-    text-align: center;
-  }
-
-  /* ═══════════════ WIN95 INTERNET ICON ═══════════════ */
-  .wiki-link {
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: filter 0.15s;
-    margin-top: clamp(4px,1.5vmin,14px);
+    justify-content: center;
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+    z-index: 10;
   }
 
-  .wiki-link:hover { filter: brightness(1.4); }
-
-  .wiki-link canvas {
-    image-rendering: pixelated;
-    width: clamp(36px,8vmin,64px);
-    height: clamp(36px,8vmin,64px);
-  }
-
-  .wiki-label {
-    font-family: 'VT323', monospace;
-    font-size: clamp(12px, 2.5vmin, 20px);
-    color: var(--phosphor-dim);
-    text-shadow: 0 0 4px rgba(100,180,80,0.4);
-    letter-spacing: 0.1em;
-  }
-
-  /* ═══════════════ WIKI OVERLAY ═══════════════ */
-  #wiki {
-    display: none;
-    position: fixed; inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.88);
-    overflow-y: auto;
-    padding: 24px 16px;
-    font-family: 'Press Start 2P', monospace;
-  }
-
-  #wiki.open { display: block; }
-
-  .wp {
-    max-width: 820px;
-    margin: 0 auto;
-    background: #f4f4e4;
-    border: 3px solid #666;
-    box-shadow: 6px 6px 0 #000;
-    padding: 16px;
-  }
-
-  .wp-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 3px solid #666;
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-
-  .wp-logo {
-    font-size: clamp(9px, 3vmin, 18px);
-    color: #000;
-    letter-spacing: 0.04em;
-  }
-
-  .wp-logo span { color: #0000cc; text-decoration: underline; }
-
-  .wp-search {
-    flex: 1; min-width: 100px;
-    border: 2px inset #aaa;
-    background: #fff;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.5vmin, 9px);
-    padding: 3px 6px;
-  }
-
-  .wp-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1.3vmin, 8px);
-    background: #d4d0c8;
-    border: 2px solid #fff;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    padding: 3px 8px;
-    cursor: pointer;
-    color: #000;
-  }
-
-  .wp-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-
-  .wp-tab {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1.3vmin, 8px);
-    background: #d4d0c8;
-    border: 2px solid #666;
-    border-bottom: 0;
-    padding: 4px 10px;
-    color: #0000cc;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .wp-tab.active { background: #f4f4e4; color: #000; text-decoration: none; }
-
-  .wp h1 {
-    font-size: clamp(9px, 3vmin, 18px);
-    border-bottom: 2px solid #888;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-    color: #000;
-    line-height: 1.6;
-  }
-
-  .wp h1 span { color: #0000cc; }
-
-  .wp p {
-    font-size: clamp(5px, 1.5vmin, 9px);
-    color: #000;
-    line-height: 2.4;
-    margin-bottom: 12px;
-  }
-
-  .wp a { color: #0000cc; text-decoration: underline; cursor: pointer; }
-
-  .wp h2 {
-    font-size: clamp(7px, 2.2vmin, 13px);
-    border-bottom: 1px solid #aaa;
-    padding-bottom: 4px;
-    margin: 14px 0 8px;
-    color: #000;
-  }
-
-  .wp ul { padding-left: 20px; margin-bottom: 12px; }
-
-  .wp ul li {
-    font-size: clamp(4px, 1.3vmin, 8px);
-    color: #000;
-    line-height: 2.8;
-    list-style: square;
-  }
-
-  .infobox {
-    float: right;
-    width: clamp(120px, 34%, 230px);
-    border: 2px solid #888;
-    background: #ddd8c0;
-    margin: 0 0 12px 14px;
-    font-size: clamp(4px, 1.3vmin, 8px);
-  }
-
-  .ib-title {
-    background: #5577aa;
-    color: #fff;
+  .main-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: -0.05em;
+    margin-bottom: 2vh;
     text-align: center;
-    padding: 5px;
-    font-size: clamp(5px, 1.5vmin, 9px);
-    line-height: 1.8;
   }
 
-  .ib-table { width: 100%; border-collapse: collapse; }
-  .ib-table td { padding: 3px 6px; border-top: 1px solid #bbb; line-height: 2; vertical-align: top; }
-  .ib-table td:first-child { color: #555; font-size: clamp(4px,1.2vmin,7px); }
+  .main-title strong { font-weight: 700; }
 
-  #wiki-close {
-    position: fixed; top: 10px; right: 10px;
-    background: #c00;
-    color: #fff;
-    border: 2px solid #800;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(6px, 2.2vmin, 12px);
-    padding: 5px 10px;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 #400;
-    z-index: 201;
-  }
-
-  #wiki-close:active { box-shadow:none; transform:translate(3px,3px); }
-
-  /* ══ TAB PANELS ══ */
-  .tab-panel { display: block; }
-
-  /* ══ DISCUSSION ══ */
-  .disc-add {
-    background: #eeeede;
-    border: 2px solid #888;
-    padding: 10px 12px;
-    margin-bottom: 14px;
-  }
-  .disc-add-label {
-    font-size: clamp(4px, 1.3vmin, 8px);
-    color: #333;
-    margin-bottom: 8px;
-    line-height: 2;
-  }
-  .disc-user { color: #0000cc; text-decoration: underline; }
-  .disc-textarea {
-    width: 100%;
-    min-height: 70px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1.3vmin, 8px);
-    border: 2px inset #aaa;
-    background: #fff;
-    color: #000;
-    padding: 6px;
-    resize: vertical;
-    line-height: 2;
-  }
-  .disc-divider {
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #888;
-    margin: 16px 0 12px;
-    letter-spacing: 0.05em;
-  }
-  .disc-locked {
-    border: 2px solid #999;
-    background: #e8e8d8;
-    padding: 20px 16px;
+  .timer-container {
+    font-size: clamp(3rem, 10vw, 10rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 6vh;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  .lock-icon { font-size: 24px; margin-bottom: 4px; }
-  .lock-title {
-    font-size: clamp(7px, 1.8vw, 12px);
-    color: #000;
-    letter-spacing: 0.04em;
-  }
-  .lock-sub {
-    font-size: clamp(4px, 1.3vmin, 8px);
-    color: #555;
-    line-height: 2;
-    max-width: 400px;
-  }
-  .lock-count {
-    font-size: clamp(4px, 1.3vmin, 8px);
-    color: #333;
-    background: #d4d0c8;
-    border: 1px solid #888;
-    padding: 3px 10px;
-    letter-spacing: 0.1em;
-  }
-  .lock-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.5vmin, 9px);
-    background: #0000cc;
-    color: #fff;
-    border: 2px solid #000080;
-    border-right-color: #000033;
-    border-bottom-color: #000033;
-    padding: 6px 16px;
-    cursor: pointer;
-    margin-top: 4px;
-  }
-  .lock-btn:active { border-style: inset; }
-  .lock-hint {
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #555;
-    line-height: 2;
-  }
-
-  /* ══ LOGIN MODAL ══ */
-  #login-modal { display: none; }
-  #login-modal.open { display: flex !important; }
-  .login-win {
-    background: #d4d0c8;
-    border: 2px solid #fff;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    width: min(340px, 90vw);
-    font-family: 'Press Start 2P', monospace;
-  }
-  .login-titlebar {
-    background: linear-gradient(90deg, #000080, #1084d0);
-    color: #fff;
-    font-size: clamp(5px, 1.5vmin, 9px);
-    padding: 5px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-  }
-  .login-x {
-    background: #d4d0c8;
-    border: 2px solid #fff;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    font-size: 9px;
-    width: 18px; height: 18px;
-    cursor: pointer;
-    color: #000;
-    display: flex; align-items: center; justify-content: center;
-    padding: 0;
-    font-family: sans-serif;
-  }
-  .login-x:active { border-color: #444; border-right-color: #fff; border-bottom-color: #fff; }
-  .login-body {
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .login-icon { font-size: 28px; text-align: center; margin-bottom: 4px; }
-  .login-field-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .login-label {
-    font-size: clamp(5px, 1.1vw, 7px);
-    color: #000;
-    min-width: 50px;
-    text-align: right;
-  }
-  .login-input {
-    flex: 1;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.1vw, 7px);
-    border: 2px inset #aaa;
-    background: #fff;
-    color: #000;
-    padding: 4px 6px;
-    letter-spacing: 0.1em;
-  }
-  .login-err {
-    font-size: clamp(4px, 1.3vmin, 8px);
-    color: #cc0000;
-    text-align: center;
-    line-height: 2;
-  }
-  .login-hint {
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #555;
-    text-align: center;
-    margin-top: 4px;
-  }
-  .login-hint a { color: #0000cc; text-decoration: underline; cursor: pointer; }
-
-  /* ══ THREADS ══ */
-  .thread {
-    border: 2px solid #999;
-    background: #f0f0e0;
-    margin-bottom: 14px;
-  }
-  .thread.deleted {
-    background: #e8e0d8;
-    border-color: #bbb;
-    opacity: 0.75;
-  }
-  .thread-header {
-    background: #d4d0c8;
-    border-bottom: 1px solid #999;
-    padding: 5px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  .thread-title {
-    font-size: clamp(5px, 1.3vw, 9px);
-    color: #000;
-    line-height: 1.6;
-  }
-  .thread-meta {
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #666;
-  }
-  .thread-user { color: #0000cc; }
-  .thread-body {
-    padding: 8px 10px;
-    font-size: clamp(5px, 1.1vw, 7px);
-    color: #000;
-    line-height: 2.4;
-  }
-  .thread-deleted-msg {
-    font-size: clamp(5px, 1.1vw, 7px);
-    color: #999;
-    font-style: italic;
-    padding: 10px;
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-  .thread-votes {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 10px;
-    border-top: 1px solid #ccc;
-    background: #e8e8d8;
-  }
-  .vote-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px, 1.3vmin, 8px);
-    background: #d4d0c8;
-    border: 2px solid #fff;
-    border-right-color: #666;
-    border-bottom-color: #666;
-    padding: 3px 7px;
-    cursor: pointer;
-    color: #000;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .vote-btn:active { border-color: #666; border-right-color: #fff; border-bottom-color: #fff; }
-  .vote-btn.voted-up   { background: #c8e8c8; border-color: #4a8a4a; color: #004400; }
-  .vote-btn.voted-down { background: #e8c8c8; border-color: #8a4a4a; color: #440000; }
-  .vote-count { font-size: clamp(4px, 1.3vmin, 8px); color: #333; }
-
-  .hidden-user {
-    color: #888 !important;
-    letter-spacing: 0.05em;
-    font-style: italic;
-  }
-  .thread-mystery {
-    border-color: #777;
-    background: #ebebd8;
-    border-style: dashed;
-  }
-  .thread-mystery .thread-header {
-    background: #d0ccc0;
-    border-bottom-style: dashed;
-  }
-
-  /* ══ RETRO PLAYER ══ */
-  .retro-player {
-    border: 3px solid #444;
-    border-right-color: #aaa;
-    border-bottom-color: #aaa;
-    background: #c0c0c0;
-    max-width: 520px;
-    margin: 0 auto;
-    font-family: 'Press Start 2P', monospace;
-  }
-  .rp-titlebar {
-    background: linear-gradient(90deg, #000080, #1084d0);
-    color: #fff;
-    padding: 4px 8px;
-    font-size: clamp(5px, 1.1vw, 8px);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    letter-spacing: 0.03em;
-    user-select: none;
-  }
-  .rp-dot {
-    width: 10px; height: 10px;
-    background: #c0c0c0;
-    border: 1px solid #888;
-    border-right-color: #fff;
-    border-bottom-color: #fff;
-    display: inline-block;
-  }
-  .rp-screen {
-    background: #000;
-    position: relative;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    border: 3px inset #888;
-    margin: 6px;
-  }
-  .rp-screen video {
-    width: 100%; height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-  .rp-overlay {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.45);
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .rp-overlay.hidden { opacity: 0; pointer-events: none; }
-  .rp-play-big {
-    font-size: clamp(24px, 6vw, 48px);
-    color: #fff;
-    text-shadow: 0 0 12px rgba(255,255,255,0.7);
     line-height: 1;
   }
-  .rp-caption {
-    font-size: clamp(5px, 1.5vmin, 9px);
-    color: #000;
-    text-align: center;
-    padding: 2px 8px 4px;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid #888;
-    margin: 0 6px;
-  }
-  .rp-controls {
+
+  .timer-labels {
+    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-top: 10px;
     display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 8px;
-    border-bottom: 1px solid #999;
-  }
-  .rp-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.2vw, 9px);
-    background: #d4d0c8;
-    border: 2px solid #fff;
-    border-right-color: #444;
-    border-bottom-color: #444;
-    padding: 3px 6px;
-    cursor: pointer;
-    color: #000;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .rp-btn:active { border-color: #444; border-right-color: #fff; border-bottom-color: #fff; }
-  .rp-progress-wrap {
-    flex: 1;
-    height: 12px;
-    background: #888;
-    border: 2px inset #666;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .rp-progress-bar {
-    height: 100%;
-    background: #000080;
-    width: 0%;
-    transition: width 0.3s linear;
-    pointer-events: none;
-  }
-  .rp-time {
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #000;
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: 70px;
-    text-align: right;
-  }
-  .rp-statusbar {
-    background: #d4d0c8;
-    border-top: 1px solid #fff;
-    padding: 3px 8px;
-    font-size: clamp(4px, 1.2vmin, 7px);
-    color: #000;
-    letter-spacing: 0.08em;
-  }
-
-  /* ═══════════════ PIVOT / TALL SCREENS ═══════════════ */
-  @media (max-aspect-ratio: 3/4) {
-    .content {
-      width: min(94vw, 70vh);
-      gap: clamp(6px, 2.5vmin, 20px);
-    }
-    #counter {
-      font-size: clamp(12px, 5vmin, 44px);
-    }
-    .title {
-      font-size: clamp(8px, 2.5vmin, 18px);
-    }
-    .counter-wrap {
-      padding: clamp(5px, 1.8vmin, 14px) clamp(6px, 2.5vmin, 22px);
-    }
-  }
-
-  /* ═══════════════ VERY WIDE SCREENS ═══════════════ */
-  @media (min-aspect-ratio: 21/9) {
-    .content {
-      max-width: min(60vh, 700px);
-    }
-  }
-
-  /* ═══════════════ WIN95 CURSOR ═══════════════ */
-  html, body, #stage, .content, * {
-    cursor: none !important;
-  }
-  #win95-cursor {
-    position: fixed;
-    top: 0; left: 0;
-    width: 20px;
-    height: 20px;
-    pointer-events: none;
-    z-index: 99999;
-    image-rendering: pixelated;
-    transform: translate(0, 0);
-    will-change: transform;
-  }
-  #win95-cursor.clicking {
-    transform: translate(1px, 1px);
-  }
-
-  @media (hover: none), (pointer: coarse) {
-    #win95-cursor { display: none !important; }
-    html, body, #stage, .content, * { cursor: auto !important; }
-    a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn,
-    .rp-btn, .node, .wp-tab, .login-x, #wiki-close { cursor: pointer !important; }
-  }
-
-  /* ══ HISTORIA TERMINAL ══ */
-  .hist-terminal {
-    border: 3px solid #333;
-    border-right-color: #aaa;
-    border-bottom-color: #aaa;
-    background: #0c0c0c;
-    font-family: 'VT323', monospace;
-    margin-top: 12px;
-  }
-  .hist-topbar {
-    background: linear-gradient(90deg, #000080, #1084d0);
-    color: #fff;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px, 1.1vmin, 8px);
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    user-select: none;
-  }
-  .hist-dot {
-    width: 10px; height: 10px;
-    background: #c0c0c0;
-    border: 1px solid #888;
-    border-right-color: #fff;
-    border-bottom-color: #fff;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-  .hist-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .hist-body {
-    padding: 12px 14px;
-    color: #d4f5c0;
-    font-size: clamp(12px, 2vmin, 18px);
-    line-height: 1.9;
-    min-height: 200px;
-  }
-  .hist-line { display: block; margin-bottom: 2px; }
-  .hist-line.sep { color: #3a6a2a; margin: 6px 0; }
-  .hist-line.del { color: #ff6060; }
-  .hist-line.edit { color: #d4f5c0; }
-  .hist-line.req { color: #80c0ff; }
-  .hist-line.sys { color: #ffff60; }
-  .hist-line.censor { color: #ff9900; }
-  .hist-stamp { color: #5a9a4a; margin-right: 6px; }
-  .hist-user { color: #80ff80; }
-  .hist-admin { color: #ff8080; }
-  .hist-cursor-blink::after {
-    content: '█';
-    animation: blink 1s step-end infinite;
-    color: #d4f5c0;
-  }
-
-  .icon-row {
-    display: flex;
-    gap: clamp(16px, 5vmin, 48px);
-    align-items: flex-start;
     justify-content: center;
-    flex-wrap: wrap;
+    gap: clamp(1rem, 6vw, 4rem);
   }
 
-  /* ══════════════ GOD.WIFINEWS ══════════════ */
-  .news-page {
-    max-width: 960px;
-    margin: 0 auto;
-    background: #f0ede0;
-    border: 3px solid #444;
-    box-shadow: 6px 6px 0 #000;
-    font-family: 'Press Start 2P', monospace;
-    overflow: hidden;
-  }
-
-  /* masthead */
-  .news-masthead {
-    background: #f0ede0;
-    border-bottom: 4px solid #000;
-    padding: 10px 16px 8px;
-    text-align: center;
-  }
-  .news-logo {
-    font-size: clamp(14px, 4vmin, 32px);
-    color: #000;
-    letter-spacing: 0.04em;
-    line-height: 1.3;
-  }
-  .news-logo span { color: #0000cc; }
-  .news-meta {
-    font-size: clamp(4px, 1vmin, 7px);
-    color: #555;
-    margin-top: 4px;
+  .btn-next {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 15px 50px;
+    font-size: 1.2rem;
+    font-weight: 300;
+    text-transform: uppercase;
     letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
   }
 
-  /* ticker */
-  .news-ticker-wrap {
-    background: #000;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    height: 28px;
-    border-bottom: 3px solid #000;
+  .btn-next:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
   }
-  .news-ticker-label {
-    font-size: clamp(5px, 1.2vmin, 8px);
-    background: #cc0000;
-    color: #fff;
-    padding: 0 10px;
-    height: 100%;
+
+  /* ═════════ EKRAN PODZIAŁU ═════════ */
+  #split-screen {
+    position: absolute;
+    inset: 0;
     display: flex;
-    align-items: center;
-    white-space: nowrap;
-    flex-shrink: 0;
-    border-right: 2px solid #ff4444;
-    letter-spacing: 0.1em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed);
+    z-index: 5;
   }
-  .news-ticker-track {
+
+  #split-screen.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .half {
     flex: 1;
-    overflow: hidden;
     height: 100%;
-    display: flex;
-    align-items: center;
-  }
-  .news-ticker-inner {
-    font-size: clamp(5px, 1.2vmin, 8px);
-    white-space: nowrap;
-    display: inline-block;
-    animation: tickerScroll 28s linear infinite;
-    letter-spacing: 0.08em;
-    padding-left: 100%;
-  }
-  @keyframes tickerScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* layout */
-
-  @media (max-width: 680px) {
-  }
-
-  /* ads */
-  .news-ad {
-    padding: 12px 8px;
-    border-right: 1px dashed #aaa;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    background: #e8e5d8;
-    min-height: 400px;
-    box-sizing: border-box;
+    padding: 60px;
+    transition: background 0.4s ease, color 0.4s ease;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .news-ad-right { border-right: none; border-left: 1px dashed #aaa; }
-  .ad-canvas { image-rendering: pixelated; display: block; border: 2px solid #888; max-width: 120px; }
 
-  /* article */
-  .news-article {
-    padding: 16px 20px;
-    border-right: 1px dashed #aaa;
-    min-width: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
+  .half:last-child { border-right: none; }
+
+  .half:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
   }
-  .news-headline {
-    font-size: clamp(8px, 2vmin, 14px);
-    color: #000;
+  .half:hover .border-line { border-color: var(--bg-color); }
+  .half:hover .date-dot { color: var(--bg-color); }
+
+  /* WSPÓLNE ELEMENTY */
+  .section-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: -0.03em;
+    text-transform: lowercase;
+  }
+
+  .border-line {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 40px;
+    transition: border-color 0.4s;
+  }
+
+  /* ═════════ WIKIPEDIA ═════════ */
+  .wiki-content {
+    font-size: 1rem;
     line-height: 1.7;
-    margin-bottom: 8px;
-    text-align: left;
-    border-bottom: 2px solid #000;
-    padding-bottom: 8px;
-  }
-  .news-byline {
-    font-size: clamp(4px, 1vmin, 6px);
-    color: #666;
-    margin-bottom: 6px;
-    letter-spacing: 0.08em;
-  }
-  .news-divider {
-    border: none;
-    border-top: 1px solid #bbb;
-    margin: 10px 0;
-  }
-  .news-body {
-    font-size: clamp(7px, 1.5vmin, 10px);
-    color: #111;
-    line-height: 2.6;
-    margin-bottom: 12px;
-    text-align: justify;
-  }
-  .news-body a { color: #0000cc; text-decoration: underline; }
-  .news-body b { font-weight: 700; }
-  .news-footer {
-    font-size: clamp(4px, 0.9vmin, 6px);
-    color: #888;
-    text-align: center;
-    letter-spacing: 0.06em;
-    line-height: 2;
+    font-weight: 300;
   }
 
-
-  /* ══ NEWS CALENDAR & READER ══ */
-  #news-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.92);
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 20px 20px;
-    overflow-y: auto;
-    font-family: 'Press Start 2P', monospace;
-  }
-  #news-overlay.open { display: block; }
-
-  #news-close-btn {
-    position: fixed; top: 10px; right: 10px;
-    background: #c00; color: #fff;
-    border: 2px solid #800;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(6px,1.5vmin,10px);
-    padding: 5px 10px; cursor: pointer;
-    box-shadow: 3px 3px 0 #400; z-index: 201;
-  }
-  #news-close-btn:active { box-shadow:none; transform:translate(3px,3px); }
-
-  /* ── CALENDAR ── */
-  #news-calendar {
-    width: min(720px, 96vw);
-    background: #f0ede0;
-    border: 3px solid #444;
-    box-shadow: 6px 6px 0 #000;
-    margin: 0 auto;
-  }
-  .ncal-header {
-    background: linear-gradient(90deg,#000080,#1084d0);
-    color: #fff;
-    padding: 8px 14px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: clamp(7px,1.8vmin,13px);
-    letter-spacing: 0.06em;
-    user-select: none;
-  }
-  .ncal-logo { font-size: clamp(9px,2.2vmin,16px); }
-  .ncal-logo span { color: #88ccff; }
-  .ncal-ticker-wrap {
-    background: #000; color: #fff;
-    overflow: hidden; height: 24px;
-    display: flex; align-items: center;
-    border-bottom: 2px solid #000;
-  }
-  .ncal-ticker-label {
-    background: #cc0000; color: #fff;
-    padding: 0 8px; height: 100%;
-    display: flex; align-items: center;
-    font-size: clamp(5px,1.1vmin,7px);
-    white-space: nowrap; flex-shrink: 0;
-    border-right: 2px solid #ff4444;
-    letter-spacing: 0.08em;
-  }
-  .ncal-ticker-track { flex:1; overflow:hidden; height:100%; display:flex; align-items:center; }
-  .ncal-ticker-inner {
-    font-size: clamp(5px,1.1vmin,7px);
-    white-space: nowrap; display: inline-block;
-    animation: calTicker 30s linear infinite;
-    letter-spacing: 0.08em; padding-left: 100%;
-  }
-  @keyframes calTicker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
-  .ncal-month-bar {
-    background: #e8e5d8;
-    border-bottom: 2px solid #999;
-    padding: 6px 14px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: clamp(6px,1.5vmin,11px);
-    color: #000;
-  }
-  .ncal-nav-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px,1.2vmin,9px);
-    background: #d4d0c8;
-    border: 2px solid #fff; border-right-color: #444; border-bottom-color: #444;
-    padding: 3px 8px; cursor: pointer; color: #000;
-  }
-  .ncal-nav-btn:active { border-color:#444; border-right-color:#fff; border-bottom-color:#fff; }
-
-  .ncal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    border-left: 1px solid #bbb;
-    border-top: 1px solid #bbb;
-  }
-  .ncal-dow {
-    background: #000080; color: #fff;
-    text-align: center;
-    padding: 5px 2px;
-    font-size: clamp(4px,1vmin,7px);
-    border-right: 1px solid #4466aa;
-    border-bottom: 1px solid #4466aa;
+  .wiki-content h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 40px 0 15px;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  .ncal-day {
-    min-height: clamp(36px,6vmin,52px);
-    border-right: 1px solid #bbb;
-    border-bottom: 1px solid #bbb;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 3px;
-    background: #e8e5d8;
-    position: relative;
+
+  .wiki-content p { margin-bottom: 20px; }
+  .wiki-content ul { margin-bottom: 20px; padding-left: 20px; }
+  .wiki-content li { margin-bottom: 10px; }
+  .wiki-content a { color: inherit; text-decoration: underline; }
+
+  .wiki-infobox {
+    float: right;
+    width: 300px;
+    border: 1px solid currentColor;
+    padding: 25px;
+    margin: 0 0 30px 40px;
+    font-size: 0.9rem;
   }
-  .ncal-day.empty { background: #ddd8c8; }
-  .ncal-day.inactive { background: #e8e5d8; }
-  .ncal-day.active {
-    background: #f4f4e0;
+
+  .wiki-infobox h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 10px;
+  }
+
+  .wiki-infobox ul { list-style: none; padding: 0; }
+  .wiki-infobox li { display: flex; justify-content: space-between; margin-bottom: 12px; }
+  .wiki-infobox strong { font-weight: 700; opacity: 0.6; }
+
+  /* ═════════ NEWSY ═════════ */
+  .news-calendar-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+  }
+
+  .date-selector { display: flex; gap: 20px; }
+  .date-dot {
     cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    opacity: 0.4;
+    transition: opacity 0.3s;
   }
-  .ncal-day.active:hover { background: #fffff0; }
-  .ncal-day.today { outline: 2px solid #cc0000; outline-offset: -2px; }
-  .ncal-day-num {
-    font-size: clamp(6px,1.4vmin,11px);
-    color: #888;
-    line-height: 1;
-  }
-  .ncal-day.active .ncal-day-num { color: #000; font-weight: bold; }
-  .ncal-day.today .ncal-day-num { color: #cc0000; }
-  .ncal-dot {
-    width: clamp(5px,1.2vmin,8px);
-    height: clamp(5px,1.2vmin,8px);
-    background: #000080;
-    border: 1px solid #000055;
-    image-rendering: pixelated;
-  }
-  .ncal-day.active .ncal-article-label {
-    font-size: clamp(3px,0.7vmin,5px);
-    color: #000080;
-    text-align: center;
-    line-height: 1.4;
-    padding: 0 2px;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .ncal-footer {
-    background: #d4d0c8;
-    border-top: 2px solid #999;
-    padding: 5px 12px;
-    font-size: clamp(4px,0.9vmin,6px);
-    color: #555;
-    text-align: center;
-    letter-spacing: 0.08em;
+  .date-dot:hover, .date-dot.active { opacity: 1; }
+
+  .news-item {
+    margin-bottom: 50px;
+    cursor: pointer;
+    group: article;
   }
 
-  /* ── ARTICLE READER ── */
-  #news-reader {
-    display: none;
-    width: min(900px, 96vw);
-    background: #f0ede0;
-    border: 3px solid #444;
-    box-shadow: 6px 6px 0 #000;
-    margin: 0 auto;
-  }
-  #news-reader.open { display: block; }
-  .nrd-topbar {
-    background: linear-gradient(90deg,#000080,#1084d0);
-    color: #fff;
-    padding: 6px 12px;
-    display: flex; align-items: center; gap: 10px;
-    font-size: clamp(5px,1.2vmin,8px);
-  }
-  .nrd-back-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(5px,1.1vmin,7px);
-    background: #d4d0c8; color: #000;
-    border: 2px solid #fff; border-right-color: #444; border-bottom-color: #444;
-    padding: 3px 8px; cursor: pointer; flex-shrink: 0;
-  }
-  .nrd-back-btn:active { border-color:#444; border-right-color:#fff; border-bottom-color:#fff; }
-  .nrd-layout {
-    display: grid;
-    grid-template-columns: 140px 1fr 140px;
-    align-items: start;
-    background: #f0ede0;
-  }
-  @media(max-width:600px){ .nrd-layout{grid-template-columns:1fr} .nrd-side{display:none!important} }
-  .nrd-side {
-    background: #e8e5d8;
-    padding: 12px 8px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    background: #e8e5d8;
-    align-self: stretch;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(4px,0.9vmin,6px);
-    text-align: center;
-  }
-  .nrd-side-left { border-right: 1px dashed #aaa; }
-  .nrd-side-right { border-left: 1px dashed #aaa; }
-  .nrd-content {
-    padding: 16px 20px;
-    background: #f0ede0;
-    min-width: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-  .nrd-headline {
-    font-size: clamp(8px,2vmin,14px);
-    color: #000; line-height: 1.7;
-    margin-bottom: 8px;
-    border-bottom: 2px solid #000;
-    padding-bottom: 8px;
-  }
-  .nrd-byline { font-size: clamp(4px,1vmin,6px); color:#666; margin-bottom:6px; letter-spacing:0.08em; }
-  .nrd-divider { border:none; border-top:1px solid #bbb; margin:10px 0; }
-  .nrd-body { font-size:clamp(7px,1.4vmin,10px); color:#111; line-height:2.6; margin-bottom:12px; }
-  .nrd-body a { color:#0000cc; text-decoration:underline; }
-  .nrd-body b { font-weight:700; }
-  .nrd-subhead { font-size:clamp(6px,1.4vmin,9px); color:#000080; border-left:3px solid #000080; padding-left:8px; margin:14px 0 8px; line-height:1.8; }
-  .nrd-quote { border-left:3px solid #888; padding:6px 10px; margin:10px 0; background:#e8e5d8; font-size:clamp(6px,1.3vmin,9px); color:#333; line-height:2.4; font-style:italic; }
-  .nrd-footer { font-size:clamp(4px,0.9vmin,6px); color:#888; text-align:center; letter-spacing:0.06em; line-height:2; }
-  .congrats-card { border:2px solid #888; background:#f0ede0; padding:5px 6px; width:118px; box-sizing:border-box; font-family:'Press Start 2P',monospace; }
-  .congrats-card-name { color:#000080; font-size:clamp(4px,1vmin,7px); margin-bottom:2px; }
-  .congrats-card-award { color:#cc6600; font-size:clamp(3px,0.8vmin,5px); line-height:1.8; }
+  .news-item:hover .news-title { text-decoration: underline; }
 
-  /* ── MEDIA PLAYER ── */
-  .nrd-media-section { border-top:3px solid #000; background:#e8e5d8; padding:14px 16px; }
-  .nrd-media-header { font-family:'Press Start 2P',monospace; font-size:clamp(5px,1.2vmin,9px); color:#000080; letter-spacing:0.08em; margin-bottom:12px; border-bottom:1px solid #999; padding-bottom:6px; }
-  .nrd-media-layout { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
-  .nrd-media-player { flex:1; min-width:240px; border:3px solid #444; border-right-color:#aaa; border-bottom-color:#aaa; background:#c0c0c0; font-family:'Press Start 2P',monospace; }
-  .nmp-titlebar { background:linear-gradient(90deg,#000080,#1084d0); color:#fff; padding:4px 8px; font-size:clamp(5px,1.1vmin,7px); display:flex; align-items:center; gap:5px; user-select:none; }
-  .nmp-dot { width:10px; height:10px; background:#c0c0c0; border:1px solid #888; border-right-color:#fff; border-bottom-color:#fff; display:inline-block; flex-shrink:0; }
-  .nmp-title { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .nmp-screen { background:#000; position:relative; aspect-ratio:16/9; overflow:hidden; border:3px inset #888; margin:6px; }
-  .nmp-screen video { width:100%; height:100%; object-fit:contain; display:block; }
-  .nmp-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); cursor:pointer; transition:opacity 0.2s; }
-  .nmp-overlay.hidden { opacity:0; pointer-events:none; }
-  .nmp-play-big { font-size:clamp(20px,5vmin,40px); color:#fff; }
-  .nmp-controls { display:flex; align-items:center; gap:4px; padding:5px 8px; border-bottom:1px solid #999; }
-  .nmp-btn { font-family:'Press Start 2P',monospace; font-size:clamp(5px,1.1vmin,8px); background:#d4d0c8; border:2px solid #fff; border-right-color:#444; border-bottom-color:#444; padding:3px 6px; cursor:pointer; color:#000; flex-shrink:0; }
-  .nmp-btn:active { border-color:#444; border-right-color:#fff; border-bottom-color:#fff; }
-  .nmp-progress-wrap { flex:1; height:12px; background:#888; border:2px inset #666; cursor:pointer; position:relative; overflow:hidden; }
-  .nmp-progress-bar { height:100%; background:#000080; width:0%; transition:width 0.3s linear; pointer-events:none; }
-  .nmp-time { font-size:clamp(4px,0.9vmin,6px); color:#000; white-space:nowrap; flex-shrink:0; min-width:70px; text-align:right; }
-  .nmp-statusbar { background:#d4d0c8; border-top:1px solid #fff; padding:3px 8px; font-size:clamp(4px,0.9vmin,6px); color:#000; letter-spacing:0.06em; }
-  .nrd-playlist { width:200px; flex-shrink:0; border:2px solid #888; background:#f0ede0; font-family:'Press Start 2P',monospace; }
-  .nrd-pl-header { background:#000080; color:#fff; padding:5px 8px; font-size:clamp(4px,1vmin,7px); letter-spacing:0.08em; }
-  .nrd-pl-item { display:flex; align-items:flex-start; gap:8px; padding:7px 8px; cursor:pointer; border-bottom:1px solid #ccc; }
-  .nrd-pl-item:hover { background:#ddd8c8; }
-  .nrd-pl-item.active { background:#d4d0c8; border-left:3px solid #000080; }
-  .pl-num { font-size:clamp(4px,1vmin,7px); color:#888; flex-shrink:0; margin-top:2px; }
-  .pl-info { font-size:clamp(4px,1vmin,7px); color:#000; line-height:2; }
-  .pl-info b { color:#000080; }
-  .pl-sub { font-size:clamp(3px,0.8vmin,5px); color:#666; }
-
-  /* confetti */
-  #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:9999; display:none; }
-
-  .nrd-article-single { padding: 16px 20px; overflow-wrap: break-word; word-break: break-word; }
-  .nrd-congrats-row { display: flex; border-top: 2px solid #bbb; background: #e8e5d8; }
-  .nrd-congrats-half { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: 'Press Start 2P', monospace; text-align: center; }
-  .congrats-label-top { font-size: clamp(5px,1.1vmin,8px); color: #000080; margin-bottom: 4px; letter-spacing: 0.06em; }
-
-  #news-back-btn {
-    position: fixed; top: 46px; right: 10px;
-    background: #000080; color: #fff;
-    border: 2px solid #000040;
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(6px,1.5vmin,10px);
-    padding: 5px 10px; cursor: pointer;
-    box-shadow: 3px 3px 0 #000020; z-index: 201;
-    display: none;
+  .news-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+    line-height: 1.2;
   }
-  #news-back-btn.visible { display: block; }
-  #news-back-btn:active { box-shadow:none; transform:translate(3px,3px); }
+
+  .news-meta {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 15px;
+  }
+
+  .news-excerpt {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 300;
+    opacity: 0.8;
+  }
+
+  /* ═════════ MODAL ARTYKUŁU ═════════ */
+  #article-modal {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    z-index: 100;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    padding: 0 20px;
+  }
+
+  #article-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-close {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 101;
+  }
+
+  .modal-close:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+  }
+
+  .modal-content {
+    max-width: 800px;
+    margin: 120px auto 100px;
+  }
+
+  #modal-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+
+  #modal-meta {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 50px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 20px;
+  }
+
+  #modal-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  #modal-body p { margin-bottom: 25px; }
+  #modal-body b, #modal-body strong { font-weight: 700; }
+  #modal-body h2, #modal-body .nrd-subhead {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 40px 0 20px;
+  }
+  #modal-body .nrd-quote {
+    border-left: 2px solid var(--text-color);
+    padding-left: 20px;
+    margin: 30px 0;
+    font-style: italic;
+    opacity: 0.8;
+  }
+  #modal-body a { color: inherit; text-decoration: underline; }
+
+  /* RWD */
+  @media (max-width: 900px) {
+    #split-screen { flex-direction: column; }
+    .half { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 40px 20px; }
+    .wiki-infobox { float: none; width: 100%; margin: 0 0 30px 0; }
+  }
 </style>
 </head>
 <body>
 
-
-<!-- WIN95 PIXEL CURSOR -->
-<canvas id="win95-cursor" width="20" height="20"></canvas>
-
-<div id="stage">
-  <div id="glass"></div>
-
-  <canvas id="noise" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:23;opacity:0.055;"></canvas>
-
-  <div id="hline"></div>
-
-  <div class="content">
-
-    <div class="title">
-      &rsaquo;&rsaquo; GDZIE JEST <span class="highlight">god.wifi</span>?
-    </div>
-
-    <div class="cursor-line">SEARCHING FOR SIGNAL</div>
-
-    <div class="missing">&#x25B6; ZAGINĘŁA</div>
-
-    <div class="counter-wrap">
-      <div id="counter">
-        <span class="days-n" id="d">000</span><span class="sep"> DNI </span><span id="h">00</span><span class="sep">:</span><span id="m">00</span><span class="sep">:</span><span id="s">00</span>
+  <div id="intro-screen">
+    <div class="main-title">gdzie jest <strong>god.wifi?</strong> Zaginęła:</div>
+    <div>
+      <div class="timer-container" id="counter">
+        <span id="d">000</span>:<span id="h">00</span>:<span id="m">00</span>:<span id="s">00</span>
+      </div>
+      <div class="timer-labels">
+        <span>DNI</span><span>GODZ</span><span>MIN</span><span>SEK</span>
       </div>
     </div>
-
-    <div class="since">TEMU &nbsp;&#x2502;&nbsp; OD 27.02.2025 00:00:00</div>
-
-    <div class="icon-row">
-      <a class="wiki-link" onclick="openWiki()">
-        <canvas id="ie-icon" width="64" height="64"></canvas>
-        <span class="wiki-label">&#x25BA; GOD.WIFIPEDIA</span>
-      </a>
-      <a class="wiki-link" onclick="openNews()">
-        <canvas id="news-icon" width="64" height="64"></canvas>
-        <span class="wiki-label">&#x25BA; GOD.WIFINEWS</span>
-      </a>
-    </div>
-
+    <button class="btn-next" onclick="showSplitScreen()">DALEJ</button>
   </div>
-</div>
 
-<!-- WIKI PAGE -->
-<div id="wiki">
-  <button id="wiki-close" onclick="closeWiki()">X ZAMKNIJ</button>
-  <div class="wp">
-    <div class="wp-bar">
-      <div class="wp-logo">GOD.<span>wifi</span>PEDIA</div>
-      <input class="wp-search" type="text" placeholder="SZUKAJ...">
-      <button class="wp-btn">SZUKAJ</button>
-    </div>
-    <div class="wp-tabs">
-      <div class="wp-tab active" onclick="switchTab('artykul')">ARTYKUŁ</div>
-      <div class="wp-tab" onclick="switchTab('dyskusja')">DYSKUSJA</div>
-      <div class="wp-tab" onclick="switchTab('media')">MEDIA</div>
-      <div class="wp-tab" onclick="switchTab('historia')">HISTORIA</div>
-    </div>
-
-    <!-- ══ TAB: ARTYKUŁ ══ -->
-    <div id="tab-artykul" class="tab-panel">
-    <div class="infobox">
-      <div class="ib-title">GOD.WIFI<br>Wiktoria Maciuk</div>
-      <table class="ib-table">
-        <tr><td>STATUS</td><td>ZAGINIONA</td></tr>
-        <tr><td>OD</td><td>27.02.2025</td></tr>
-        <tr><td>ZAWÓD</td><td>DJ / FOTO / VJ</td></tr>
-        <tr><td>SYGNAŁ</td><td>BRAK</td></tr>
-        <tr><td>PING</td><td>TIMEOUT</td></tr>
-        <tr><td>SPORT</td><td>BMX (była)</td></tr>
-        <tr><td>PASMO</td><td>obraz + muzyka</td></tr>
-        <tr><td>POSZUK.</td><td><span id="wiki-days">—</span> DNI</td></tr>
-      </table>
-    </div>
-
-    <h1><span>god.wifi</span></h1>
-
-    <p><b>god.wifi</b> (właśc. Wiktoria Maciuk) – polska artystka wizualna, DJ-ka, fotografka, autorka teledysków i była zawodniczka BMX. Zaczynała od jazdy na BMX-ie, nagrywania własnych materiałów i montażu, z czasem rozwijając się w stronę obrazu, muzyki i projektów kreatywnych. Kojarzona z estetyką internetu, nocnym życiem, cyfrową nostalgią i własnym, trudnym do podrobienia stylem.</p>
-
-    <h2>OPIS</h2>
-    <p>Według dostępnych danych god.wifi wyróżniała się silnym sygnałem w paśmie obrazu, muzyki i obecności. Najczęściej wykrywana w pobliżu klubów, backstage'y, projektów kreatywnych i osób, które „miały już iść do domu". Użytkownicy zgłaszali poprawę nastroju, wzrost energii i nagłą aktywację trybu <a>#party</a>. Ostatnie logi sugerują, że opuściła sieć lokalną bez pozostawienia stabilnego śladu.</p>
-
-    <h2>HIPOTEZY ZAGINIĘCIA</h2>
-    <ul>
-      <li>Praca nad nową muzyką w trybie „nie przeszkadzać"</li>
-      <li>Zbyt głęboka infiltracja projektu <a>#party</a></li>
-      <li>Wyjście „tylko na chwilę" na matche i brak powrotu do głównej osi czasu</li>
-      <li>Wciągnięcie przez backstage o nieznanej geometrii</li>
-      <li>Przejście w tryb nocny i utrata kompatybilności z porankami</li>
-      <li>Zalogowanie się do alternatywnej rzeczywistości po secie</li>
-      <li>Ostatni pociąg / ostatni Uber / ostatnia decyzja, która zmieniła wszystko</li>
-      <li>Rozproszenie sygnału pomiędzy klubem, studiem i czyimś „chodź, pokażę ci jedno miejsce"</li>
-      <li>Zbyt wysoka gęstość emocji w jednym pomieszczeniu (przeciążenie systemu)</li>
-      <li>Ukrywanie się przed ludźmi, którzy piszą „co tam?"</li>
-      <li>Migracja do pasma 5 GHz, niewykrywalnego dla zwykłych użytkowników</li>
-      <li>Tymczasowe porzucenie internetu na rzecz realnego życia (wersja najmniej prawdopodobna)</li>
-    </ul>
-
-    <h2>STATUS POSZUKIWAŃ</h2>
-    <p>Poszukiwania trwają nieprzerwanie od <span id="wiki-days2">—</span> dni.<br>
-    Sygnał god.wifi bywa nadal wykrywany w niestabilnych warunkach, głównie:</p>
-    <ul>
-      <li>po północy,</li>
-      <li>przy odpowiednim poziomie głośności,</li>
-      <li>w pobliżu osób, które „już nic dziś nie robią",</li>
-      <li>oraz podczas nieautoryzowanych aktywacji projektu <a>#party</a>.</li>
-    </ul>
-    <p>Odnotowano możliwe ślady obecności w:</p>
-    <ul>
-      <li>stories wrzucanych bez kontekstu,</li>
-      <li>krótkich odpowiedziach typu „jestem zaraz",</li>
-      <li>zamazanych światłach miasta,</li>
-      <li>oraz playlistach, które nie powinny aż tak boleć.</li>
-    </ul>
-    <p>Eksperci zalecają dalsze wysyłanie pingów, cierpliwość oraz regularne sprawdzanie, czy przypadkiem nie wróciła dokładnie wtedy, kiedy nikt już się tego nie spodziewa.</p>
-
-    <h2>LINKI ZEWNĘTRZNE</h2>
-    <ul>
-      <li><a href="https://www.instagram.com/god.wifi/" target="_blank">&#x25BA; Instagram: @god.wifi</a></li>
-      <li><a href="https://discord.gg/4PTQRsUq9t" target="_blank">&#x25BA; Discord: serwer god.wifi</a></li>
-      <li><a href="https://www.instagram.com/tokarz_k/" target="_blank">&#x25BA; Kontakt z administratorem</a></li>
-      <li><a onclick="closeWiki()">&#x25C4; Wróć do ekranu głównego</a></li>
-    </ul>
-
-    </div><!-- /tab-artykul -->
-
-    <!-- ══ TAB: DYSKUSJA ══ -->
-    <div id="tab-dyskusja" class="tab-panel" style="display:none;">
-      <h1>Dyskusja: <span>god.wifi</span></h1>
-
-      <!-- Dodaj komentarz -->
-      <div class="disc-add">
-        <div class="disc-add-label">&#x25BA; DODAJ KOMENTARZ jako: <span class="disc-user" id="disc-username">Anonimowy_użytkownik</span></div>
-        <textarea class="disc-textarea" placeholder="Wpisz komentarz..." rows="4"></textarea>
-        <div style="display:flex;gap:8px;margin-top:6px;">
-          <button class="wp-btn">DODAJ SEKCJĘ</button>
-          <button class="wp-btn">PODGLĄD</button>
+  <div id="split-screen">
+    
+    <div class="half" id="wiki-side">
+      <div class="section-header">godwifipedia</div>
+      <div class="border-line"></div>
+      
+      <div class="wiki-content">
+        <div class="wiki-infobox">
+          <h3>god.wifi (Wiktoria Maciuk)</h3>
+          <ul>
+            <li><strong>STATUS</strong> <span>ZAGINIONA</span></li>
+            <li><strong>OD</strong> <span>27.02.2025</span></li>
+            <li><strong>ZAWÓD</strong> <span>DJ / FOTO / VJ</span></li>
+            <li><strong>SYGNAŁ</strong> <span>BRAK</span></li>
+            <li><strong>PASMO</strong> <span>obraz + muzyka</span></li>
+          </ul>
         </div>
-      </div>
 
-      <div class="disc-divider">── WĄTKI ──────────────────────────────</div>
+        <p><b>god.wifi</b> (właśc. Wiktoria Maciuk) – polska artystka wizualna, DJ-ka, fotografka, autorka teledysków i była zawodniczka BMX. Zaczynała od jazdy na BMX-ie, nagrywania własnych materiałów i montażu, z czasem rozwijając się w stronę obrazu, muzyki i projektów kreatywnych. Kojarzona z estetyką internetu, nocnym życiem, cyfrową nostalgią i własnym, trudnym do podrobienia stylem.</p>
+        
+        <h2>OPIS</h2>
+        <p>Według dostępnych danych god.wifi wyróżniała się silnym sygnałem w paśmie obrazu, muzyki i obecności. Najczęściej wykrywana w pobliżu klubów, backstage'y, projektów kreatywnych i osób, które „miały już iść do domu". Użytkownicy zgłaszali poprawę nastroju, wzrost energii i nagłą aktywację trybu #party. Ostatnie logi sugerują, że opuściła sieć lokalną bez pozostawienia stabilnego śladu.</p>
 
-      <!-- LOCKED STATE (before login) -->
-      <div id="disc-locked-block">
-        <div class="disc-locked">
-          <div class="lock-icon">&#x1F512;</div>
-          <div class="lock-title">KOMENTARZE UKRYTE</div>
-          <div class="lock-sub">Ta sekcja jest dostępna tylko dla zalogowanych użytkowników.</div>
-          <div class="lock-count">&#x25A0;&#x25A0;&#x25A0; ukrytych wątków (12)</div>
-          <button class="lock-btn" onclick="openLoginModal()">&#x25BA; ZALOGUJ SIĘ</button>
-          <div class="lock-hint">Nie masz konta? <a>Zarejestruj się</a> · <a>Przypomnij hasło</a></div>
-        </div>
-      </div>
+        <h2>HIPOTEZY ZAGINIĘCIA</h2>
+        <ul>
+          <li>Praca nad nową muzyką w trybie „nie przeszkadzać"</li>
+          <li>Zbyt głęboka infiltracja projektu #party</li>
+          <li>Wyjście „tylko na chwilę" na matche i brak powrotu do głównej osi czasu</li>
+          <li>Wciągnięcie przez backstage o nieznanej geometrii</li>
+          <li>Przejście w tryb nocny i utrata kompatybilności z porankami</li>
+          <li>Zalogowanie się do alternatywnej rzeczywistości po secie</li>
+          <li>Ostatni pociąg / ostatni Uber / ostatnia decyzja, która zmieniła wszystko</li>
+          <li>Tymczasowe porzucenie internetu na rzecz realnego życia (wersja najmniej prawdopodobna)</li>
+        </ul>
 
-      <!-- THREADS (after login, hidden by default) -->
-      <div id="disc-threads" style="display:none;"></div>
+        <h2>STATUS POSZUKIWAŃ</h2>
+        <p>Sygnał god.wifi bywa nadal wykrywany w niestabilnych warunkach, głównie po północy, przy odpowiednim poziomie głośności oraz podczas nieautoryzowanych aktywacji projektu #party. Odnotowano możliwe ślady obecności w stories wrzucanych bez kontekstu i krótkich odpowiedziach typu „jestem zaraz".</p>
+        <p>Eksperci zalecają dalsze wysyłanie pingów, cierpliwość oraz regularne sprawdzanie, czy przypadkiem nie wróciła dokładnie wtedy, kiedy nikt już się tego nie spodziewa.</p>
 
-    </div><!-- /tab-dyskusja -->
-
-    <!-- ══ LOGIN MODAL ══ -->
-    <div id="login-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-      <div class="login-win">
-        <div class="login-titlebar">
-          <span>Logowanie – god.wifipedia</span>
-          <button class="login-x" onclick="closeLoginModal()">&#x2715;</button>
-        </div>
-        <div class="login-body">
-          <div class="login-icon">&#x1F464;</div>
-          <div class="login-field-wrap">
-            <label class="login-label">Login:</label>
-            <input class="login-input" id="lgi-user" type="text" autocomplete="off" placeholder="wpisz login...">
-          </div>
-          <div class="login-field-wrap">
-            <label class="login-label">Hasło:</label>
-            <input class="login-input" id="lgi-pass" type="password" autocomplete="off" placeholder="········">
-          </div>
-          <div class="login-err" id="login-err" style="display:none;">&#x26A0; Nieprawidłowy login lub hasło</div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
-            <button class="lock-btn" onclick="doLogin()">&#x25BA; ZALOGUJ</button>
-            <button class="wp-btn" onclick="closeLoginModal()">ANULUJ</button>
-          </div>
-          <div class="login-hint">Nie masz konta? <a>Zarejestruj się</a></div>
-        </div>
+        <h2>LINKI ZEWNĘTRZNE</h2>
+        <ul>
+          <li><a href="https://www.instagram.com/god.wifi/" target="_blank">Instagram: @god.wifi</a></li>
+          <li><a href="https://discord.gg/4PTQRsUq9t" target="_blank">Discord: serwer god.wifi</a></li>
+        </ul>
       </div>
     </div>
 
-    <!-- ══ TAB: MEDIA ══ -->
-    <div id="tab-media" class="tab-panel" style="display:none;">
-      <h1>Media: <span>god.wifi</span></h1>
-
-      <!-- Retro player -->
-      <div class="retro-player">
-        <div class="rp-titlebar">
-          <span class="rp-dot"></span><span class="rp-dot"></span><span class="rp-dot"></span>
-          <span class="rp-title">&#x25BA; MEDIA PLAYER v1.0 &nbsp;–&nbsp; snippet</span>
+    <div class="half" id="news-side">
+      <div class="section-header">god.wifi news</div>
+      
+      <div class="news-calendar-bar">
+        <div class="date-selector">
+          <span class="date-dot active">KWIECIEŃ 2026</span>
         </div>
-        <div class="rp-screen">
-          <video id="rp-video"
-            src="media/videos/EDB0DFEA-BF19-4394-A5E5-FD20DF61EAA1.mov"
-            preload="metadata"
-            playsinline
-          ></video>
-          <div class="rp-overlay" id="rp-overlay">
-            <div class="rp-play-big" onclick="rpPlay()">&#x25BA;</div>
-          </div>
-        </div>
-        <div class="rp-caption">snippet</div>
-        <div class="rp-controls">
-          <button class="rp-btn" id="rp-playbtn" onclick="rpToggle()">&#x25BA;</button>
-          <button class="rp-btn" onclick="rpRewind()">&#x25C4;&#x25C4;</button>
-          <div class="rp-progress-wrap" onclick="rpSeek(event)">
-            <div class="rp-progress-bar" id="rp-bar"></div>
-          </div>
-          <span class="rp-time" id="rp-time">0:00 / 0:00</span>
-          <button class="rp-btn" onclick="rpMute()">&#x1F50A;</button>
-        </div>
-        <div class="rp-statusbar">
-          <span id="rp-status">GOTOWY &nbsp;|&nbsp; KLIKNIJ ▶ ABY ODTWORZYĆ</span>
-        </div>
+        <div style="font-size: 0.8rem; text-transform: uppercase;">Wybierz artykuł</div>
       </div>
-    </div><!-- /tab-media -->
 
-    <!-- ══ TAB: HISTORIA ══ -->
-    <div id="tab-historia" class="tab-panel" style="display:none;">
-      <h1>Historia edycji: <span>god.wifi</span></h1>
-
-      <div id="hist-locked" style="margin-top:16px;">
-        <div class="disc-locked">
-          <div class="lock-icon">&#x1F512;</div>
-          <div class="lock-title">HISTORIA UKRYTA</div>
-          <div class="lock-sub">Historia edycji dostępna tylko dla zalogowanych użytkowników.</div>
-          <button class="lock-btn" onclick="openHistLogin()">&#x25BA; ZALOGUJ SIĘ</button>
+      <div class="news-item" onclick="openArticle('art1')">
+        <div class="news-meta">9 KWIETNIA 2026 | REDAKCJA</div>
+        <div class="news-title">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</div>
+        <div class="news-excerpt">
+          Już dzisiaj odbędzie się gala Popkillery — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. W gronie nominowanych znalazła się również god.wifi... [Czytaj dalej]
         </div>
       </div>
 
-      <div id="hist-content" style="display:none;">
-        <div class="hist-terminal">
-          <div class="hist-topbar">
-            <span class="hist-dot"></span><span class="hist-dot"></span><span class="hist-dot"></span>
-            <span class="hist-title">&#x25BA; LOG SYSTEMU – god.wifipedia :: historia_edycji.log</span>
-          </div>
-          <div class="hist-body" id="hist-body"></div>
-        </div>
-      </div>
-    </div><!-- /tab-historia -->
+      <div class="border-line"></div>
 
-    <!-- ══ HISTORIA LOGIN MODAL ══ -->
-    <div id="hist-login-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-      <div class="login-win">
-        <div class="login-titlebar">
-          <span>Logowanie – Panel Administracyjny</span>
-          <button class="login-x" onclick="closeHistLogin()">&#x2715;</button>
-        </div>
-        <div class="login-body">
-          <div class="login-icon">&#x1F6E1;</div>
-          <div class="login-field-wrap">
-            <label class="login-label">Login:</label>
-            <input class="login-input" id="hlgi-user" type="text" autocomplete="off" placeholder="login admina...">
-          </div>
-          <div class="login-field-wrap">
-            <label class="login-label">Hasło:</label>
-            <input class="login-input" id="hlgi-pass" type="password" autocomplete="off" placeholder="········">
-          </div>
-          <div class="login-err" id="hist-login-err" style="display:none;">&#x26A0; Brak dostępu</div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
-            <button class="lock-btn" onclick="doHistLogin()">&#x25BA; ZALOGUJ</button>
-            <button class="wp-btn" onclick="closeHistLogin()">ANULUJ</button>
-          </div>
+      <div class="news-item" onclick="openArticle('art2')">
+        <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
+        <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
+        <div class="news-excerpt">
+          Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]
         </div>
       </div>
+
     </div>
+  </div>
 
-  </div><!-- /wp -->
-</div><!-- /wiki -->
+  <div id="article-modal">
+    <button class="modal-close" onclick="closeArticle()">X ZAMKNIJ</button>
+    <div class="modal-content">
+      <h1 id="modal-title"></h1>
+      <div id="modal-meta"></div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
 
 <script>
-/* ═══════ TIMER ═══════ */
-// Use Warsaw time (UTC+1 winter / UTC+2 summer)
-// 27.02.2025 was winter time (UTC+1), so midnight Warsaw = 23:00 UTC prev day
-const START = new Date('2025-02-26T23:00:00Z');
-function pad(n, w=2){ return String(n).padStart(w,'0'); }
+  /* ═════════ LOGIKA LICZNIKA ═════════ */
+  const START = new Date('2025-02-26T23:00:00Z');
+  
+  function pad(n, w=2){ return String(n).padStart(w,'0'); }
 
-function tick(){
-  const diff = Date.now() - START;
-  const ts = Math.floor(diff/1000);
-  const d = Math.floor(ts/86400);
-  const h = Math.floor((ts%86400)/3600);
-  const m = Math.floor((ts%3600)/60);
-  const s = ts%60;
-  document.getElementById('d').textContent = pad(d,3);
-  document.getElementById('h').textContent = pad(h);
-  document.getElementById('m').textContent = pad(m);
-  document.getElementById('s').textContent = pad(s);
-  document.getElementById('wiki-days').textContent = d;
-  document.getElementById('wiki-days2').textContent = d;
-}
-tick(); setInterval(tick,1000);
-
-/* ═══════ NOISE ═══════ */
-(function noiseLoop(){
-  const c = document.getElementById('noise');
-  const ctx = c.getContext('2d');
-  function resize(){
-    c.width  = window.innerWidth;
-    c.height = window.innerHeight;
+  function tick(){
+    const diff = Date.now() - START;
+    const ts = Math.floor(diff/1000);
+    const d = Math.floor(ts/86400);
+    const h = Math.floor((ts%86400)/3600);
+    const m = Math.floor((ts%3600)/60);
+    const s = ts%60;
+    
+    document.getElementById('d').textContent = pad(d,3);
+    document.getElementById('h').textContent = pad(h);
+    document.getElementById('m').textContent = pad(m);
+    document.getElementById('s').textContent = pad(s);
   }
-  resize();
-  window.addEventListener('resize', resize);
-  function frame(){
-    const w=c.width, h=c.height;
-    const img = ctx.createImageData(w,h);
-    const d = img.data;
-    for(let i=0;i<d.length;i+=4){
-      const v = Math.random()*255|0;
-      d[i]=v; d[i+1]=v; d[i+2]=v; d[i+3]=18;
+  
+  tick(); 
+  setInterval(tick, 1000);
+
+  /* ═════════ PRZEJŚCIE DALEJ ═════════ */
+  function showSplitScreen() {
+    const intro = document.getElementById('intro-screen');
+    const split = document.getElementById('split-screen');
+
+    intro.style.opacity = '0';
+    intro.style.transform = 'scale(0.98)';
+    intro.style.pointerEvents = 'none';
+
+    setTimeout(() => {
+      split.classList.add('active');
+    }, 400);
+  }
+
+  /* ═════════ BAZA ARTYKUŁÓW ═════════ */
+  const articlesData = {
+    art1: {
+      title: "Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki",
+      meta: "REDAKCJA | 9 KWIETNIA 2026",
+      body: `
+        <p>Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
+        <p>W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom. To właśnie ta wyrazistość i konsekwencja w budowaniu własnego języka artystycznego sprawiają, że jej nazwisko coraz częściej pojawia się w kontekście najciekawszych postaci młodego pokolenia.</p>
+        <p>Twórczość god.wifi wpisuje się w nurt artystów, którzy stawiają na autentyczność, atmosferę i silną tożsamość artystyczną, a nie wyłącznie na chwilowy trend. Dzięki temu zyskuje ona coraz większe zainteresowanie odbiorców poszukujących muzyki świeżej, świadomej i estetycznie dopracowanej.</p>
+        <p>Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś, <b>9 kwietnia</b>, za pośrednictwem oficjalnego kanału <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada się jako jedno z ważniejszych wydarzeń dnia dla wszystkich obserwujących rozwój polskiej sceny muzycznej i artystów, którzy realnie kształtują jej współczesny kierunek.</p>
+        <p>Dla god.wifi obecność wśród wyróżnionych nazwisk to kolejny istotny moment w rozwoju kariery — a dla słuchaczy i obserwatorów sceny, sygnał, że warto uważnie śledzić jej dalsze artystyczne ruchy.</p>
+      `
+    },
+    art2: {
+      title: "Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji",
+      meta: "REDAKCJA | 10 KWIETNIA 2026",
+      body: `
+        <p>Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Choć nagrody trafiły do wielu artystów, trudno nie odnieść wrażenia, że narrację całego wydarzenia zdominowały dwie postacie: <b>Żabson</b> oraz <b>GOD.WIFI</b>.</p>
+        
+        <h2>Żabson – lider, trendsetter i showman</h2>
+        <p>Żabson bezsprzecznie był jedną z najważniejszych postaci gali. Zdobył tytuł <b>Rapera Roku</b> (publiczność), <b>Trendsettera Roku</b> oraz nagrodę za <b>Album Roku</b> publiczności („Hollywood Smile”). Jego pozycja na scenie wydaje się dziś niepodważalna.</p>
+        <p>Jednak nie tylko statuetki zrobiły wrażenie. Krótki koncert Żabsona wraz z ekipą był jednym z najmocniejszych momentów całego wydarzenia. Artysta wciągnął publiczność w imprezowy klimat, skutecznie „rozruszał” całą salę i pokazał, że sceniczna energia to jego ogromny atut.</p>
+        
+        <h2>„Fakty” – kulisy, które wyszły na jaw</h2>
+        <p>Jednym z najbardziej komentowanych punktów gali była nagroda za <b>Kooperację Roku</b> dla utworu „Fakty” (Żabson x Oki x Pezet x GOD.WIFI x Młody West). Wokół tego numeru pojawiło się sporo spekulacji – i, co ciekawe, część z nich została później potwierdzona.</p>
+        <p>Z nieoficjalnych informacji krążących wcześniej w środowisku wynikało, że utwór pierwotnie był w całości nagrany przez GOD.WIFI. Według tych doniesień, Żabson po usłyszeniu numeru miał uznać, że jest na tyle mocny, że chce włączyć go do swojego projektu – a następnie dograł się do niego wraz z zaproszonymi gośćmi.</p>
+        <p>Podczas gali Żabson odniósł się do tej sytuacji, w praktyce potwierdzając krążące wcześniej informacje. To rzuca zupełnie inne światło na odbiór „Faktów” i jasno wskazuje, jak duży był wkład GOD.WIFI w powstanie tego utworu.</p>
+        
+        <h2>GOD.WIFI – niedosyt nagród, duży potencjał</h2>
+        <p>Warto to powiedzieć wprost: gratulacje dla GOD.WIFI za nominacje i nagrodę przy „Faktach”. Nawet jeśli formalnie to kooperacja, wiele wskazuje na to, że jej rola była fundamentem tego numeru.</p>
+        <p>Nie dziwi więc, że wśród fanów pojawiło się poczucie niedosytu. Część społeczności uważa, że artystka została pominięta w innych kategoriach i nie otrzymała pełnego uznania, na jakie zasłużyła.</p>
+        
+        <h2>Co dalej?</h2>
+        <p>Z naszych informacji wynika, że GOD.WIFI intensywnie pracuje nad nową muzyką. Trwają przygotowania do kolejnych singli oraz albumu, a poziom materiału ma być bardzo wysoki.</p>
+        <p>Jeśli te zapowiedzi się potwierdzą, przyszłoroczna gala może wyglądać zupełnie inaczej. Wszystko wskazuje na to, że artystka dopiero buduje swoją pozycję i w najbliższym czasie może zrobić jeszcze większy ruch.</p>
+        
+        <div class="nrd-quote">„Były problemy, szczególnie techniczne, ale ogólnie gala była do przyjęcia – mogło być lepiej, ale nie było źle.” – relacjonuje nasz korespondent.</div>
+      `
     }
-    ctx.putImageData(img,0,0);
-    requestAnimationFrame(frame);
-  }
-  frame();
-})();
+  };
 
-/* ═══════ WINDOWS 95 IE-STYLE PIXEL GLOBE ═══════ */
-(function drawIcon(){
-  const c = document.getElementById('ie-icon');
-  const cx = c.getContext('2d');
-  cx.imageSmoothingEnabled = false;
-  const SZ = 64;
-  // palette
-  const T = 'transparent';
-  const W = '#ffffff';
-  const B = '#000080'; // navy blue
-  const BL= '#0000ff';
-  const BM= '#1414c8';
-  const GD= '#00c000'; // green dark
-  const GL= '#00ff00'; // green light
-  const CY= '#00ffff'; // cyan highlight
-  const GR= '#808080';
-  const LG= '#c0c0c0';
-  const RD= '#ff0000'; // red (magnifier handle)
-  const YL= '#ffff00';
-  const WH= '#e0e0e0';
+  /* ═════════ LOGIKA MODALA ═════════ */
+  const modal = document.getElementById('article-modal');
+  const mTitle = document.getElementById('modal-title');
+  const mMeta = document.getElementById('modal-meta');
+  const mBody = document.getElementById('modal-body');
 
-  // pixel art: 32×32 grid scaled ×2
-  // Globe (left 3/4) + magnifier (right-bottom)
-  const P = [
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,GR,LG,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,T,T,GR,LG,W, W, CY,CY,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,T,GR,W, CY,CY,B, BL,BL,B, CY,CY,W, GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,GR,W, CY,B, BL,BL,GL,GL,BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,LG,W, B, BL,GL,GD,GD,GD,GD,GL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,W, CY,BL,GL,GD,GD,GD,GD,GD,GD,GL,BL,CY,W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,W, CY,BL,GL,GD,GD,GD,W, GD,GD,GL,BL,CY,W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,W, B, BL,GD,GD,W, GD,GD,GD,BL,BL,B, B, W, T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,LG,W, B, BL,BL,BL,BL,BL,BL,B, B, W, LG,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,GR,W, CY,B, B, B, B, B, B, CY,W, GR,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,GR,W, CY,CY,CY,CY,CY,CY,W, GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,T,T,GR,W, W, W, W, W, W, LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,T,T,T,T,GR,GR,LG,LG,GR,T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    // magnifier: 16 rows × 32 cols (starting row 16)
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, W, LG,GR,T, T, T, T, T, T, T, T, T, T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, CY,CY,W, LG,GR,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,CY,B, B, CY,CY,W, GR,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,B, B, BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,LG,W, B, BL,BL,BL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,LG,W, B, BL,BL,BL,BL,B, W, LG,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,B, B, BL,BL,B, CY,W, GR,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,W, CY,CY,B, B, CY,W, GR,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,LG,W, CY,W, LG,GR,GR,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,GR,LG,GR,GR,T, GR,GR,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,T, T, GR,GR,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,GR,T, T, GR,GR,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,RD,T, T, RD,GR,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,RD,T, T, RD,RD,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-  ];
-
-  const px = SZ/32;
-  for(let r=0;r<32;r++){
-    for(let col=0;col<32;col++){
-      const color = P[r*32+col];
-      if(color && color !== T){
-        cx.fillStyle = color;
-        cx.fillRect(col*px, r*px, px, px);
-      }
-    }
-  }
-})();
-
-/* ═══════ LOGIN MODAL ═══════ */
-const LOGIN = 'WhereAreYou';
-const PASS  = 'Gd7#mKx2';  // 8-char hidden password
-
-function openLoginModal(){
-  document.getElementById('login-modal').classList.add('open');
-  document.getElementById('login-err').style.display='none';
-  // auto-type login char by char
-  const inp = document.getElementById('lgi-user');
-  inp.value = '';
-  let i = 0;
-  const typeLogin = setInterval(()=>{
-    if(i < LOGIN.length){ inp.value += LOGIN[i++]; }
-    else clearInterval(typeLogin);
-  }, 80);
-  // fill password with dots after login types
-  setTimeout(()=>{
-    const pinp = document.getElementById('lgi-pass');
-    pinp.value = '';
-    let j = 0;
-    const typePass = setInterval(()=>{
-      if(j < PASS.length){ pinp.value += PASS[j++]; j; }
-      else clearInterval(typePass);
-    }, 90);
-  }, LOGIN.length * 80 + 200);
-}
-
-function closeLoginModal(){
-  document.getElementById('login-modal').classList.remove('open');
-}
-
-function doLogin(){
-  const u = document.getElementById('lgi-user').value;
-  const p = document.getElementById('lgi-pass').value;
-  const err = document.getElementById('login-err');
-  if(u === LOGIN && p === PASS){
-    closeLoginModal();
-    document.getElementById('disc-username').textContent = LOGIN;
-    showThreads();
-  } else {
-    err.style.display='block';
-    err.textContent='⚠ Nieprawidłowy login lub hasło';
-  }
-}
-
-/* ═══════ THREADS DATA ═══════ */
-function randVotes(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-
-const THREAD_DATA = [
-  {
-    id:'t1', deleted:true,
-    title:'[usunięty]', user:'[usunięty]', date:'2025-03-12 · 14:22',
-    body:'', up:0, down:0
-  },
-  {
-    id:'t2', deleted:false,
-    title:'Hej słyszałem że mają być czapki ale jeszcze ich nie widziałem? ktoś coś wie?',
-    user:'Gumis', date:'2026-03-18 · 09:47',
-    body:'Serio, słyszałem ze gdzieś miały się pojawić jakieś czapki z logo. Ktoś widział? Dawajcie znać bo bardzo chcę jedną.',
-    up: randVotes(28,45), down: randVotes(2,6)
-  },
-  {
-    id:'t3', deleted:true,
-    title:'[usunięty przez administratora]', user:'[usunięty]', date:'2025-03-21 · 23:11',
-    body:'', up:0, down:0
-  },
-  {
-    id:'t4', deleted:false,
-    title:'Hej, dostaliście plakat? Widzę że idzie coś do mnie pocztą ale nie wiem czy to to?',
-    user:'XVsia', date:'2025-11-29 · 16:05',
-    body:'Sprawdzam śledzenie paczki i coś jedzie ale nadawca nie wiem kto 😅 Macie jakieś info? Adres był z Warszawy chyba.',
-    up: randVotes(19,38), down: randVotes(1,5)
-  },
-  {
-    id:'t5', deleted:false,
-    title:'Jak się czujecie z tym że zaraz rocznica płyty FREE WIF? Myślicie że będzie jakiś special?',
-    user:'Zanzir', date:'2025-02-01 · 02:33',
-    body:'Serio minął już rok? Czas leci. Ta płyta żyje do dziś w moich playlistach. Mam nadzieję na coś specjalnego, może jakiś set, remastering, cokolwiek. Ktoś coś słyszał?',
-    up: randVotes(52,74), down: randVotes(3,8)
-  },
-  {
-    id:'t6', deleted:true,
-    title:'[usunięty przez administratora]', user:'[usunięty]', date:'2025-04-01 · 11:59',
-    body:'', up:0, down:0
-  },
-  {
-    id:'t7', deleted:false,
-    title:'Widzieliście że powstaje jakaś gra?',
-    user:'[ukryty użytkownik]', date:'2026-04-02 · 03:17',
-    body:'Podobno jeszcze jest w alphie ale udało mi się do niej dokopać... co o niej myślicie? Ciekawe kiedy wyjdzie całość. Zostawiam tu dla chętnych: <a href="https://ilovegodwifi.pl/" target="_blank" style="color:#0000cc;text-decoration:underline;">#NEWGAMEEVENT</a>',
-    up: randVotes(38,61), down: randVotes(2,5),
-    hiddenUser: true
-  },
-];
-
-const voteState = {}; // track user votes per thread
-
-function showThreads(){
-  document.getElementById('disc-locked-block').style.display='none';
-  const container = document.getElementById('disc-threads');
-  container.style.display='block';
-  container.innerHTML = THREAD_DATA.map(t => buildThread(t)).join('');
-}
-
-function buildThread(t){
-  if(t.deleted){
-    return `<div class="thread deleted">
-      <div class="thread-header">
-        <span class="thread-title">${t.title}</span>
-        <span class="thread-meta">${t.date}</span>
-      </div>
-      <div class="thread-deleted-msg">&#x26A0; Ten wątek został usunięty przez administratora.</div>
-    </div>`;
-  }
-  const userHtml = t.hiddenUser
-    ? `<span class="thread-user hidden-user">&#x25A0;&#x25A0;&#x25A0; [ukryty użytkownik]</span>`
-    : `<span class="thread-user">${t.user}</span>`;
-  return `<div class="thread${t.hiddenUser?' thread-mystery':''}" id="thread-${t.id}">
-    <div class="thread-header">
-      <span class="thread-title">${t.title}</span>
-      <span class="thread-meta">autor: ${userHtml} &nbsp;|&nbsp; ${t.date}</span>
-    </div>
-    <div class="thread-body">${t.body}</div>
-    <div class="thread-votes">
-      <button class="vote-btn" id="up-${t.id}" onclick="vote('${t.id}','up')">&#x25B2; <span id="upc-${t.id}">${t.up}</span></button>
-      <button class="vote-btn" id="dn-${t.id}" onclick="vote('${t.id}','down')">&#x25BC; <span id="dnc-${t.id}">${t.down}</span></button>
-      <span class="vote-count" id="net-${t.id}" style="margin-left:4px;color:${(t.up-t.down)>=0?'#006600':'#880000'}">
-        ${(t.up-t.down)>=0?'+':''}${t.up-t.down}
-      </span>
-    </div>
-  </div>`;
-}
-
-function vote(id, dir){
-  const t = THREAD_DATA.find(x=>x.id===id);
-  if(!t) return;
-  const prev = voteState[id];
-  if(prev === dir){
-    // undo vote
-    if(dir==='up') t.up--;
-    else t.down--;
-    voteState[id] = null;
-  } else {
-    // undo previous if any
-    if(prev==='up') t.up--;
-    if(prev==='down') t.down--;
-    // apply new
-    if(dir==='up') t.up++;
-    else t.down++;
-    voteState[id] = dir;
-  }
-  // update DOM
-  document.getElementById('upc-'+id).textContent = t.up;
-  document.getElementById('dnc-'+id).textContent = t.down;
-  const net = t.up - t.down;
-  const netEl = document.getElementById('net-'+id);
-  netEl.textContent = (net>=0?'+':'')+net;
-  netEl.style.color = net>=0 ? '#006600' : '#880000';
-  document.getElementById('up-'+id).className = 'vote-btn' + (voteState[id]==='up'?' voted-up':'');
-  document.getElementById('dn-'+id).className = 'vote-btn' + (voteState[id]==='down'?' voted-down':'');
-}
-
-/* ═══════ WIKI ═══════ */
-function openWiki(){ document.getElementById('wiki').classList.add('open'); }
-function closeWiki(){ document.getElementById('wiki').classList.remove('open'); }
-const TABS = ['artykul','dyskusja','media','historia'];
-function switchTab(name){
-  TABS.forEach(t => {
-    const panel = document.getElementById('tab-'+t);
-    if(panel) panel.style.display = (t===name) ? 'block' : 'none';
-  });
-  document.querySelectorAll('.wp-tab').forEach((el,i) => {
-    el.classList.toggle('active', TABS[i]===name);
-  });
-}
-
-/* ═══════ VIDEO PLAYER ═══════ */
-const vid = document.getElementById('rp-video');
-const overlay = document.getElementById('rp-overlay');
-const bar = document.getElementById('rp-bar');
-const timeEl = document.getElementById('rp-time');
-const playBtn = document.getElementById('rp-playbtn');
-const statusEl = document.getElementById('rp-status');
-
-function fmtTime(s){
-  const m=Math.floor(s/60), sec=Math.floor(s%60);
-  return m+':'+(sec<10?'0':'')+sec;
-}
-
-function rpPlay(){
-  vid.play();
-  overlay.classList.add('hidden');
-  statusEl.textContent = 'ODTWARZANIE...';
-}
-
-function rpToggle(){
-  if(vid.paused){ vid.play(); overlay.classList.add('hidden'); playBtn.textContent='⏸'; statusEl.textContent='ODTWARZANIE...'; }
-  else { vid.pause(); playBtn.textContent='▶'; statusEl.textContent='PAUZA'; }
-}
-
-function rpRewind(){
-  vid.currentTime = Math.max(0, vid.currentTime - 10);
-}
-
-function rpMute(){
-  vid.muted = !vid.muted;
-  document.querySelectorAll('.rp-btn')[3].textContent = vid.muted ? '🔇' : '🔊';
-}
-
-function rpSeek(e){
-  const rect = e.currentTarget.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  vid.currentTime = pct * (vid.duration || 0);
-}
-
-vid.addEventListener('timeupdate', () => {
-  const pct = vid.duration ? (vid.currentTime/vid.duration)*100 : 0;
-  bar.style.width = pct+'%';
-  timeEl.textContent = fmtTime(vid.currentTime)+' / '+fmtTime(vid.duration||0);
-});
-
-vid.addEventListener('ended', () => {
-  overlay.classList.remove('hidden');
-  playBtn.textContent='▶';
-  statusEl.textContent='KONIEC · KLIKNIJ ▶ ABY ODTWORZYĆ PONOWNIE';
-});
-
-vid.addEventListener('error', () => {
-  statusEl.textContent='BŁĄD: PLIK NIEDOSTĘPNY · SPRAWDŹ ŚCIEŻKĘ media/videos/';
-});
-
-vid.addEventListener('waiting', () => { statusEl.textContent='ŁADOWANIE BUFORA...'; });
-vid.addEventListener('playing', () => { statusEl.textContent='ODTWARZANIE...'; });
-
-/* ═══════ WIN95 PIXEL CURSOR ═══════ */
-(function(){
-  const cur = document.getElementById('win95-cursor');
-  const cx = cur.getContext('2d');
-  cx.imageSmoothingEnabled = false;
-
-  // Win95 arrow cursor pixel map (20x20)
-  // B=black, W=white, T=transparent
-  const B='#000000', W='#ffffff', T=null;
-  // Classic Win95 arrow: points top-left, black outline, white interior
-  const A = [
-    B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,W,W,W,B,B,B,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,W,B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,W,B,T,B,W,W,B,T,T,T,T,T,T,T,T,T,T,T,
-    B,W,B,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,T,T,
-    B,B,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,T,
-    B,T,T,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,B,W,W,B,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,B,W,B,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,B,B,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-  ];
-
-  // pointer/hand cursor for clickable elements (Win95 hand)
-  const H = [
-    T,T,T,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,B,B,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,B,W,B,B,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,B,W,B,W,B,B,T,T,T,T,T,T,T,T,T,T,
-    B,T,B,W,W,W,W,W,B,W,B,T,T,T,T,T,T,T,T,T,
-    B,B,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,B,W,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,B,W,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,B,W,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,B,W,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,B,W,W,W,W,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,B,B,B,B,B,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-  ];
-
-  function drawCursor(map){
-    cx.clearRect(0,0,20,20);
-    for(let i=0;i<map.length;i++){
-      const color = map[i];
-      if(!color) continue;
-      const row = Math.floor(i/20);
-      const col = i % 20;
-      cx.fillStyle = color;
-      cx.fillRect(col, row, 1, 1);
+  function openArticle(id) {
+    const data = articlesData[id];
+    if(data) {
+      mTitle.innerHTML = data.title;
+      mMeta.innerHTML = data.meta;
+      mBody.innerHTML = data.body;
+      
+      modal.classList.add('active');
+      // Zapobiega scrollowaniu tła, gdy modal jest otwarty
+      document.body.style.overflow = 'hidden';
     }
   }
 
-  drawCursor(A);
-
-  let mx=0, my=0, isPointer=false;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    cur.style.transform = `translate(${mx}px,${my}px)`;
-
-    // Check if hovered element wants pointer
-    const el = document.elementFromPoint(mx, my);
-    const wantsPointer = el && (
-      el.tagName==='A' || el.tagName==='BUTTON' ||
-      el.tagName==='INPUT' || el.tagName==='TEXTAREA' ||
-      el.tagName==='SELECT' || el.tagName==='LABEL' ||
-      el.closest('a, button, .wiki-link, .lock-btn, .wp-btn, .vote-btn, .rp-btn, .node, .wp-tab, .login-x, #wiki-close, #news-close')
-    );
-
-    if(wantsPointer !== isPointer){
-      isPointer = wantsPointer;
-      drawCursor(isPointer ? H : A);
-    }
-  });
-
-  document.addEventListener('mousedown', () => {
-    cur.style.transform = `translate(${mx+1}px,${my+1}px)`;
-  });
-  document.addEventListener('mouseup', () => {
-    cur.style.transform = `translate(${mx}px,${my}px)`;
-  });
-
-  // Hide when leaving window
-  document.addEventListener('mouseleave', () => { cur.style.opacity='0'; });
-  document.addEventListener('mouseenter', () => { cur.style.opacity='1'; });
-})();
-
-
-/* ═══════ HISTORIA LOGIN ═══════ */
-const HIST_LOGIN = 'god.wifi';
-const HIST_PASS  = 'Kiedypłyta';
-
-function openHistLogin(){
-  document.getElementById('hist-login-modal').style.display='flex';
-  document.getElementById('hist-login-err').style.display='none';
-  document.getElementById('hlgi-user').value='';
-  document.getElementById('hlgi-pass').value='';
-  setTimeout(()=>document.getElementById('hlgi-user').focus(), 50);
-}
-function closeHistLogin(){
-  document.getElementById('hist-login-modal').style.display='none';
-}
-function doHistLogin(){
-  const u = document.getElementById('hlgi-user').value.trim();
-  const p = document.getElementById('hlgi-pass').value;
-  const err = document.getElementById('hist-login-err');
-  if(u === HIST_LOGIN && p === HIST_PASS){
-    closeHistLogin();
-    showHistoria();
-  } else {
-    err.style.display='block';
-    err.textContent='⚠ Brak dostępu. Dane nieprawidłowe.';
+  function closeArticle() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
   }
-}
-// allow Enter key in hist login
-document.addEventListener('keydown', e => {
-  if(e.key==='Enter' && document.getElementById('hist-login-modal').style.display==='flex'){
-    doHistLogin();
-  }
-});
-
-/* ═══════ HISTORIA LOG ═══════ */
-const HIST_ENTRIES = [
-  { cls:'sys',   stamp:'2025-02-27 · 00:00:01', text:'[SYSTEM] Artykuł "god.wifi" utworzony. Autor: god.wifi_bot.' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'edit',  stamp:'2025-02-27 · 11:34:22', text:'[EDYCJA] ➔ Rolka: Drobna korekta sekcji "Opis" – literówki, formatowanie.' },
-  { cls:'req',   stamp:'2025-02-28 · 09:12:04', text:'[PROŚBA] ➔ elmo2137: Prośba o aktualizację sekcji "Linki" – brakuje nowego linka do Soundcloud.' },
-  { cls:'edit',  stamp:'2025-03-01 · 14:55:37', text:'[EDYCJA] ➔ Rolka: Rozszerzona sekcja "Hipotezy zaginięcia" o 3 nowe punkty.' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'del',   stamp:'2025-03-04 · 02:17:49', text:'[USUNIETO] ➔ ADMIN: Usunięto komentarz od użytkownika anon_88 w dyskusji: "macie tutaj leak nowego utworu i okładki" [naruszenie §4 regulaminu – nieuprawnione rozpowszechnianie]' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'req',   stamp:'2025-03-07 · 18:03:11', text:'[PROŚBA] ➔ elmo2137: Prośba o dodanie sekcji "Dyskografia" – brak wzmianki o EP z 2023.' },
-  { cls:'edit',  stamp:'2025-03-08 · 20:44:00', text:'[EDYCJA] ➔ nocny_tryb404: Aktualizacja daty ostatniego sygnału w sekcji "Status poszukiwań".' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'del',   stamp:'2025-03-12 · 23:41:05', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji od nieznany_user_441: "Hej, dostałem informację że premiera singla będzie [**/**/****], nie mogę się doczekać." [naruszenie §7 – publikacja niepotwierdzonych dat wydania]' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'edit',  stamp:'2025-03-15 · 10:22:18', text:'[EDYCJA] ➔ Rolka: Poprawki gramatyczne w sekcji głównej i infoboxie.' },
-  { cls:'req',   stamp:'2025-03-19 · 16:07:55', text:'[PROŚBA] ➔ XVsia: Prośba o dodanie zdjęcia do artykułu – proponuje zdjęcie z ostatniego setu.' },
-  { cls:'censor',stamp:'2025-03-21 · 23:11:33', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji [treść ukryta przez system]. Autor: konto zawieszone.' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'req',   stamp:'2025-03-26 · 08:55:02', text:'[PROŚBA] ➔ elmo2137: Prośba o weryfikację sekcji "Linki zewnętrzne" – link do Discord wygasł.' },
-  { cls:'edit',  stamp:'2025-03-28 · 19:30:44', text:'[EDYCJA] ➔ Rolka: Aktualizacja linku Discord w sekcji "Linki zewnętrzne".' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'del',   stamp:'2025-04-01 · 11:59:02', text:'[USUNIETO] ➔ ADMIN: Usunięto wątek w dyskusji od użytkownika [konto skasowane]: treść zawierała niezatwierdzone materiały promocyjne. [§4 + §9]' },
-  { cls:'sys',   stamp:'2025-04-02 · 03:18:11', text:'[SYSTEM] Wykryto nowy wątek od [ukryty użytkownik] – flagowanie automatyczne. Status: widoczny (brak naruszenia).' },
-  { cls:'sep',   stamp:'',                        text:'────────────────────────────────────────────────────────────' },
-  { cls:'sys',   stamp:'2025-04-06 · 00:00:00', text:'[SYSTEM] Licznik aktywny. Dni bez sygnału: ' + (()=>{const d=Math.floor((Date.now()-new Date('2025-02-26T23:00:00Z'))/86400000);return d;})() + '. Ostatnia aktywność administratora: właśnie teraz.' },
-];
-
-function showHistoria(){
-  document.getElementById('hist-locked').style.display='none';
-  document.getElementById('hist-content').style.display='block';
-  const body = document.getElementById('hist-body');
-  body.innerHTML='';
-  // Type out lines one by one with delay
-  let delay = 0;
-  HIST_ENTRIES.forEach((entry, i) => {
-    setTimeout(()=>{
-      const line = document.createElement('span');
-      line.className = 'hist-line ' + entry.cls;
-      if(entry.stamp){
-        line.innerHTML = '<span class="hist-stamp">[' + entry.stamp + ']</span> ' + entry.text;
-      } else {
-        line.textContent = entry.text;
-      }
-      // add blinking cursor to last line
-      if(i === HIST_ENTRIES.length - 1){
-        line.classList.add('hist-cursor-blink');
-      }
-      body.appendChild(line);
-      // auto-scroll
-      body.scrollTop = body.scrollHeight;
-    }, delay);
-    delay += entry.cls === 'sep' ? 30 : 80;
-  });
-}
-
-/* ═══════ NEWS OPEN/CLOSE ═══════ */
-function openNews(){
-  document.getElementById('news-overlay').style.display='block';
-  showArticle(1);
-  drawAds();
-}
-function closeNews(){
-  document.getElementById('news-overlay').style.display='none';
-  stopConfetti();
-}
-
-/* ═══════ NEWS ICON (Win95 newspaper) ═══════ */
-(function drawNewsIcon(){
-  const c = document.getElementById('news-icon');
-  if(!c) return;
-  const cx = c.getContext('2d');
-  cx.imageSmoothingEnabled = false;
-  const SZ = 64;
-  const B='#000000', W='#ffffff', G='#808080', LG='#c0c0c0', T=null,
-        N='#f0ede0', R='#cc0000';
-  const P = [
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,N,B,T,T,T,T,T,T,
-    T,T,B,N,R,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,R,N,B,T,T,T,T,T,T,
-    T,T,B,N,R,W,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,W,R,N,B,T,T,T,T,T,T,
-    T,T,B,N,R,W,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,W,R,N,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,B,N,N,B,B,B,B,B,B,B,N,N,B,B,B,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,B,B,B,B,B,N,N,B,B,B,B,B,B,B,B,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,N,N,B,B,B,B,B,B,B,N,N,B,B,B,B,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,T,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,N,N,B,B,T,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,N,B,T,T,T,T,T,
-    T,T,B,N,B,B,B,B,B,N,B,B,B,B,B,B,B,B,B,N,B,B,B,N,B,N,N,B,T,T,T,T,
-    T,T,B,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,B,N,N,B,T,T,T,T,
-    T,T,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,T,N,B,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,T,N,B,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,N,N,B,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,B,B,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-    T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,
-  ];
-  const px = SZ/32;
-  for(let r=0;r<32;r++){
-    for(let col=0;col<32;col++){
-      const color = P[r*32+col];
-      if(color){ cx.fillStyle=color; cx.fillRect(col*px, r*px, px, px); }
-    }
-  }
-})();
-
-/* ═══════ PIXEL ADS ═══════ */
-function drawAds(){
-  // ── AD 1: Vinyl promo (120×240) ──
-  var el1 = document.getElementById('ad1');
-  if(el1){
-    var x = el1.getContext('2d');
-    x.imageSmoothingEnabled = false;
-    // bg + stars
-    x.fillStyle='#080010'; x.fillRect(0,0,120,240);
-    for(var i=0;i<55;i++){
-      x.fillStyle='rgba(255,255,255,'+(0.2+Math.random()*0.7)+')';
-      x.fillRect(Math.random()*118|0, Math.random()*238|0, 1, 1);
-    }
-    // header bar
-    x.fillStyle='#cc00cc'; x.fillRect(0,0,120,18);
-    x.fillStyle='#ff66ff'; x.fillRect(0,0,120,2);
-    x.fillStyle='#ffffff'; x.textAlign='center';
-    x.font='bold 6px monospace'; x.fillText('⚡ REKLAMA ⚡', 60, 12);
-    // title
-    x.fillStyle='#ff44ff';
-    x.font='bold 11px monospace'; x.fillText('NOWY', 60, 48);
-    x.fillText('SINGIEL', 60, 62);
-    x.fillStyle='#ffff00'; x.font='bold 8px monospace'; x.fillText('god.wifi', 60, 80);
-    // vinyl record
-    x.beginPath(); x.arc(60,130,28,0,Math.PI*2); x.fillStyle='#111'; x.fill();
-    x.beginPath(); x.arc(60,130,28,0,Math.PI*2); x.strokeStyle='#333'; x.lineWidth=2; x.stroke();
-    for(var r=14;r<=26;r+=4){
-      x.beginPath(); x.arc(60,130,r,0,Math.PI*2); x.strokeStyle='#2a2a2a'; x.lineWidth=1; x.stroke();
-    }
-    x.beginPath(); x.arc(60,130,11,0,Math.PI*2); x.fillStyle='#9900cc'; x.fill();
-    x.beginPath(); x.arc(60,130,4,0,Math.PI*2); x.fillStyle='#111'; x.fill();
-    x.fillStyle='#cc88ff'; x.font='5px monospace'; x.textAlign='center';
-    x.fillText('FREE', 60, 128); x.fillText('WIF', 60, 136);
-    // bottom
-    x.fillStyle='#888'; x.font='5px monospace';
-    x.fillText('bandcamp', 60, 192); x.fillText('/ soundcloud', 60, 204);
-    // border
-    x.strokeStyle='#cc00cc'; x.lineWidth=2; x.strokeRect(1,1,118,238);
-  }
-
-  // ── AD 2: Concert poster (120×240) ──
-  var el2 = document.getElementById('ad2');
-  if(el2){
-    var y = el2.getContext('2d');
-    y.imageSmoothingEnabled = false;
-    y.fillStyle='#001400'; y.fillRect(0,0,120,240);
-    // scanlines
-    for(var s=0;s<240;s+=4){ y.fillStyle='rgba(0,0,0,0.25)'; y.fillRect(0,s,120,2); }
-    // header
-    y.fillStyle='#004400'; y.fillRect(0,0,120,22);
-    y.fillStyle='#00ff44'; y.font='bold 7px monospace'; y.textAlign='center';
-    y.fillText('[ EVENT ]', 60, 14);
-    y.fillStyle='#00ff44'; y.font='bold 9px monospace';
-    y.fillText('9.04.2026', 60, 46);
-    y.fillStyle='#00cc33'; y.font='6px monospace';
-    y.fillText('POPKILLERY', 60, 60);
-    y.fillText('GALA', 60, 72);
-    // stage
-    y.fillStyle='#003300'; y.fillRect(20,100,80,50);
-    y.fillStyle='#004400'; y.fillRect(22,102,76,46);
-    // spotlights
-    y.fillStyle='rgba(255,255,80,0.12)';
-    y.beginPath(); y.moveTo(35,100); y.lineTo(25,102); y.lineTo(45,102); y.closePath(); y.fill();
-    y.fillStyle='rgba(80,180,255,0.12)';
-    y.beginPath(); y.moveTo(85,100); y.lineTo(75,102); y.lineTo(95,102); y.closePath(); y.fill();
-    // figure
-    y.fillStyle='#00ff44';
-    y.fillRect(56,110,8,6); y.fillRect(54,116,12,16);
-    y.fillRect(52,132,5,12); y.fillRect(63,132,5,12);
-    y.fillRect(44,118,10,4); y.fillRect(66,118,10,4);
-    y.fillStyle='#aaa'; y.fillRect(60,108,2,7);
-    // footer
-    y.fillStyle='#00aa22'; y.font='5px monospace'; y.textAlign='center';
-    y.fillText('god.wifi', 60, 175);
-    y.fillStyle='#005500'; y.font='5px monospace';
-    y.fillText('w nominacjach', 60, 188);
-    y.fillStyle='#00aa22'; y.fillText('▶ youtube.com', 60, 210);
-    y.fillText('/popkiller', 60, 222);
-    y.strokeStyle='#00ff44'; y.lineWidth=2; y.strokeRect(1,1,118,238);
-  }
-
-  // ── AD 3: Discord square (120×120) ──
-  var el3 = document.getElementById('ad3');
-  if(el3){
-    var z = el3.getContext('2d');
-    z.imageSmoothingEnabled = false;
-    z.fillStyle='#f0ede0'; z.fillRect(0,0,120,120);
-    z.strokeStyle='#000'; z.lineWidth=2; z.strokeRect(1,1,118,118);
-    z.fillStyle='#000080'; z.fillRect(0,0,120,20);
-    z.fillStyle='#fff'; z.font='bold 5px monospace'; z.textAlign='center';
-    z.fillText('GOD.WIFI DISCORD', 60, 13);
-    // wifi arcs
-    z.strokeStyle='#0000cc'; z.lineWidth=2;
-    for(var a=3;a>=1;a--){
-      z.beginPath(); z.arc(60,82,a*11,Math.PI*1.15,Math.PI*1.85); z.stroke();
-    }
-    z.fillStyle='#0000cc'; z.beginPath(); z.arc(60,82,4,0,Math.PI*2); z.fill();
-    z.fillStyle='#000'; z.font='5px monospace'; z.textAlign='center';
-    z.fillText('DOŁĄCZ DO', 60, 42);
-    z.fillText('SPOŁECZNOŚCI', 60, 54);
-    z.fillStyle='#0000cc'; z.font='bold 5px monospace';
-    z.fillText('▶ KLIKNIJ TU', 60, 108);
-  }
-}
-
-
-/* ═══════ NEWS CALENDAR SYSTEM ═══════ */
-
-var NEWS_ARTICLES = {
-  '2026-04-09': {
-    id: 'art1',
-    title: 'Popkillery 2026 ju\u017C dzi\u015B. god.wifi w gronie artyst\u00F3w z szans\u0105 na statuetki',
-    date: '9 kwietnia 2026, 00:01',
-    confetti: false,
-    leftAd: 'ad1',
-    rightAd: 'ad2'
-  },
-  '2026-04-10': {
-    id: 'art2',
-    title: 'Popkillery 2026: \u017Babson w centrum wydarze\u0144, GOD.WIFI w sercu dyskusji',
-    date: '10 kwietnia 2026, 15:00',
-    confetti: true,
-    leftAd: 'congrats-left',
-    rightAd: 'congrats-right'
-  }
-};
-
-var calYear = 2026, calMonth = 3; // 0-indexed: 3 = April
-var nmpCurrent = -1;
-var NMP_TRACKS = [
-  {src:'media/videos/koncert1.mp4', label:'KONCERT1 - GOD.WIFI LIVE'},
-  {src:'media/videos/koncert2.mp4', label:'KONCERT2 - GOD.WIFI LIVE'}
-];
-
-function openNews(){
-  document.getElementById('news-overlay').classList.add('open');
-  document.getElementById('news-calendar').style.display = 'block';
-  document.getElementById('news-reader').classList.remove('open');
-  renderCalendar(calYear, calMonth);
-}
-function closeNews(){
-  document.getElementById('news-overlay').classList.remove('open');
-  stopConfetti();
-}
-
-function renderCalendar(y, m){
-  calYear = y; calMonth = m;
-  var MONTHS = ['STYCZE\u0143','LUTY','MARZEC','KWIECIE\u0143','MAJ','CZERWIEC',
-                'LIPIEC','SIERPIE\u0143','WRZESIE\u0143','PA\u017ADZIERNIK','LISTOPAD','GRUDZIE\u0143'];
-  document.getElementById('ncal-month-label').textContent = MONTHS[m] + ' ' + y;
-  var grid = document.getElementById('ncal-grid-body');
-  grid.innerHTML = '';
-  var firstDay = new Date(y, m, 1).getDay(); // 0=Sun
-  // Make Monday first: shift so Mon=0
-  firstDay = (firstDay + 6) % 7;
-  var daysInMonth = new Date(y, m+1, 0).getDate();
-  var today = new Date();
-  // Empty cells before first day
-  for(var i=0;i<firstDay;i++){
-    var el = document.createElement('div');
-    el.className = 'ncal-day empty';
-    grid.appendChild(el);
-  }
-  for(var d=1;d<=daysInMonth;d++){
-    var key = y+'-'+(m<9?'0':'')+(m+1)+'-'+(d<10?'0':'')+d;
-    var art = NEWS_ARTICLES[key];
-    var isToday = (today.getFullYear()===y && today.getMonth()===m && today.getDate()===d);
-    var el = document.createElement('div');
-    el.className = 'ncal-day' + (art?' active':'') + (isToday?' today':'');
-    var numEl = document.createElement('div');
-    numEl.className = 'ncal-day-num';
-    numEl.textContent = d;
-    el.appendChild(numEl);
-    if(art){
-      var dot = document.createElement('div');
-      dot.className = 'ncal-dot';
-      el.appendChild(dot);
-      var lbl = document.createElement('div');
-      lbl.className = 'ncal-article-label';
-      lbl.textContent = art.title.substring(0,22)+'...';
-      el.appendChild(lbl);
-      (function(k){ el.addEventListener('click', function(){ openArticle(k); }); })(key);
-    }
-    grid.appendChild(el);
-  }
-}
-
-function openArticle(key){
-  var art = NEWS_ARTICLES[key];
-  if(!art) return;
-  document.getElementById('news-calendar').style.display = 'none';
-  var reader = document.getElementById('news-reader');
-  reader.classList.add('open');
-  // Show/hide panels by ID
-  document.getElementById('nrd-panel-art1').style.display = art.id === 'art1' ? 'grid' : 'none';
-  document.getElementById('nrd-panel-art2').style.display = art.id === 'art2' ? 'grid' : 'none';
-  document.getElementById('nrd-panel-media').style.display = art.id === 'art2' ? 'block' : 'none';
-  document.getElementById('news-back-btn').classList.add('visible');
-  // Reset art2 canvas _d flags so they draw after panel is visible
-  if(art.id === 'art2'){
-    var _c1 = document.getElementById('ad-congrats-left');
-    var _c2 = document.getElementById('ad-congrats-right');
-    if(_c1) _c1._d = 0;
-    if(_c2) _c2._d = 0;
-  }
-  if(art.confetti) startConfetti(); else stopConfetti();
-  setTimeout(drawAds, 100);
-  window.scrollTo(0, 0);
-}
-
-function backToCalendar(){
-  // Hide all article panels first
-  document.getElementById('nrd-panel-art1').style.display = 'none';
-  document.getElementById('nrd-panel-art2').style.display = 'none';
-  document.getElementById('nrd-panel-media').style.display = 'none';
-  // Hide reader, show calendar
-  document.getElementById('news-reader').classList.remove('open');
-  document.getElementById('news-calendar').style.display = 'block';
-  document.getElementById('news-back-btn').classList.remove('visible');
-  stopConfetti();
-}
-
-/* CONFETTI */
-var confettiAnim=null, confettiParts=[];
-var CCOLORS=['#ff4444','#ffcc00','#44ff88','#44aaff','#ff44ff','#ff8800','#00ffcc','#ffffff','#66ff66'];
-function startConfetti(){
-  var cv=document.getElementById('confetti-canvas');
-  cv.style.display='block'; cv.width=window.innerWidth; cv.height=window.innerHeight; confettiParts=[];
-  for(var i=0;i<140;i++) confettiParts.push({x:Math.random()*cv.width,y:Math.random()*cv.height-cv.height,w:Math.floor(Math.random()*7)+3,h:Math.floor(Math.random()*5)+3,color:CCOLORS[Math.floor(Math.random()*CCOLORS.length)],speed:Math.random()*3+1.5,wx:Math.random()*1.5-0.75,rot:Math.random()*Math.PI*2,rv:Math.random()*0.08-0.04});
-  if(confettiAnim) cancelAnimationFrame(confettiAnim);
-  (function loop(){var cctx=cv.getContext('2d');cctx.clearRect(0,0,cv.width,cv.height);var alive=false;confettiParts.forEach(function(p){p.y+=p.speed;p.x+=p.wx;p.rot+=p.rv;if(p.y<cv.height+20)alive=true;cctx.save();cctx.translate(p.x+p.w/2,p.y+p.h/2);cctx.rotate(p.rot);cctx.fillStyle=p.color;cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cctx.restore();});if(alive)confettiAnim=requestAnimationFrame(loop);else stopConfetti();})();
-}
-function stopConfetti(){if(confettiAnim){cancelAnimationFrame(confettiAnim);confettiAnim=null;}var cv=document.getElementById('confetti-canvas');if(cv){cv.style.display='none';cv.getContext('2d').clearRect(0,0,cv.width,cv.height);}}
-
-/* DRAW ADS */
-function drawAds(){
-  var el1=document.getElementById('ad1');
-  if(el1&&!el1._d){el1._d=1;var x=el1.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle='#080010';x.fillRect(0,0,120,240);for(var i=0;i<55;i++){x.fillStyle='rgba(255,255,255,'+(0.2+Math.random()*0.7)+')';x.fillRect(Math.random()*118|0,Math.random()*238|0,1,1);}x.fillStyle='#cc00cc';x.fillRect(0,0,120,18);x.fillStyle='#ff66ff';x.fillRect(0,0,120,2);x.fillStyle='#fff';x.textAlign='center';x.font='bold 6px monospace';x.fillText('REKLAMA',60,12);x.fillStyle='#ff44ff';x.font='bold 11px monospace';x.fillText('NOWY',60,46);x.fillText('SINGIEL',60,60);x.fillStyle='#ffff00';x.font='bold 8px monospace';x.fillText('god.wifi',60,78);x.beginPath();x.arc(60,130,28,0,Math.PI*2);x.fillStyle='#111';x.fill();for(var r=14;r<=26;r+=4){x.beginPath();x.arc(60,130,r,0,Math.PI*2);x.strokeStyle='#2a2a2a';x.lineWidth=1;x.stroke();}x.beginPath();x.arc(60,130,11,0,Math.PI*2);x.fillStyle='#9900cc';x.fill();x.beginPath();x.arc(60,130,4,0,Math.PI*2);x.fillStyle='#111';x.fill();x.fillStyle='#cc88ff';x.font='5px monospace';x.textAlign='center';x.fillText('FREE',60,128);x.fillText('WIF',60,136);x.fillStyle='#888';x.font='5px monospace';x.fillText('bandcamp',60,192);x.fillText('soundcloud',60,204);x.strokeStyle='#cc00cc';x.lineWidth=2;x.strokeRect(1,1,118,238);}
-  var el2=document.getElementById('ad2');
-  if(el2&&!el2._d){el2._d=1;var y=el2.getContext('2d');y.imageSmoothingEnabled=false;y.fillStyle='#001400';y.fillRect(0,0,120,240);for(var s=0;s<240;s+=4){y.fillStyle='rgba(0,0,0,0.22)';y.fillRect(0,s,120,2);}y.fillStyle='#004400';y.fillRect(0,0,120,22);y.fillStyle='#00ff44';y.font='bold 7px monospace';y.textAlign='center';y.fillText('[ EVENT ]',60,14);y.fillStyle='#00ff44';y.font='bold 9px monospace';y.fillText('9.04.2026',60,46);y.fillStyle='#00cc33';y.font='6px monospace';y.fillText('POPKILLERY',60,60);y.fillText('GALA',60,72);y.fillStyle='#003300';y.fillRect(20,100,80,50);y.fillStyle='#004400';y.fillRect(22,102,76,46);y.fillStyle='#00ff44';y.fillRect(56,110,8,6);y.fillRect(54,116,12,16);y.fillRect(52,132,5,12);y.fillRect(63,132,5,12);y.fillRect(44,118,10,4);y.fillRect(66,118,10,4);y.fillStyle='#aaa';y.fillRect(60,108,2,7);y.fillStyle='#00aa22';y.font='5px monospace';y.textAlign='center';y.fillText('god.wifi',60,175);y.fillStyle='#005500';y.font='5px monospace';y.fillText('w nominacjach',60,188);y.fillText('youtube.com',60,210);y.fillText('/popkiller',60,222);y.strokeStyle='#00ff44';y.lineWidth=2;y.strokeRect(1,1,118,238);}
-  var ecl=document.getElementById('ad-congrats-left');
-  if(ecl&&!ecl._d){ecl._d=1;
-    var cl=ecl.getContext('2d'); cl.imageSmoothingEnabled=false;
-    // Gold/trophy background
-    cl.fillStyle='#1a0a00'; cl.fillRect(0,0,120,240);
-    // Stars
-    for(var si=0;si<40;si++){cl.fillStyle='rgba(255,220,50,'+(0.3+Math.random()*0.7)+')';cl.fillRect(Math.random()*118|0,Math.random()*238|0,Math.random()<0.5?1:2,Math.random()<0.5?1:2);}
-    // Header
-    cl.fillStyle='#cc8800'; cl.fillRect(0,0,120,22);
-    cl.fillStyle='#ffe066'; cl.fillRect(0,0,120,2);
-    cl.fillStyle='#fff'; cl.textAlign='center'; cl.font='bold 6px monospace'; cl.fillText('NAGRODZENI',60,14);
-    // Trophy pixel
-    cl.fillStyle='#ffd700';
-    cl.fillRect(50,30,20,14); cl.fillRect(46,30,4,8); cl.fillRect(70,30,4,8);
-    cl.fillRect(54,44,12,4); cl.fillRect(50,48,20,4); cl.fillRect(46,52,28,4);
-    // Names
-    var names=[['ZABSON','#ffd700'],['GOD.WIFI','#ff88ff'],['OKI','#88ffaa'],['MLODY WEST','#88ccff']];
-    var y2=66;
-    names.forEach(function(n){
-      cl.fillStyle='#222'; cl.fillRect(8,y2,104,18);
-      cl.strokeStyle=n[1]; cl.lineWidth=1; cl.strokeRect(8,y2,104,18);
-      cl.fillStyle=n[1]; cl.font='bold 6px monospace'; cl.textAlign='center'; cl.fillText(n[0],60,y2+12);
-      y2+=24;
-    });
-    // Confetti pixels
-    var cols2=['#ff4444','#ffcc00','#44ff88','#44aaff','#ff44ff'];
-    for(var ci=0;ci<20;ci++){cl.fillStyle=cols2[ci%5];cl.fillRect(Math.random()*116|0,y2+Math.random()*(238-y2)|0,4,4);}
-    cl.fillStyle='#cc8800'; cl.font='bold 7px monospace'; cl.textAlign='center'; cl.fillText('POPKILLERY',60,220); cl.fillText('2026',60,232);
-    cl.strokeStyle='#cc8800'; cl.lineWidth=2; cl.strokeRect(1,1,118,238);
-  }
-  var ecr=document.getElementById('ad-congrats-right');
-  if(ecr&&!ecr._d){ecr._d=1;
-    var cr=ecr.getContext('2d'); cr.imageSmoothingEnabled=false;
-    // Dark bg with gradient feel
-    cr.fillStyle='#000814'; cr.fillRect(0,0,120,240);
-    for(var si2=0;si2<35;si2++){cr.fillStyle='rgba(255,255,255,'+(0.1+Math.random()*0.4)+')';cr.fillRect(Math.random()*118|0,Math.random()*238|0,1,1);}
-    // Header
-    cr.fillStyle='#000080'; cr.fillRect(0,0,120,22);
-    cr.fillStyle='#88aaff'; cr.fillRect(0,0,120,2);
-    cr.fillStyle='#fff'; cr.textAlign='center'; cr.font='bold 5px monospace'; cr.fillText('GRATULACJE!',60,14);
-    // Star burst pixel art
-    cr.fillStyle='#ffff00';
-    var cx2=60,cy2=60;
-    [[0,-18],[0,18],[-18,0],[18,0],[-13,-13],[13,-13],[-13,13],[13,13]].forEach(function(p){
-      cr.fillRect(cx2+p[0]-1,cy2+p[1]-1,3,3);
-    });
-    cr.fillRect(cx2-4,cy2-4,9,9); // center
-    // GOD.WIFI box
-    cr.fillStyle='#cc00cc'; cr.fillRect(10,90,100,36);
-    cr.strokeStyle='#ff66ff'; cr.lineWidth=2; cr.strokeRect(10,90,100,36);
-    cr.fillStyle='#fff'; cr.font='bold 7px monospace'; cr.textAlign='center'; cr.fillText('GOD.WIFI',60,104);
-    cr.fillStyle='#ffccff'; cr.font='5px monospace'; cr.fillText('fundamentem',60,118);
-    // ZABSON box
-    cr.fillStyle='#004400'; cr.fillRect(10,136,100,28);
-    cr.strokeStyle='#00ff44'; cr.lineWidth=1; cr.strokeRect(10,136,100,28);
-    cr.fillStyle='#00ff44'; cr.font='bold 6px monospace'; cr.textAlign='center'; cr.fillText('ZABSON',60,147);
-    cr.fillStyle='#88ffaa'; cr.font='5px monospace'; cr.fillText('Hollywood Smile',60,159);
-    // Scena PL
-    cr.fillStyle='#1a1a3a'; cr.fillRect(10,174,100,28);
-    cr.strokeStyle='#4488ff'; cr.lineWidth=1; cr.strokeRect(10,174,100,28);
-    cr.fillStyle='#88aaff'; cr.font='bold 5px monospace'; cr.textAlign='center'; cr.fillText('SCENA PL',60,185);
-    cr.fillStyle='#6688cc'; cr.font='5px monospace'; cr.fillText('wciaz rosnie',60,197);
-    // Footer
-    cr.fillStyle='#333355'; cr.font='5px monospace'; cr.textAlign='center'; cr.fillText('god.wifiNEWS',60,220); cr.fillText('obserwuje',60,232);
-    cr.strokeStyle='#000080'; cr.lineWidth=2; cr.strokeRect(1,1,118,238);
-  }
-}
-
-/* MEDIA PLAYER */
-function nmpLoad(idx){
-  var vid=document.getElementById('nmp-video');
-  if(nmpCurrent>=0){var old=document.getElementById('pl-'+nmpCurrent);if(old)old.classList.remove('active');}
-  nmpCurrent=idx;
-  var item=document.getElementById('pl-'+idx);if(item)item.classList.add('active');
-  vid.src=NMP_TRACKS[idx].src;
-  document.getElementById('nmp-title').textContent='> '+NMP_TRACKS[idx].label;
-  document.getElementById('nmp-status').textContent='LADOWANIE...';
-  document.getElementById('nmp-bar').style.width='0%';
-  document.getElementById('nmp-time').textContent='0:00 / 0:00';
-  document.getElementById('nmp-overlay').classList.remove('hidden');
-  document.getElementById('nmp-playbtn').textContent='>';
-  vid.load();
-}
-function nmpPlay(){var vid=document.getElementById('nmp-video');if(nmpCurrent<0)nmpLoad(0);vid.play();document.getElementById('nmp-overlay').classList.add('hidden');document.getElementById('nmp-status').textContent='ODTWARZANIE...';}
-function nmpToggle(){var vid=document.getElementById('nmp-video');if(nmpCurrent<0){nmpLoad(0);return;}if(vid.paused){vid.play();document.getElementById('nmp-overlay').classList.add('hidden');document.getElementById('nmp-playbtn').textContent='||';document.getElementById('nmp-status').textContent='ODTWARZANIE...';}else{vid.pause();document.getElementById('nmp-playbtn').textContent='>';document.getElementById('nmp-status').textContent='PAUZA';}}
-function nmpRewind(){var vid=document.getElementById('nmp-video');vid.currentTime=Math.max(0,vid.currentTime-10);}
-function nmpMute(){var vid=document.getElementById('nmp-video');vid.muted=!vid.muted;document.getElementById('nmp-mutebtn').textContent=vid.muted?'[X]':'[S]';}
-function nmpSeek(e){var vid=document.getElementById('nmp-video');var rect=e.currentTarget.getBoundingClientRect();var pct=(e.clientX-rect.left)/rect.width;if(vid.duration)vid.currentTime=pct*vid.duration;}
-function nmpFmt(s){if(!s||isNaN(s))return '0:00';var m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
-(function(){
-  var vid=document.getElementById('nmp-video');if(!vid)return;
-  vid.addEventListener('timeupdate',function(){var pct=vid.duration?(vid.currentTime/vid.duration)*100:0;document.getElementById('nmp-bar').style.width=pct+'%';document.getElementById('nmp-time').textContent=nmpFmt(vid.currentTime)+' / '+nmpFmt(vid.duration);});
-  vid.addEventListener('ended',function(){document.getElementById('nmp-overlay').classList.remove('hidden');document.getElementById('nmp-playbtn').textContent='>';document.getElementById('nmp-status').textContent='KONIEC';var next=nmpCurrent+1;if(next<NMP_TRACKS.length)setTimeout(function(){nmpLoad(next);nmpPlay();},800);});
-  vid.addEventListener('error',function(){document.getElementById('nmp-status').textContent='BLAD: PLIK NIEDOSTEPNY';});
-  vid.addEventListener('waiting',function(){document.getElementById('nmp-status').textContent='LADOWANIE...';});
-  vid.addEventListener('playing',function(){document.getElementById('nmp-status').textContent='ODTWARZANIE...';});
-})();
 </script>
-
-<canvas id="confetti-canvas"></canvas>
-
-<div id="news-overlay">
-  <button id="news-close-btn" onclick="closeNews()">X ZAMKNIJ</button>
-  <button id="news-back-btn" onclick="backToCalendar()">&#x25C4; POWROT DO KALENDARZA</button>
-
-  <!-- CALENDAR -->
-  <div id="news-calendar">
-    <div class="ncal-header">
-      <div class="ncal-logo">GOD.<span>wifi</span>NEWS</div>
-      <div style="font-size:clamp(4px,1vmin,7px);letter-spacing:0.1em;">ARCHIWUM ARTYKUL&Oacute;W</div>
-    </div>
-    <div class="ncal-ticker-wrap">
-      <span class="ncal-ticker-label">&#x25BA; BREAKING</span>
-      <div class="ncal-ticker-track">
-        <span class="ncal-ticker-inner">GOD.WIFI OKRADZIONA?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY USTAWIONE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;KTO NAPRAWD&#x118; NAPISA&#x141; FAKTY?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&#x17B;ABSON POTWIERDZA&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI &ndash; NOWA P&#x141;YTA W DRODZE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;SKANDAL NA GALI?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;G&#x141;OSOWANIE NIEUCZCIWE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GRATULACJE DLA NAGRODZONYCH&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;GOD.WIFI OKRADZIONA?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;POPKILLERY USTAWIONE?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;KTO NAPRAWD&#x118; NAPISA&#x141; FAKTY?&nbsp;&nbsp;&nbsp;&nbsp;&#x25C6;&nbsp;&nbsp;&nbsp;&nbsp;&#x17B;ABSON POTWIERDZA</span>
-      </div>
-    </div>
-    <div class="ncal-month-bar">
-      <button class="ncal-nav-btn" onclick="renderCalendar(calYear, calMonth-1 < 0 ? calYear-- && 11 : --calMonth)">&#x25C4;&#x25C4;</button>
-      <span id="ncal-month-label">KWIECIEN 2026</span>
-      <button class="ncal-nav-btn" onclick="renderCalendar(calYear, calMonth+1 > 11 ? calYear++ && 0 : ++calMonth)">&#x25BA;&#x25BA;</button>
-    </div>
-    <div class="ncal-grid">
-      <div class="ncal-dow">PON</div>
-      <div class="ncal-dow">WT</div>
-      <div class="ncal-dow">&#x15A;R</div>
-      <div class="ncal-dow">CZW</div>
-      <div class="ncal-dow">PT</div>
-      <div class="ncal-dow">SOB</div>
-      <div class="ncal-dow">NIEDZ</div>
-      <div id="ncal-grid-body" style="display:contents;"></div>
-    </div>
-    <div class="ncal-footer">&#x25BA; KLIKNIJ W PODSWIETLONA DATE ABY PRZECZYTAC ARTYKUL &nbsp;&#x25C6;&nbsp; SZARE DNI = BRAK ARTYKULU</div>
-  </div>
-
-  <!-- ARTICLE READER -->
-  <div id="news-reader">
-    <div class="nrd-topbar">
-      <button class="nrd-back-btn" onclick="backToCalendar()">&#x25C4; POWROT DO KALENDARZA</button>
-      <span>GOD.<span style="color:#88ccff;">wifi</span>NEWS</span>
-    </div>
-
-    <!-- ARTICLE 1: 09.04 -->
-    <div id="nrd-panel-art1" class="nrd-layout">
-      <div class="nrd-side nrd-side-left">
-        <div class="nrd-ad-panel" data-ad="ad1">
-          <canvas id="ad1" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-        </div>
-      </div>
-      <div class="nrd-article-content">
-        <div class="nrd-content">
-          <h1 class="nrd-headline">Popkillery 2026 ju&#x17C; dzi&#x15B;. god.wifi w gronie artyst&oacute;w z szans&#x105; na statuetki</h1>
-          <div class="nrd-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 9 kwietnia 2026, 00:01</div>
-          <div class="nrd-divider"></div>
-          <p class="nrd-body">Ju&#x17C; dzisiaj, <b>9 kwietnia 2026 roku</b>, odb&#x119;dzie si&#x119; gala <b>Popkillery</b> &mdash; jedno z najwa&#x17C;niejszych wydarze&#x144; wyr&oacute;&#x17C;niaj&#x105;cych tw&oacute;rc&oacute;w wsp&oacute;&#x142;czesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyci&#x105;ga uwag&#x119; zar&oacute;wno s&#x142;uchaczy, jak i przedstawicieli bran&#x17C;y, staj&#x105;c si&#x119; przestrzeni&#x105; do docenienia najciekawszych artyst&oacute;w, album&oacute;w i muzycznych zjawisk ostatnich miesi&#x119;cy.</p>
-          <p class="nrd-body">W gronie tw&oacute;rc&oacute;w, kt&oacute;rzy maj&#x105; szans&#x119; na tegoroczne wyr&oacute;&#x17C;nienia, znalaz&#x142;a si&#x119; r&oacute;wnie&#x17C; <b>god.wifi</b> &mdash; artystka coraz wyra&#x17A;niej zaznaczaj&#x105;ca swoj&#x105; obecno&#x15B;&#x107; na nowej scenie muzycznej. Jej dzia&#x142;alno&#x15B;&#x107; artystyczna zwraca uwag&#x119; sp&oacute;jn&#x105; estetyk&#x105;, emocjonalnym przekazem oraz nowoczesnym podej&#x15B;ciem do brzmienia, kt&oacute;re wymyka si&#x119; prostym gatunkowym klasyfikacjom. To w&#x142;a&#x15B;nie ta wyrazisto&#x15B;&#x107; i konsekwencja w budowaniu w&#x142;asnego j&#x119;zyka artystycznego sprawiaj&#x105;, &#x17C;e jej nazwisko coraz cz&#x119;&#x15B;ciej pojawia si&#x119; w kontek&#x15B;cie najciekawszych postaci m&#x142;odego pokolenia.</p>
-          <p class="nrd-body">Tw&oacute;rczo&#x15B;&#x107; god.wifi wpisuje si&#x119; w nurt artyst&oacute;w, kt&oacute;rzy stawiaj&#x105; na autentyczno&#x15B;&#x107;, atmosfer&#x119; i siln&#x105; to&#x17C;samo&#x15B;&#x107; artystyczn&#x105;, a nie wy&#x142;&#x105;cznie na chwilowy trend. Dzi&#x119;ki temu zyskuje ona coraz wi&#x119;ksze zainteresowanie odbiorc&oacute;w poszukuj&#x105;cych muzyki &#x15B;wie&#x17C;ej, &#x15B;wiadomej i estetycznie dopracowanej.</p>
-          <p class="nrd-body">Tegoroczn&#x105; gal&#x119; Popkiller&oacute;w 2026 b&#x119;dzie mo&#x17C;na &#x15B;ledzi&#x107; na &#x17C;ywo ju&#x17C; dzi&#x15B;, <b>9 kwietnia</b>, za po&#x15B;rednictwem oficjalnego kana&#x142;u <a href="https://www.youtube.com/@popkiller" target="_blank">YouTube Popkiller</a>. Transmisja zapowiada si&#x119; jako jedno z wa&#x17C;niejszych wydarze&#x144; dnia dla wszystkich obserwuj&#x105;cych rozw&oacute;j polskiej sceny muzycznej i artyst&oacute;w, kt&oacute;rzy realnie kszta&#x142;tuj&#x105; jej wsp&oacute;&#x142;czesny kierunek.</p>
-          <p class="nrd-body">Dla god.wifi obecno&#x15B;&#x107; w&#x15B;r&oacute;d wyr&oacute;&#x17C;nionych nazwisk to kolejny istotny moment w rozwoju kariery &mdash; a dla s&#x142;uchaczy i obserwator&oacute;w sceny, sygna&#x142;, &#x17C;e warto uwa&#x17C;nie &#x15B;ledzi&#x107; jej dalsze artystyczne ruchy.</p>
-          <div class="nrd-divider"></div>
-          <div class="nrd-footer">&copy; 2026 god.wifiNEWS &nbsp;&middot;&nbsp; Wszelkie prawa zastrze&#x17C;one &nbsp;&middot;&nbsp; Redakcja nie ponosi odpowiedzialno&#x15B;ci za brak sygna&#x142;u</div>
-        </div></div>
-      </div>
-      <div class="nrd-side nrd-side-right">
-        <div class="nrd-ad-panel" data-ad="ad2">
-          <canvas id="ad2" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARTICLE 2: 10.04 -->
-    <div id="nrd-panel-art2" class="nrd-layout" style="display:none;">
-      <div class="nrd-side nrd-side-left">
-        <canvas id="ad-congrats-left" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-      </div>
-      <div class="nrd-article-content">
-        <div class="nrd-content">
-          <h1 class="nrd-headline">Popkillery 2026: &#x17B;abson w centrum wydarze&#x144;, GOD.WIFI w sercu dyskusji</h1>
-          <div class="nrd-byline">Redakcja god.wifiNEWS &nbsp;|&nbsp; 10 kwietnia 2026, 15:00</div>
-          <div class="nrd-divider"></div>
-          <p class="nrd-body">Tegoroczna gala Popkiller&oacute;w przynios&#x142;a sporo emocji &ndash; zar&oacute;wno na scenie, jak i poza ni&#x105;. Cho&#x107; nagrody trafi&#x142;y do wielu artyst&oacute;w, trudno nie odnie&#x15B;&#x107; wra&#x17C;enia, &#x17C;e narracj&#x119; ca&#x142;ego wydarzenia zdominowa&#x142;y dwie postacie: <b>&#x17B;abson</b> oraz <b>GOD.WIFI</b>.</p>
-          <div class="nrd-subhead">&#x17B;abson &ndash; lider, trendsetter i showman</div>
-          <p class="nrd-body">&#x17B;abson bezsprzecznie by&#x142; jedn&#x105; z najwa&#x17C;niejszych postaci gali. Zdoby&#x142; tytu&#x142; <b>Rapera Roku</b> (publiczno&#x15B;&#x107;), <b>Trendsettera Roku</b> oraz nagrod&#x119; za <b>Album Roku</b> publiczno&#x15B;ci (&bdquo;Hollywood Smile&rdquo;). Jego pozycja na scenie wydaje si&#x119; dzi&#x15B; niepodwa&#x17C;alna.</p>
-          <p class="nrd-body">Jednak nie tylko statuetki zrobi&#x142;y wra&#x17C;enie. Kr&oacute;tki koncert &#x17B;absona wraz z ekip&#x105; by&#x142; jednym z najmocniejszych moment&oacute;w ca&#x142;ego wydarzenia. Artysta wcign&#x105;&#x142; publiczno&#x15B;&#x107; w imprezowy klimat, skutecznie &bdquo;rozrusza&#x142;&rdquo; ca&#x142;&#x105; sal&#x119; i pokaza&#x142;, &#x17C;e sceniczna energia to jego ogromny atut.</p>
-          <p class="nrd-body">Szczeg&oacute;lnie wyr&oacute;&#x17C;ni&#x142;o si&#x119; wykonanie utworu <b>&bdquo;Pingwin&rdquo;</b> &ndash; dynamiczne, pe&#x142;ne ruchu i autentycznej energii. Na scenie dzia&#x142;o si&#x119; du&#x17C;o: taniec, interakcja z publik&#x105; i wyra&#x17A;na chemia mi&#x119;dzy cz&#x142;onkami ekipy. To by&#x142; moment, kt&oacute;ry przypomnia&#x142;, &#x17C;e hip-hop to nie tylko liczby i nagrody, ale te&#x17C; &#x17C;ywe do&#x15B;wiadczenie.</p>
-          <div class="nrd-subhead">&bdquo;Fakty&rdquo; &ndash; kulisy, kt&oacute;re wysz&#x142;y na jaw</div>
-          <p class="nrd-body">Jednym z najbardziej komentowanych punkt&oacute;w gali by&#x142;a nagroda za <b>Kooperacj&#x119; Roku</b> dla utworu &bdquo;Fakty&rdquo; (&#x17B;abson x Oki x Pezet x GOD.WIFI x M&#x142;ody West). Wok&oacute;&#x142; tego numeru pojawi&#x142;o si&#x119; sporo spekulacji &ndash; i, co ciekawe, cz&#x119;&#x15B;&#x107; z nich zosta&#x142;a p&oacute;&#x17A;niej potwierdzona.</p>
-          <p class="nrd-body">Z nieoficjalnych informacji kr&#x105;&#x17C;&#x105;cych wcze&#x15B;niej w &#x15B;rodowisku wynika&#x142;o, &#x17C;e utw&oacute;r pierwotnie by&#x142; w ca&#x142;o&#x15B;ci nagrany przez GOD.WIFI. Wed&#x142;ug tych doniesie&#x144;, &#x17B;abson po us&#x142;yszeniu numeru mia&#x142; uzna&#x107;, &#x17C;e jest na tyle mocny, &#x17C;e chce w&#x142;&#x105;czy&#x107; go do swojego projektu &ndash; a nast&#x119;pnie dogra&#x142; si&#x119; do niego wraz z zaproszonymi go&#x15B;&#x107;mi.</p>
-          <p class="nrd-body">Podczas gali &#x17B;abson odni&oacute;s&#x142; si&#x119; do tej sytuacji, w praktyce potwierdzaj&#x105;c kr&#x105;&#x17C;&#x105;ce wcze&#x15B;niej informacje. To rzuca zupe&#x142;nie inne &#x15B;wiat&#x142;o na odbi&oacute;r &bdquo;Fakt&oacute;w&rdquo; i jasno wskazuje, jak du&#x17C;y by&#x142; wk&#x142;ad GOD.WIFI w powstanie tego utworu.</p>
-          <div class="nrd-subhead">GOD.WIFI &ndash; niedosyt nagr&oacute;d, du&#x17C;y potencja&#x142;</div>
-          <p class="nrd-body">Warto to powiedzie&#x107; wprost: gratulacje dla GOD.WIFI za nominacje i nagrod&#x119; przy &bdquo;Faktach&rdquo;. Nawet je&#x15B;li formalnie to kooperacja, wiele wskazuje na to, &#x17C;e jej rola by&#x142;a fundamentem tego numeru.</p>
-          <p class="nrd-body">Nie dziwi wi&#x119;c, &#x17C;e w&#x15B;r&oacute;d fan&oacute;w pojawi&#x142;o si&#x119; poczucie niedosytu. Cz&#x119;&#x15B;&#x107; spo&#x142;eczno&#x15B;ci uwa&#x17C;a, &#x17C;e artystka zosta&#x142;a pomini&#x119;ta w innych kategoriach i nie otrzyma&#x142;a pe&#x142;nego uznania, na jakie zas&#x142;u&#x17C;y&#x142;a.</p>
-          <p class="nrd-body">Jednocze&#x15B;nie jedno jest pewne &ndash; GOD.WIFI jest dzi&#x15B; na radarze s&#x142;uchaczy i &#x15B;rodowiska. A to cz&#x119;sto wa&#x17C;niejsze ni&#x17C; pojedyncze statuetki.</p>
-          <div class="nrd-subhead">Co dalej?</div>
-          <p class="nrd-body">Z naszych informacji wynika, &#x17C;e GOD.WIFI intensywnie pracuje nad now&#x105; muzyk&#x105;. Trwaj&#x105; przygotowania do kolejnych singli oraz albumu, a poziom materia&#x142;u ma by&#x107; bardzo wysoki.</p>
-          <p class="nrd-body">Je&#x15B;li te zapowiedzi si&#x119; potwierdzn, przysz&#x142;oroczna gala mo&#x17C;e wygl&#x105;da&#x107; zupe&#x142;nie inaczej. Wszystko wskazuje na to, &#x17C;e artystka dopiero buduje swoj&#x105; pozycj&#x119; i w najbli&#x17C;szym czasie mo&#x17C;e zrobi&#x107; jeszcze wi&#x119;kszy ruch.</p>
-          <div class="nrd-subhead">G&#x142;os z miejsca wydarze&#x144;</div>
-          <p class="nrd-body">Nie zabrak&#x142;o te&#x17C; opinii naszych korespondent&oacute;w. Korespondentka Wiktorialean - jakpodaje przyzna&#x142;a, &#x17C;e gala mia&#x142;a lu&#x17A;n&#x105;, imprezow&#x105; atmosfer&#x119; &ndash; cho&#x107; sama, jak relacjonowa&#x142;a, troch&#x119; za bardzo wczu&#x142;a (%) si&#x119; w klimat wydarzenia. Mimo tego oceni&#x142;a inicjatyw&#x119; pozytywnie.</p>
-          <p class="nrd-body">Drugi z korespondent&oacute;w zwr&oacute;ci&#x142; uwag&#x119; na niedoci&#x105;gni&#x119;cia organizacyjne:</p>
-          <div class="nrd-quote">&bdquo;By&#x142;y problemy, szczeg&oacute;lnie techniczne, ale og&oacute;lnie gala by&#x142;a do przyj&#x119;cia &ndash; mog&#x142;o by&#x107; lepiej, ale nie by&#x142;o &#x17A;le.&rdquo;</div>
-          <div class="nrd-subhead">Problemy techniczne i odbi&oacute;r gali</div>
-          <p class="nrd-body">Najwi&#x119;ksze zastrze&#x17C;enia dotyczy&#x142;y transmisji na &#x17C;ywo. Problemy z d&#x17A;wi&#x119;kiem momentami utrudnia&#x142;y odbi&oacute;r, co przy wydarzeniu tej skali nie powinno mie&#x107; miejsca.</p>
-          <div class="nrd-subhead">Podsumowanie</div>
-          <p class="nrd-body">Popkillery 2026 to gala pe&#x142;na kontrast&oacute;w &ndash; z jednej strony mocna dominacja &#x17B;absona i &#x15B;wietny wyst&#x119;p na scenie, z drugiej kontrowersje wok&oacute;&#x142; GOD.WIFI i pytania o transparentno&#x15B;&#x107; wynik&oacute;w.</p>
-          <p class="nrd-body">Jedno jest pewne: &#x17B;abson potwierdza swoj&#x105; pozycj&#x119; lidera, a <b>GOD.WIFI buduje napi&#x119;cie przed kolejnymi ruchami</b>. Gratulujemy wszystkim nagrodzonym &ndash; i uwa&#x17C;nie obserwujemy, co wydarzy si&#x119; dalej.</p>
-          <div class="nrd-divider"></div>
-          <div class="nrd-footer">&copy; 2026 god.wifiNEWS &nbsp;&middot;&nbsp; Wszelkie prawa zastrze&#x17C;one &nbsp;&middot;&nbsp; Redakcja nie ponosi odpowiedzialno&#x15B;ci za brak sygna&#x142;u</div>
-        </div>
-      </div>
-      <div class="nrd-side nrd-side-right">
-        <canvas id="ad-congrats-right" width="120" height="240" style="border:2px solid #888;image-rendering:pixelated;"></canvas>
-      </div>
-    </div>
-
-    <!-- MEDIA PLAYER (art2 only) -->
-    <div id="nrd-panel-media" style="display:none;">
-<!-- MEDIA PLAYER (always visible) -->
-    <div class="nrd-media-section">
-      <div class="nrd-media-header">&#x25BA; ARCHIWUM WIDEO &nbsp;|&nbsp; GOD.WIFI LIVE</div>
-      <div class="nrd-media-layout">
-        <div class="nrd-media-player">
-          <div class="nmp-titlebar"><span class="nmp-dot"></span><span class="nmp-dot"></span><span class="nmp-dot"></span><span class="nmp-title" id="nmp-title">&#x25BA; MEDIA PLAYER v1.0</span></div>
-          <div class="nmp-screen">
-            <video id="nmp-video" preload="metadata" playsinline></video>
-            <div class="nmp-overlay" id="nmp-overlay"><div class="nmp-play-big" onclick="nmpPlay()">&#x25BA;</div></div>
-          </div>
-          <div class="nmp-controls">
-            <button class="nmp-btn" id="nmp-playbtn" onclick="nmpToggle()">&#x25BA;</button>
-            <button class="nmp-btn" onclick="nmpRewind()">&#x25C4;&#x25C4;</button>
-            <div class="nmp-progress-wrap" onclick="nmpSeek(event)"><div class="nmp-progress-bar" id="nmp-bar"></div></div>
-            <span class="nmp-time" id="nmp-time">0:00 / 0:00</span>
-            <button class="nmp-btn" id="nmp-mutebtn" onclick="nmpMute()">[S]</button>
-          </div>
-          <div class="nmp-statusbar"><span id="nmp-status">WYBIERZ NAGRANIE Z LISTY &#x25BA;</span></div>
-        </div>
-        <div class="nrd-playlist">
-          <div class="nrd-pl-header">&#x25A0; PLAYLIST</div>
-          <div class="nrd-pl-item" id="pl-0" onclick="nmpLoad(0)"><span class="pl-num">01</span><span class="pl-info"><b>koncert1</b><br><span class="pl-sub">god.wifi live set</span></span></div>
-          <div class="nrd-pl-item" id="pl-1" onclick="nmpLoad(1)"><span class="pl-num">02</span><span class="pl-info"><b>koncert2</b><br><span class="pl-sub">god.wifi live set</span></span></div>
-        </div>
-      </div>
-    </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
