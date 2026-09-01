@@ -11,6 +11,8 @@
   :root {
     --bg-color: #0a0a0a;
     --text-color: #ffffff;
+    --accent-blue: #8ab4f8;
+    --link-url-color: #9aa0a6;
     --transition-speed: 0.5s;
   }
 
@@ -19,6 +21,8 @@
     :root {
       --bg-color: #ffffff;
       --text-color: #0a0a0a;
+      --accent-blue: #1a0dab;
+      --link-url-color: #006621;
     }
   }
 
@@ -34,7 +38,177 @@
     transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* ═════════ EKRAN STARTOWY ═════════ */
+  /* ═════════ FAKE GOOGLE SCREEN ═════════ */
+  #fake-google-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10vh 15vw;
+    z-index: 50;
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+    background-color: var(--bg-color);
+  }
+
+  #fake-google-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+  }
+
+  .google-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    margin-bottom: 30px;
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(128, 128, 128, 0.4);
+    border-radius: 24px;
+    padding: 12px 20px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 50px;
+  }
+
+  .search-bar span {
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  .search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 650px;
+  }
+
+  .result-item {
+    cursor: pointer;
+  }
+
+  .result-url {
+    font-size: 0.85rem;
+    color: var(--link-url-color);
+    margin-bottom: 5px;
+  }
+
+  .result-title {
+    font-size: 1.3rem;
+    color: var(--accent-blue);
+    font-weight: 400;
+    text-decoration: none;
+    margin-bottom: 8px;
+  }
+
+  .result-title:hover {
+    text-decoration: underline;
+  }
+
+  .result-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  /* ═════════ ODTWARZACZ MP3 EKRAN ═════════ */
+  #mp3-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+    background-color: var(--bg-color);
+    transition: opacity var(--transition-speed);
+  }
+
+  #mp3-screen.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mp3-container {
+    border: 1px solid var(--text-color);
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .visualizer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
+    height: 60px;
+    margin: 30px 0;
+  }
+
+  .bar {
+    width: 8px;
+    background-color: var(--text-color);
+    height: 10px;
+    transition: height 0.1s ease;
+  }
+
+  .visualizer.playing .bar {
+    animation: bounce 0.5s infinite alternate;
+  }
+
+  .visualizer.playing .bar:nth-child(1) { animation-delay: 0.1s; }
+  .visualizer.playing .bar:nth-child(2) { animation-delay: 0.4s; }
+  .visualizer.playing .bar:nth-child(3) { animation-delay: 0.2s; }
+  .visualizer.playing .bar:nth-child(4) { animation-delay: 0.5s; }
+  .visualizer.playing .bar:nth-child(5) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    from { height: 10px; }
+    to { height: 60px; }
+  }
+
+  .mp3-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .btn-mp3 {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 10px 30px;
+    margin-top: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+  }
+  .btn-mp3:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+  }
+
+  .btn-close-mp3 {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    background: transparent;
+    color: var(--text-color);
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ═════════ EKRAN STARTOWY (LICZNIK) ═════════ */
   #intro-screen {
     position: absolute;
     inset: 0;
@@ -44,8 +218,13 @@
     justify-content: center;
     transition: opacity var(--transition-speed), transform var(--transition-speed);
     z-index: 10;
+    /* Domyślnie ukryty, pokaże się po wybraniu opcji z fake wyszukiwarki */
+    opacity: 0; 
+    pointer-events: none;
   }
 
+  /* ... RESZTA TWOJEGO KODU CSS BEZ ZMIAN ... */
+  
   .main-title {
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 300;
@@ -56,7 +235,6 @@
 
   .main-title strong { font-weight: 700; }
 
-  /* Układ licznika */
   .timer-wrapper {
     display: flex;
     align-items: flex-start;
@@ -114,7 +292,6 @@
     color: var(--bg-color);
   }
 
-  /* ═════════ EKRAN PODZIAŁU (MENU) ═════════ */
   #split-screen {
     position: absolute;
     inset: 0;
@@ -157,7 +334,6 @@
     transform: scale(1.05);
   }
 
-  /* Przycisk powrotu na środku ekranu podziału */
   .btn-split-back {
     position: absolute;
     bottom: 40px;
@@ -179,7 +355,6 @@
     color: var(--bg-color);
   }
 
-  /* ═════════ WIDOKI PEŁNOEKRANOWE (WIKI / NEWS) ═════════ */
   .fullscreen-view {
     position: absolute;
     inset: 0;
@@ -217,19 +392,8 @@
     margin: 0 auto;
   }
 
-  /* ═════════ WIKIPEDIA ═════════ */
-  .wiki-content {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    font-weight: 300;
-  }
-  .wiki-content h2 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 40px 0 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  .wiki-content { font-size: 1.1rem; line-height: 1.7; font-weight: 300; }
+  .wiki-content h2 { font-size: 1.4rem; font-weight: 700; margin: 40px 0 15px; text-transform: uppercase; letter-spacing: 0.05em; }
   .wiki-content p { margin-bottom: 20px; }
   .wiki-content ul { margin-bottom: 20px; padding-left: 20px; }
   .wiki-content li { margin-bottom: 10px; }
@@ -243,17 +407,11 @@
     margin: 0 0 30px 40px;
     font-size: 0.9rem;
   }
-  .wiki-infobox h3 {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--text-color);
-    padding-bottom: 10px;
-  }
+  .wiki-infobox h3 { font-size: 1.2rem; margin-bottom: 20px; border-bottom: 1px solid var(--text-color); padding-bottom: 10px; }
   .wiki-infobox ul { list-style: none; padding: 0; }
   .wiki-infobox li { display: flex; justify-content: space-between; margin-bottom: 12px; }
   .wiki-infobox strong { font-weight: 700; opacity: 0.6; }
 
-  /* ═════════ NEWSY ═════════ */
   .news-calendar-bar {
     display: flex;
     justify-content: space-between;
@@ -264,41 +422,15 @@
   }
 
   .date-selector { display: flex; gap: 20px; }
-  .date-dot {
-    font-size: 1rem;
-    font-weight: 700;
-    opacity: 0.4;
-  }
+  .date-dot { font-size: 1rem; font-weight: 700; opacity: 0.4; }
   .date-dot.active { opacity: 1; }
 
-  .news-item {
-    margin-bottom: 50px;
-    cursor: pointer;
-  }
+  .news-item { margin-bottom: 50px; cursor: pointer; }
   .news-item:hover .news-title { text-decoration: underline; }
+  .news-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 10px; line-height: 1.2; }
+  .news-meta { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 15px; }
+  .news-excerpt { font-size: 1.1rem; line-height: 1.6; font-weight: 300; opacity: 0.8; }
 
-  .news-title {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-  .news-meta {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.5;
-    margin-bottom: 15px;
-  }
-  .news-excerpt {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    font-weight: 300;
-    opacity: 0.8;
-  }
-
-  /* ═════════ MODAL ARTYKUŁU ═════════ */
   #article-modal {
     position: fixed;
     inset: 0;
@@ -311,10 +443,7 @@
     transition: opacity 0.4s ease;
     padding: 0 20px;
   }
-  #article-modal.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  #article-modal.active { opacity: 1; pointer-events: auto; }
 
   .modal-close {
     position: fixed;
@@ -331,145 +460,32 @@
     transition: all 0.3s;
     z-index: 101;
   }
-  .modal-close:hover {
-    background: var(--text-color);
-    color: var(--bg-color);
-  }
+  .modal-close:hover { background: var(--text-color); color: var(--bg-color); }
 
-  .modal-content {
-    max-width: 800px;
-    margin: 120px auto 100px;
-  }
-
-  #modal-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 20px;
-  }
-  #modal-meta {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.5;
-    margin-bottom: 50px;
-    border-bottom: 1px solid rgba(128,128,128,0.2);
-    padding-bottom: 20px;
-  }
-  #modal-body {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    font-weight: 300;
-  }
+  .modal-content { max-width: 800px; margin: 120px auto 100px; }
+  #modal-title { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 20px; }
+  #modal-meta { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 50px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 20px; }
+  #modal-body { font-size: 1.1rem; line-height: 1.8; font-weight: 300; }
   #modal-body p { margin-bottom: 25px; }
   #modal-body b, #modal-body strong { font-weight: 700; }
-  #modal-body h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 40px 0 20px;
-  }
-  #modal-body .nrd-quote {
-    border-left: 2px solid var(--text-color);
-    padding-left: 20px;
-    margin: 30px 0;
-    font-style: italic;
-    opacity: 0.8;
-  }
+  #modal-body h2 { font-size: 1.5rem; font-weight: 700; margin: 40px 0 20px; }
+  #modal-body .nrd-quote { border-left: 2px solid var(--text-color); padding-left: 20px; margin: 30px 0; font-style: italic; opacity: 0.8; }
 
-  /* ═════════ MEDIA PLAYER MINIMALISTYCZNY ═════════ */
-  .minimal-player-container {
-    margin: 50px 0;
-    border: 1px solid var(--text-color);
-    padding: 20px;
-  }
-  .mp-header {
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    font-weight: 700;
-    display: flex;
-    justify-content: space-between;
-  }
-  .mp-video-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #000;
-    overflow: hidden;
-    margin-bottom: 15px;
-    border: 1px solid rgba(128,128,128,0.2);
-  }
-  .mp-video-wrap video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .mp-video-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .mp-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: opacity 0.3s ease;
-  }
-  .mp-btn {
-    background: transparent;
-    border: 1px solid var(--text-color);
-    color: var(--text-color);
-    padding: 8px 15px;
-    font-family: inherit;
-    font-size: 0.8rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: 0.3s;
-  }
-  .mp-btn:hover {
-    background: var(--text-color);
-    color: var(--bg-color);
-  }
-  .mp-progress {
-    flex: 1;
-    height: 6px;
-    background: rgba(128,128,128,0.2);
-    cursor: pointer;
-    position: relative;
-  }
-  .mp-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--text-color);
-    pointer-events: none;
-    transition: width 0.1s linear;
-  }
-  .mp-time {
-    font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
-  }
-  .mp-playlist {
-    margin-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .mp-track {
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    border: 1px solid rgba(128,128,128,0.3);
-    cursor: pointer;
-    opacity: 0.6;
-    transition: 0.3s;
-  }
-  .mp-track:hover, .mp-track.active {
-    opacity: 1;
-    border-color: var(--text-color);
-  }
+  .minimal-player-container { margin: 50px 0; border: 1px solid var(--text-color); padding: 20px; }
+  .mp-header { font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 15px; font-weight: 700; display: flex; justify-content: space-between; }
+  .mp-video-wrap { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; overflow: hidden; margin-bottom: 15px; border: 1px solid rgba(128,128,128,0.2); }
+  .mp-video-wrap video { width: 100%; height: 100%; object-fit: contain; }
+  .mp-video-wrap img { width: 100%; height: 100%; object-fit: contain; }
+  .mp-controls { display: flex; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
+  .mp-btn { background: transparent; border: 1px solid var(--text-color); color: var(--text-color); padding: 8px 15px; font-family: inherit; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+  .mp-btn:hover { background: var(--text-color); color: var(--bg-color); }
+  .mp-progress { flex: 1; height: 6px; background: rgba(128,128,128,0.2); cursor: pointer; position: relative; }
+  .mp-bar { height: 100%; width: 0%; background: var(--text-color); pointer-events: none; transition: width 0.1s linear; }
+  .mp-time { font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  .mp-playlist { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .mp-track { font-size: 0.8rem; padding: 5px 10px; border: 1px solid rgba(128,128,128,0.3); cursor: pointer; opacity: 0.6; transition: 0.3s; }
+  .mp-track:hover, .mp-track.active { opacity: 1; border-color: var(--text-color); }
 
-  /* RWD */
   @media (max-width: 900px) {
     #split-screen { flex-direction: column; }
     .menu-half { border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); }
@@ -478,12 +494,52 @@
     .fullscreen-view { padding: 30px 20px 100px; }
     .top-bar { flex-direction: column; gap: 20px; align-items: flex-start; }
     .btn-back { padding: 10px 20px; font-size: 1rem; }
+    #fake-google-screen { padding: 10vh 5vw; }
   }
 </style>
 </head>
 <body>
 
-  <!-- EKRAN STARTOWY -->
+  <div id="fake-google-screen">
+    <div class="google-header">Wyszukiwarka</div>
+    <div class="search-bar">
+      <span>gdzie jest god.wifi?</span>
+    </div>
+
+    <div class="search-results">
+      <div class="result-item" onclick="openFakeMp3()">
+        <div class="result-url">https://god.wifi.pl › snippet › faza</div>
+        <div class="result-title">Nie wiesz o co cho?</div>
+        <div class="result-desc">Ekskluzywny wyciek. Posłuchaj fragmentu nowego materiału z archiwum. Wciśnij play, zamknij oczy i pozwól, by bass przejął kontrolę nad przestrzenią.</div>
+      </div>
+
+      <div class="result-item" onclick="startMainExperience()">
+        <div class="result-url">https://god.wifi.pl › zaginiona</div>
+        <div class="result-title">Gdzie jest god.wifi?</div>
+        <div class="result-desc">Oficjalne centrum poszukiwań. Sprawdź czas do odzyskania sygnału, najnowsze dowody w sprawie oraz dostęp do encyklopedii.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mp3-screen">
+    <button class="btn-close-mp3" onclick="closeFakeMp3()">Wróc do wyszukiwania</button>
+    <div class="mp3-container">
+      <div class="mp3-title">FAZA - GOD.WIFI (SNIPPET)</div>
+      
+      <div class="visualizer" id="mp3-visualizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <button class="btn-mp3" id="mp3-play-btn" onclick="toggleSecretAudio()">PLAY</button>
+      
+      <audio id="secret-audio" src="media/videos/fazagod.wifi.mp3" preload="auto"></audio>
+    </div>
+  </div>
+
   <div id="intro-screen">
     <div class="main-title">gdzie jest <strong>god.wifi?</strong> Zaginęła:</div>
     
@@ -512,7 +568,6 @@
     <button class="btn-next" onclick="showSplitScreen()">DALEJ</button>
   </div>
 
-  <!-- EKRAN PODZIAŁU (MENU) -->
   <div id="split-screen">
     <div class="menu-half" onclick="openFullscreen('wiki')">
       <div class="menu-title">god.wifipedia</div>
@@ -523,7 +578,6 @@
     <button class="btn-split-back" onclick="backToIntro()">WRÓĆ</button>
   </div>
 
-  <!-- WIDOK: WIKIPEDIA -->
   <div id="wiki-view" class="fullscreen-view">
     <div class="top-bar">
       <div class="view-title">god.wifipedia</div>
@@ -541,12 +595,9 @@
             <li><strong>PASMO</strong> <span>obraz + muzyka</span></li>
           </ul>
         </div>
-
         <p><b>god.wifi</b> (właśc. Wiktoria Maciuk) – polska artystka wizualna, DJ-ka, fotografka, autorka teledysków i była zawodniczka BMX. Zaczynała od jazdy na BMX-ie, nagrywania własnych materiałów i montażu, z czasem rozwijając się w stronę obrazu, muzyki i projektów kreatywnych. Kojarzona z estetyką internetu, nocnym życiem, cyfrową nostalgią i własnym, trudnym do podrobienia stylem.</p>
-        
         <h2>OPIS</h2>
         <p>Według dostępnych danych god.wifi wyróżniała się silnym sygnałem w paśmie obrazu, muzyki i obecności. Najczęściej wykrywana w pobliżu klubów, backstage'y, projektów kreatywnych i osób, które „miały już iść do domu". Użytkownicy zgłaszali poprawę nastroju, wzrost energii i nagłą aktywację trybu #party. Ostatnie logi sugerują, że opuściła sieć lokalną bez pozostawienia stabilnego śladu.</p>
-
         <h2>HIPOTEZY ZAGINIĘCIA</h2>
         <ul>
           <li>Praca nad nową muzyką w trybie „nie przeszkadzać"</li>
@@ -557,10 +608,8 @@
           <li>Zalogowanie się do alternatywnej rzeczywistości po secie</li>
           <li>Ostatni pociąg / ostatni Uber / ostatnia decyzja, która zmieniła wszystko</li>
         </ul>
-
         <h2>STATUS POSZUKIWAŃ</h2>
         <p>Sygnał god.wifi bywa nadal wykrywany w niestabilnych warunkach, głównie po północy, przy odpowiednim poziomie głośności oraz podczas nieautoryzowanych aktywacji projektu #party. Odnotowano możliwe ślady obecności w stories wrzucanych bez kontekstu i krótkich odpowiedziach typu „jestem zaraz".</p>
-
         <h2>LINKI ZEWNĘTRZNE</h2>
         <ul>
           <li><a href="https://www.instagram.com/god.wifi/" target="_blank">Instagram: @god.wifi</a></li>
@@ -570,7 +619,6 @@
     </div>
   </div>
 
-  <!-- WIDOK: NEWSY -->
   <div id="news-view" class="fullscreen-view">
     <div class="top-bar">
       <div class="view-title">god.wifi news</div>
@@ -578,54 +626,35 @@
     </div>
     <div class="content-wrapper">
       <div class="news-calendar-bar">
-        <div class="date-selector">
-          <span class="date-dot active">ARCHIWUM 2026</span>
-        </div>
+        <div class="date-selector"><span class="date-dot active">ARCHIWUM 2026</span></div>
         <div style="font-size: 0.8rem; text-transform: uppercase;">Wybierz artykuł</div>
       </div>
-
-      <!-- NAJNOWSZY ARTYKUŁ Z 07.06.2026 -->
       <div class="news-item" onclick="openArticle('art4')">
         <div class="news-meta">7 CZERWCA 2026 | REDAKCJA</div>
         <div class="news-title">Wielki powrót god.wifi? Po długiej przerwie artystka wraca na scenę</div>
-        <div class="news-excerpt">
-          Po wielu miesiącach ograniczonej aktywności koncertowej wokół god.wifi ponownie zaczyna robić się głośno. W ostatnich dniach otrzymaliśmy nie jeden, a dwa mocne sygnały... [Czytaj dalej]
-        </div>
+        <div class="news-excerpt">Po wielu miesiącach ograniczonej aktywności koncertowej wokół god.wifi ponownie zaczyna robić się głośno. W ostatnich dniach otrzymaliśmy nie jeden, a dwa mocne sygnały... [Czytaj dalej]</div>
       </div>
-
-      <div class="border-line" style="margin-bottom:50px;"></div>
-
+      <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
       <div class="news-item" onclick="openArticle('art3')">
         <div class="news-meta">6 CZERWCA 2026 | REDAKCJA</div>
         <div class="news-title">Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej</div>
-        <div class="news-excerpt">
-          Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album... [Czytaj dalej]
-        </div>
+        <div class="news-excerpt">Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album... [Czytaj dalej]</div>
       </div>
-
-      <div class="border-line" style="margin-bottom:50px;"></div>
-
+      <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
       <div class="news-item" onclick="openArticle('art2')">
         <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
-        <div class="news-excerpt">
-          Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]
-        </div>
+        <div class="news-excerpt">Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]</div>
       </div>
-
-      <div class="border-line" style="margin-bottom:50px;"></div>
-
+      <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
       <div class="news-item" onclick="openArticle('art1')">
         <div class="news-meta">9 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</div>
-        <div class="news-excerpt">
-          Już dzisiaj odbędzie się gala Popkillery — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. W gronie nominowanych znalazła się również god.wifi... [Czytaj dalej]
-        </div>
+        <div class="news-excerpt">Już dzisiaj odbędzie się gala Popkillery — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. W gronie nominowanych znalazła się również god.wifi... [Czytaj dalej]</div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL Z ARTYKUŁEM -->
   <div id="article-modal">
     <button class="modal-close" onclick="closeArticle()">X ZAMKNIJ</button>
     <div class="modal-content">
@@ -636,6 +665,55 @@
   </div>
 
 <script>
+  /* ═════════ LOGIKA FAKE WYSZUKIWARKI / MP3 ═════════ */
+  function openFakeMp3() {
+    document.getElementById('fake-google-screen').classList.add('hidden');
+    document.getElementById('mp3-screen').classList.add('active');
+  }
+
+  function closeFakeMp3() {
+    const audio = document.getElementById('secret-audio');
+    audio.pause();
+    audio.currentTime = 0;
+    document.getElementById('mp3-play-btn').textContent = 'PLAY';
+    document.getElementById('mp3-visualizer').classList.remove('playing');
+
+    document.getElementById('mp3-screen').classList.remove('active');
+    document.getElementById('fake-google-screen').classList.remove('hidden');
+  }
+
+  function toggleSecretAudio() {
+    const audio = document.getElementById('secret-audio');
+    const btn = document.getElementById('mp3-play-btn');
+    const visualizer = document.getElementById('mp3-visualizer');
+
+    if (audio.paused) {
+      audio.play();
+      btn.textContent = 'PAUSE';
+      visualizer.classList.add('playing');
+    } else {
+      audio.pause();
+      btn.textContent = 'PLAY';
+      visualizer.classList.remove('playing');
+    }
+  }
+
+  // Nasłuchiwanie na koniec piosenki
+  document.getElementById('secret-audio').addEventListener('ended', function() {
+    document.getElementById('mp3-play-btn').textContent = 'PLAY';
+    document.getElementById('mp3-visualizer').classList.remove('playing');
+  });
+
+  function startMainExperience() {
+    document.getElementById('fake-google-screen').classList.add('hidden');
+    
+    // Pokazanie głównego intra z licznikiem
+    const intro = document.getElementById('intro-screen');
+    intro.style.opacity = '1';
+    intro.style.pointerEvents = 'auto';
+  }
+
+
   /* ═════════ LOGIKA LICZNIKA ═════════ */
   const START = new Date('2025-02-26T23:00:00Z');
   
@@ -751,83 +829,22 @@
     art4: {
       title: "Wielki powrót god.wifi? Po długiej przerwie artystka wraca na scenę",
       meta: "REDAKCJA | 7 CZERWCA 2026",
-      body: `
-        <p>Po wielu miesiącach ograniczonej aktywności koncertowej wokół god.wifi ponownie zaczyna robić się głośno. W ostatnich dniach otrzymaliśmy nie jeden, a dwa mocne sygnały świadczące o tym, że artystka szykuje się do powrotu na scenę. Najpierw ogłoszono jej występ na Polish Hip-Hop Festival 2026 w Płocku, a teraz poznaliśmy kolejną datę – god.wifi pojawi się również na Rap Stacja Festival 2026. Dla fanów, którzy od dawna czekali na możliwość zobaczenia artystki na żywo, są to zdecydowanie jedne z najważniejszych informacji ostatnich miesięcy.</p>
-        
-        <h2>Powrót na festiwalowe sceny</h2>
-        <p>Jeszcze niedawno trudno było znaleźć jakiekolwiek informacje o planach koncertowych god.wifi. Tymczasem w ciągu krótkiego czasu otrzymaliśmy dwa duże festiwalowe ogłoszenia. Najpierw artystka została potwierdzona w line-upie Polish Hip-Hop Festival w Płocku, jednego z największych wydarzeń rapowych w kraju. Niedługo później jej nazwisko pojawiło się również na plakacie Rap Stacja Festival 2026. To pierwsze tak wyraźne sygnały świadczące o tym, że po dłuższej przerwie god.wifi zamierza ponownie pojawić się przed publicznością w większej skali.</p>
-        
-        <h2>Czy to początek większego planu?</h2>
-        <p>Jeszcze kilka miesięcy temu głównym tematem rozmów był zapowiadany drugi album artystki. Projekt nadal znajduje się w harmonogramie Internaziomale na 2026 rok, a niedawna relacja z tajemniczym komunikatem „lada moment 💗” tylko podgrzała atmosferę wokół nadchodzących ruchów. Teraz do układanki dochodzą kolejne elementy. W świecie muzyki festiwale bardzo często pełnią rolę inauguracji nowej ery artysty. Nowy materiał, nowe koncerty, nowa oprawa wizualna i odświeżony kontakt z fanami. Trudno więc nie zastanawiać się, czy właśnie taki scenariusz szykuje również god.wifi.</p>
-
-        <h2>God.wifi na koncercie Zenona Martyniuka. Czy będzie wspólny utwór?</h2>
-        <p>W ostatnim czasie uwagę fanów zwróciło również niespodziewane pojawienie się god.wifi na jednym z koncertów Zenona Martyniuka. Sama obecność artystki wywołała sporą liczbę komentarzy i teorii. Czy była to zwykła wizyta? Prywatne spotkanie? A może początek czegoś większego? Na ten moment nie istnieją żadne oficjalne informacje dotyczące potencjalnej współpracy muzycznej. Jednak historia polskiej muzyki wielokrotnie pokazywała, że najbardziej nieoczywiste połączenia potrafią wywołać największe emocje. Czy god.wifi i Zenon Martyniuk mogliby nagrać wspólny numer? Jeszcze kilka lat temu większość osób uznałaby taki pomysł za nierealny. Dziś, w czasach coraz częstszego mieszania gatunków i przełamywania muzycznych schematów, trudno całkowicie wykluczyć jakikolwiek scenariusz. Na razie pozostaje to jednak wyłącznie w sferze spekulacji.</p>
-
-        <h2>Jeden z nielicznych koncertów w 2026 roku?</h2>
-        <p>Co ciekawe, według informacji krążących w środowisku, sytuacja może wyglądać jeszcze bardziej interesująco. Wszystko wskazuje na to, że liczba festiwalowych występów god.wifi w 2026 roku może być bardzo ograniczona. Na ten moment potwierdzone zostały jedynie Polish Hip-Hop Festival oraz Rap Stacja Festival, a kolejnych ogłoszeń nadal brakuje. Nic nie jest jeszcze w 100% potwierdzone, jednak coraz więcej wskazuje na to, że artystka nie planuje intensywnego sezonu festiwalowego. Jeżeli ten scenariusz okaże się prawdziwy, każdy z zapowiedzianych występów będzie miał wyjątkowe znaczenie dla fanów. Może to oznaczać, że priorytetem pozostaje coś innego — przede wszystkim nowa muzyka.</p>
-
-        <h2>Coraz więcej znaków zapytania i coraz więcej emocji</h2>
-        <p>Nowy album w planach Internaziomale. Tajemnicze „lada moment”. Powrót na festiwalowe sceny. Pojawienie się na koncercie Zenona Martyniuka. Wszystkie te wydarzenia sprawiają, że wokół god.wifi ponownie zaczyna budować się atmosfera oczekiwania. Czy jesteśmy świadkami początku największego powrotu w karierze artystki? Na odpowiedź trzeba jeszcze chwilę poczekać, ale jedno jest pewne — po długim okresie ciszy god.wifi znów znajduje się w centrum uwagi, a najbliższe miesiące mogą okazać się dla jej fanów wyjątkowo interesujące.</p>
-      `
+      body: `<p>Po wielu miesiącach ograniczonej aktywności koncertowej wokół god.wifi ponownie zaczyna robić się głośno. W ostatnich dniach otrzymaliśmy nie jeden, a dwa mocne sygnały świadczące o tym, że artystka szykuje się do powrotu na scenę. Najpierw ogłoszono jej występ na Polish Hip-Hop Festival 2026 w Płocku, a teraz poznaliśmy kolejną datę – god.wifi pojawi się również na Rap Stacja Festival 2026. Dla fanów, którzy od dawna czekali na możliwość zobaczenia artystki na żywo, są to zdecydowanie jedne z najważniejszych informacji ostatnich miesięcy.</p><h2>Powrót na festiwalowe sceny</h2><p>Jeszcze niedawno trudno było znaleźć jakiekolwiek informacje o planach koncertowych god.wifi. Tymczasem w ciągu krótkiego czasu otrzymaliśmy dwa duże festiwalowe ogłoszenia. Najpierw artystka została potwierdzona w line-upie Polish Hip-Hop Festival w Płocku, jednego z największych wydarzeń rapowych w kraju. Niedługo później jej nazwisko pojawiło się również na plakacie Rap Stacja Festival 2026.</p><h2>Czy to początek większego planu?</h2><p>Jeszcze kilka miesięcy temu głównym tematem rozmów był zapowiadany drugi album artystki. Projekt nadal znajduje się w harmonogramie Internaziomale na 2026 rok, a niedawna relacja z tajemniczym komunikatem „lada moment 💗” tylko podgrzała atmosferę wokół nadchodzących ruchów.</p>`
     },
     art3: {
       title: "Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej",
       meta: "REDAKCJA | 6 CZERWCA 2026",
-      body: `
-        <p>Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album artystki zbliża się do premiery, a wszystko może przebiegać zgodnie z planem przedstawionym wcześniej przez Internaziomale.</p>
-        
-        <h2>Harmonogram nadal wydaje się aktualny</h2>
-        <p>Na początku roku Internaziomale opublikowało listę najważniejszych projektów zaplanowanych na 2026 rok. Wśród nich znalazł się również drugi studyjny album god.wifi, zapowiadany jako bardziej świadoma i rozwinięta odsłona jej charakterystycznego trapowo-elektronicznego brzmienia.</p>
-        <p>Od tamtej pory nie pojawiły się żadne komunikaty sugerujące przesunięcie premiery czy problemy z realizacją projektu. Wręcz przeciwnie — wszystko wskazuje na to, że prace przebiegają zgodnie z założonym harmonogramem.</p>
-        
-        <h2>Cisza przed premierą?</h2>
-        <p>Choć sama artystka nie publikuje wielu informacji dotyczących albumu, jej aktywność w ostatnich tygodniach może sugerować, że zbliżamy się do momentu rozpoczęcia właściwej kampanii promocyjnej.</p>
-        <p>W świecie muzyki okres poprzedzający premierę często wygląda właśnie w ten sposób — twórcy ograniczają komunikację do minimum, pozostawiając fanom pojedyncze wskazówki i sygnały sugerujące nadchodzące ogłoszenia.</p>
-        
-        <h2>„Lada moment 💗”</h2>
-        <p>Najwięcej emocji wywołała najnowsza relacja opublikowana przez god.wifi na Instagramie.</p>
-        <p>Artystka udostępniła prosty komunikat:</p>
-        <div class="nrd-quote">lada moment 💗</div>
-        <p>Bez dodatkowego kontekstu, dat czy wyjaśnień.</p>
-        <p>To krótka wiadomość, ale trudno przejść obok niej obojętnie. Biorąc pod uwagę wcześniejsze zapowiedzi albumu oraz fakt, że od dawna nie otrzymaliśmy żadnych większych aktualizacji dotyczących projektu, wielu fanów interpretuje relację jako zapowiedź zbliżającego się ogłoszenia.</p>
-        <p>Czy chodzi o pierwszy singiel? Datę premiery? Okładkę albumu? A może start preorderu? Na razie pozostaje to tajemnicą.</p>
-        
-        <h2>Wyciek z głębokiej sieci</h2>
-        <p>Jednak na samej aktywności w social mediach się nie kończy. Nasza redakcja dotarła do czegoś znacznie bardziej namacalnego. Dzięki zaszyfrowanym kanałom i nieoficjalnym kontaktom blisko studia nagraniowego, weszliśmy w posiadanie surowego nagrania audio — wyciekł krótki snippet utworu noszącego roboczy tytuł <b>„technologia”</b>.</p>
-        <p>To zaledwie kilkanaście sekund, ale mówi wszystko: brzmienie jest gęste, syntezatory są agresywne, a całość nosi znamiona gigantycznej ewolucji. Choć to tylko spekulacje i wycieki (a może to w pełni kontrolowany ruch szachowy przed startem machiny promocyjnej?), wniosek jest prosty. God.wifi spędza długie, nocne godziny pod powierzchnią, szlifując swój materiał. Poniższy materiał to czysty dowód, że nowa era nadchodzi znacznie szybciej, niż ktokolwiek zakładał.</p>
-
-        ${playerHTML3}
-      `
+      body: `<p>Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album artystki zbliża się do premiery, a wszystko może przebiegać zgodnie z planem przedstawionym wcześniej przez Internaziomale.</p><h2>Harmonogram nadal wydaje się aktualny</h2><p>Na początku roku Internaziomale opublikowało listę najważniejszych projektów zaplanowanych na 2026 rok. Wśród nich znalazł się również drugi studyjny album god.wifi.</p><h2>„Lada moment 💗”</h2><p>Najwięcej emocji wywołała najnowsza relacja opublikowana przez god.wifi na Instagramie.</p><div class="nrd-quote">lada moment 💗</div><h2>Wyciek z głębokiej sieci</h2><p>Jednak na samej aktywności w social mediach się nie kończy. Nasza redakcja dotarła do czegoś znacznie bardziej namacalnego. Dzięki zaszyfrowanym kanałom weszliśmy w posiadanie surowego nagrania audio — wyciekł krótki snippet utworu noszącego roboczy tytuł <b>„technologia”</b>.</p>${playerHTML3}`
     },
     art1: {
       title: "Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki",
       meta: "REDAKCJA | 9 KWIETNIA 2026",
-      body: `
-        <p>Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. Tegoroczna edycja, jak co roku, przyciąga uwagę zarówno słuchaczy, jak i przedstawicieli branży, stając się przestrzenią do docenienia najciekawszych artystów, albumów i muzycznych zjawisk ostatnich miesięcy.</p>
-        <p>W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej. Jej działalność artystyczna zwraca uwagę spójną estetyką, emocjonalnym przekazem oraz nowoczesnym podejściem do brzmienia, które wymyka się prostym gatunkowym klasyfikacjom.</p>
-        <p>Tegoroczną galę Popkillerów 2026 będzie można śledzić na żywo już dziś za pośrednictwem oficjalnego kanału YouTube.</p>
-      `
+      body: `<p>Już dzisiaj, <b>9 kwietnia 2026 roku</b>, odbędzie się gala <b>Popkillery</b> — jedno z najważniejszych wydarzeń wyróżniających twórców współczesnej sceny muzycznej w Polsce. W gronie twórców, którzy mają szansę na tegoroczne wyróżnienia, znalazła się również <b>god.wifi</b> — artystka coraz wyraźniej zaznaczająca swoją obecność na nowej scenie muzycznej.</p>`
     },
     art2: {
       title: "Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji",
       meta: "REDAKCJA | 10 KWIETNIA 2026",
-      body: `
-        <p>Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Choć nagrody trafiły do wielu artystów, trudno nie odnieść wrażenia, że narrację całego wydarzenia zdominowały dwie postacie: <b>Żabson</b> oraz <b>GOD.WIFI</b>.</p>
-        
-        <h2>Żabson – lider, trendsetter i showman</h2>
-        <p>Żabson bezsprzecznie był jedną z najważniejszych postaci gali. Zdobył tytuł <b>Rapera Roku</b> (publiczność), <b>Trendsettera Roku</b> oraz nagrodę za <b>Album Roku</b> publiczności („Hollywood Smile”). Jego pozycja na scenie wydaje się dziś niepodważalna.</p>
-        
-        <h2>„Fakty” – kulisy, które wyszły na jaw</h2>
-        <p>Jednym z najbardziej komentowanych punktów gali była nagroda za <b>Kooperację Roku</b> dla utworu „Fakty” (Żabson x Oki x Pezet x GOD.WIFI x Młody West). Z nieoficjalnych informacji krążących wcześniej w środowisku wynikało, że utwór pierwotnie był w całości nagrany przez GOD.WIFI.</p>
-        <p>Podczas gali Żabson odniósł się do tej sytuacji, w praktyce potwierdzając krążące wcześniej informacje. To rzuca zupełnie inne światło na odbiór „Faktów” i jasno wskazuje, jak duży był wkład GOD.WIFI w powstanie tego utworu.</p>
-        
-        <div class="nrd-quote">„Były problemy, szczególnie techniczne, ale ogólnie gala była do przyjęcia – mogło być lepiej, ale nie było źle.” – relacjonuje nasz korespondent.</div>
-
-        <h2>Zarejestrowane materiały</h2>
-        <p>Poniżej znajduje się oficjalny zapis archiwalny z ostatnich aktywności god.wifi uchwyconych podczas live setów.</p>
-        
-        ${playerHTML2}
-      `
+      body: `<p>Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Choć nagrody trafiły do wielu artystów, trudno nie odnieść wrażenia, że narrację całego wydarzenia zdominowały dwie postacie: <b>Żabson</b> oraz <b>GOD.WIFI</b>.</p><h2>„Fakty” – kulisy, które wyszły na jaw</h2><p>Jednym z najbardziej komentowanych punktów gali była nagroda za <b>Kooperację Roku</b> dla utworu „Fakty” (Żabson x Oki x Pezet x GOD.WIFI x Młody West). Z nieoficjalnych informacji krążących wcześniej w środowisku wynikało, że utwór pierwotnie był w całości nagrany przez GOD.WIFI.</p><div class="nrd-quote">„Były problemy, szczególnie techniczne, ale ogólnie gala była do przyjęcia – mogło być lepiej, ale nie było źle.” – relacjonuje nasz korespondent.</div><h2>Zarejestrowane materiały</h2><p>Poniżej znajduje się oficjalny zapis archiwalny z ostatnich aktywności god.wifi uchwyconych podczas live setów.</p>${playerHTML2}`
     }
   };
 
@@ -843,7 +860,6 @@
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Uruchomienie odtwarzacza w zależności od artykułu
       if(id === 'art2') initPlayer();
       if(id === 'art3') initPlayer3();
     }
@@ -853,7 +869,6 @@
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
     
-    // Zatrzymanie wszelkich wideo
     const video = document.getElementById('mp-video');
     const video3 = document.getElementById('mp-video-3');
     if(video) video.pause();
@@ -873,7 +888,6 @@
     const bar = document.getElementById('mp-bar');
     const timeEl = document.getElementById('mp-time');
     const status = document.getElementById('mp-status-text');
-
     if(!video) return;
 
     video.addEventListener('timeupdate', () => {
@@ -913,9 +927,7 @@
     const video = document.getElementById('mp-video');
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
-    if(video.duration) {
-      video.currentTime = pct * video.duration;
-    }
+    if(video.duration) { video.currentTime = pct * video.duration; }
   }
 
   function loadTrack(id, src) {
@@ -935,7 +947,6 @@
     const bar = document.getElementById('mp-bar-3');
     const timeEl = document.getElementById('mp-time-3');
     const status = document.getElementById('mp-status-text-3');
-
     if(!video) return;
 
     video.addEventListener('timeupdate', () => {
@@ -1005,9 +1016,7 @@
     const video = document.getElementById('mp-video-3');
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
-    if(video.duration) {
-      video.currentTime = pct * video.duration;
-    }
+    if(video.duration) { video.currentTime = pct * video.duration; }
   }
 </script>
 
