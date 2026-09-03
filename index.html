@@ -223,8 +223,6 @@
     pointer-events: none;
   }
 
-  /* ... RESZTA TWOJEGO KODU CSS BEZ ZMIAN ... */
-  
   .main-title {
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 300;
@@ -496,10 +494,53 @@
     .btn-back { padding: 10px 20px; font-size: 1rem; }
     #fake-google-screen { padding: 10vh 5vw; }
   }
+
+  /* ═════════ JAPOŃSKI MOTYW (ART 5 - FAZA) ═════════ */
+  body.japan-theme {
+    --bg-color: #fcfbf9; /* Odcień papieru ryżowego */
+    --text-color: #1a1a1a; /* Głęboki, tuszowy czarny */
+    transition: background-color 0.8s ease, color 0.8s ease;
+  }
+  
+  /* Subtelna czerwona kropka w tle (nawiązanie do flagi) */
+  body.japan-theme::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vmin;
+    height: 50vmin;
+    background-color: rgba(188, 0, 45, 0.04); /* Japońska czerwień (#bc002d) z dużą przezroczystością */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 1s ease;
+  }
+
+  /* Akcenty dla artykułu w trybie japońskim */
+  body.japan-theme #modal-title {
+    color: #bc002d; /* Akcent kolorystyczny tytułu */
+  }
+  
+  body.japan-theme .modal-close {
+    border-color: #bc002d;
+    color: #bc002d;
+  }
+  
+  body.japan-theme .modal-close:hover {
+    background-color: #bc002d;
+    color: #fcfbf9;
+  }
+  
+  body.japan-theme .nrd-quote {
+    border-left-color: #bc002d;
+  }
 </style>
 </head>
 <body>
 
+  <!-- FAKE GOOGLE WYSZUKIWARKA -->
   <div id="fake-google-screen">
     <div class="google-header">Wyszukiwarka</div>
     <div class="search-bar">
@@ -521,6 +562,7 @@
     </div>
   </div>
 
+  <!-- EKRAN MP3 (NIE WIESZ O CO CHO?) -->
   <div id="mp3-screen">
     <button class="btn-close-mp3" onclick="closeFakeMp3()">Wróc do wyszukiwania</button>
     <div class="mp3-container">
@@ -540,6 +582,7 @@
     </div>
   </div>
 
+  <!-- EKRAN STARTOWY -->
   <div id="intro-screen">
     <div class="main-title">gdzie jest <strong>god.wifi?</strong> Zaginęła:</div>
     
@@ -568,6 +611,7 @@
     <button class="btn-next" onclick="showSplitScreen()">DALEJ</button>
   </div>
 
+  <!-- EKRAN PODZIAŁU (MENU) -->
   <div id="split-screen">
     <div class="menu-half" onclick="openFullscreen('wiki')">
       <div class="menu-title">god.wifipedia</div>
@@ -578,6 +622,7 @@
     <button class="btn-split-back" onclick="backToIntro()">WRÓĆ</button>
   </div>
 
+  <!-- WIDOK: WIKIPEDIA -->
   <div id="wiki-view" class="fullscreen-view">
     <div class="top-bar">
       <div class="view-title">god.wifipedia</div>
@@ -619,6 +664,7 @@
     </div>
   </div>
 
+  <!-- WIDOK: NEWSY -->
   <div id="news-view" class="fullscreen-view">
     <div class="top-bar">
       <div class="view-title">god.wifi news</div>
@@ -629,24 +675,36 @@
         <div class="date-selector"><span class="date-dot active">ARCHIWUM 2026</span></div>
         <div style="font-size: 0.8rem; text-transform: uppercase;">Wybierz artykuł</div>
       </div>
+      
+      <!-- NAJNOWSZY ARTYKUŁ Z 03.09.2026 (MOTYW JAPOŃSKI) -->
+      <div class="news-item" onclick="openArticle('art5')">
+        <div class="news-meta">3 WRZEŚNIA 2026 | REDAKCJA</div>
+        <div class="news-title">NIE WIESZ O CO CHO? Powrót god.wifi jest już chyba pewny. I coś nam mówi, że będzie grubo.</div>
+        <div class="news-excerpt">Ponad 550 dni. Tyle minęło od ostatniego singla god.wifi. Cisza była długa, pytań przez ten czas pojawiło się jeszcze więcej... [Czytaj dalej]</div>
+      </div>
+      <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
+
       <div class="news-item" onclick="openArticle('art4')">
         <div class="news-meta">7 CZERWCA 2026 | REDAKCJA</div>
         <div class="news-title">Wielki powrót god.wifi? Po długiej przerwie artystka wraca na scenę</div>
         <div class="news-excerpt">Po wielu miesiącach ograniczonej aktywności koncertowej wokół god.wifi ponownie zaczyna robić się głośno. W ostatnich dniach otrzymaliśmy nie jeden, a dwa mocne sygnały... [Czytaj dalej]</div>
       </div>
       <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
+
       <div class="news-item" onclick="openArticle('art3')">
         <div class="news-meta">6 CZERWCA 2026 | REDAKCJA</div>
         <div class="news-title">Czy god.wifi wraca? Wszystko wskazuje na to, że premiera albumu jest coraz bliżej</div>
         <div class="news-excerpt">Po kilku miesiącach względnej ciszy wokół god.wifi fani ponownie zaczynają mieć powody do ekscytacji. Coraz więcej wskazuje na to, że zapowiadany drugi album... [Czytaj dalej]</div>
       </div>
       <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
+      
       <div class="news-item" onclick="openArticle('art2')">
         <div class="news-meta">10 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026: Żabson w centrum wydarzeń, GOD.WIFI w sercu dyskusji</div>
         <div class="news-excerpt">Tegoroczna gala Popkillerów przyniosła sporo emocji – zarówno na scenie, jak i poza nią. Kulisy utworu "Fakty" wychodzą na jaw, a rola god.wifi okazuje się fundamentem... [Czytaj dalej]</div>
       </div>
       <div class="border-line" style="margin-bottom:50px; border-bottom: 1px solid rgba(128,128,128,0.2);"></div>
+      
       <div class="news-item" onclick="openArticle('art1')">
         <div class="news-meta">9 KWIETNIA 2026 | REDAKCJA</div>
         <div class="news-title">Popkillery 2026 już dziś. god.wifi w gronie artystów z szansą na statuetki</div>
@@ -655,6 +713,7 @@
     </div>
   </div>
 
+  <!-- MODAL Z ARTYKUŁEM -->
   <div id="article-modal">
     <button class="modal-close" onclick="closeArticle()">X ZAMKNIJ</button>
     <div class="modal-content">
@@ -698,7 +757,6 @@
     }
   }
 
-  // Nasłuchiwanie na koniec piosenki
   document.getElementById('secret-audio').addEventListener('ended', function() {
     document.getElementById('mp3-play-btn').textContent = 'PLAY';
     document.getElementById('mp3-visualizer').classList.remove('playing');
@@ -706,13 +764,10 @@
 
   function startMainExperience() {
     document.getElementById('fake-google-screen').classList.add('hidden');
-    
-    // Pokazanie głównego intra z licznikiem
     const intro = document.getElementById('intro-screen');
     intro.style.opacity = '1';
     intro.style.pointerEvents = 'auto';
   }
-
 
   /* ═════════ LOGIKA LICZNIKA ═════════ */
   const START = new Date('2025-02-26T23:00:00Z');
@@ -826,6 +881,48 @@
   `;
 
   const articlesData = {
+    art5: {
+      title: "NIE WIESZ O CO CHO? Powrót god.wifi jest już chyba pewny. I coś nam mówi, że będzie grubo.",
+      meta: "REDAKCJA | 3 WRZEŚNIA 2026",
+      body: `
+        <p>Ponad 550 dni. Tyle minęło od ostatniego singla god.wifi. Cisza była długa, pytań przez ten czas pojawiło się jeszcze więcej, ale wygląda na to, że powoli możemy przestać zastanawiać się <b>„czy?”</b>, a zacząć pytać <b>„kiedy?”</b>.</p>
+        <p>Bo powrót god.wifi jest już chyba naprawdę pewny.</p>
+        <p>Nowy krążek wydaje się być coraz bliżej, a zanim dostaniemy całość, czeka nas <b>„FAZA”</b> - pierwszy numer ze zbliżającego się projektu. I tutaj nie mówimy już o odległej przyszłości. Premiera wygląda na coś, co jest <b>tuż za rogiem</b>, a pierwsza zajawka numeru już lata po TikToku i powoli daje nam przedsmak tego, co może nas czekać.</p>
+        <p>I… <b>wiesz o co cho?</b></p>
+        
+        <h2>550 dni później wifi znowu łapie zasięg</h2>
+        <p>Długa przerwa naturalnie rodzi pytanie, co właściwie działo się przez cały ten czas?</p>
+        <p>Trochę odpowiedzi dostaliśmy <b>31 sierpnia</b>, kiedy odbył się meetup z god.wifi. Mieliśmy okazję zadać kilka pytań dotyczących powrotu, nowej muzyki i tego, co właściwie nadchodzi.</p>
+        <p>Odpowiedzi dostaliśmy.<br>Czy dowiedzieliśmy się wszystkiego?</p>
+        <div class="nrd-quote">No właśnie nie. XD</div>
+        <p>I chyba właśnie o to chodziło. Artystka zdradziła nam kilka rzeczy, ale jednocześnie zrobiła to na tyle ostrożnie, że po meetupie liczba odpowiedzi może i wzrosła, ale razem z nią pojawiło się jeszcze więcej pytań. Szczegóły projektu nadal pozostają owiane tajemnicą i trudno jednoznacznie przewidzieć, co dokładnie god.wifi dla nas przygotowała.</p>
+        <p>Jedno natomiast dało się wyczuć bardzo wyraźnie, <b>ten projekt nie powstaje przypadkiem</b>.</p>
+        
+        <h2>Zabawa zabawą, ale tutaj widać konkretny plan</h2>
+        <p>Patrząc na to, jak god.wifi mówi o nadchodzącym materiale i jak wygląda cały powrót, można odnieść wrażenie, że te ponad 550 dni nie poszło na marne. Jest zabawa. Jest charakterystyczny chaos. Jest energia, której po god.wifi można było się spodziewać. Ale pod tym wszystkim widać też <b>skupienie i bardzo konkretną wizję</b>.</p>
+        <p>Nie wygląda to jak powrót polegający na wrzuceniu jednego numeru po długiej przerwie i sprawdzeniu, co się wydarzy. Coraz bardziej wygląda to na kompletny projekt, nad którym ktoś rzeczywiście siedział, myślał, zmieniał, poprawiał i dopracowywał go tak, żeby po długiej ciszy dostarczyć coś, co będzie miało swój własny świat.</p>
+        <p>A pierwsze elementy tego świata właśnie zaczynamy poznawać.</p>
+
+        <h2>„FAZA” nadchodzi, a machina już ruszyła</h2>
+        <p>Promocja pierwszego numeru nabiera tempa. Snippet <b>„FAZY”</b> już lata po TikToku, a w socialach god.wifi, Internaziomali i Żabsona zdecydowanie zaczyna się coś dziać. I chyba najbardziej rzuca się w oczy jedno, <b>oni się tym po prostu bawią</b>.</p>
+        <p>Nie ma tutaj sztywnej kampanii promocyjnej z komunikatem „singiel już niedługo”. Zamiast tego dostajemy energię, wygłupy, kolejne materiały i stopniowe budowanie całego klimatu wokół premiery.</p>
+        <p>A god.wifi zdążyła przy okazji pokazać, że przez czas swojej nieobecności najwyraźniej zbudowała również swój własny… <b>gang kukuriniarzy.</b></p>
+        <p>Nie pytajcie. Albo właściwie pytajcie. Tylko nie gwarantujemy, że dostaniecie konkretną odpowiedź.</p>
+        <p><b>Wiesz o co cho?</b></p>
+        
+        <h2>Kilka słów od redakcji</h2>
+        <p>Nie będziemy udawać, <b>czekamy. I to bardzo.</b></p>
+        <p>Po tak długiej przerwie oczekiwania naturalnie są spore, ale wszystko, co do tej pory widzimy, daje poczucie, że god.wifi nie zamierza po prostu wrócić.</p>
+        <p>Ona chce zrobić z tego <b>powrót</b>. Z energią, własnym stylem, masą zabawy i charakterem, którego nie da się pomylić z nikim innym. Jednocześnie coraz mocniej widać, że za całym tym pozornym chaosem stoi coś znacznie bardziej przemyślanego.</p>
+        <p>I właśnie to ciekawi nas najbardziej. Bo możemy analizować snippet. Możemy rozkładać na części odpowiedzi z meetupu. Możemy patrzeć na sociale i próbować połączyć wszystkie kropki.</p>
+        <p>Tylko mamy dziwne przeczucie, że <b>god.wifi nadal pokazuje nam jedynie mały fragment tego, co przygotowała.</b></p>
+        <p>Ponad 550 dni ciszy powoli dobiega końca.</p>
+        <p><b>„FAZA” jest coraz bliżej. Krążek jest coraz bliżej. god.wifi wraca.</b></p>
+        <p>A my?</p>
+        <p>My dalej nie do końca <b>wiemy, o co cho.</b></p>
+        <p>I chyba właśnie dlatego chcemy wiedzieć jeszcze bardziej.</p>
+      `
+    },
     art4: {
       title: "Wielki powrót god.wifi? Po długiej przerwie artystka wraca na scenę",
       meta: "REDAKCJA | 7 CZERWCA 2026",
@@ -857,6 +954,11 @@
       document.getElementById('modal-meta').innerHTML = data.meta;
       document.getElementById('modal-body').innerHTML = data.body;
       
+      // Jeżeli użytkownik otworzy najnowszy news o FAZIE - włącz japoński motyw
+      if(id === 'art5') {
+        document.body.classList.add('japan-theme');
+      }
+
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
 
@@ -868,6 +970,9 @@
   function closeArticle() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
+    
+    // Upewnij się, że usuniemy japoński motyw po zamknięciu modala
+    document.body.classList.remove('japan-theme');
     
     const video = document.getElementById('mp-video');
     const video3 = document.getElementById('mp-video-3');
