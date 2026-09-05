@@ -536,6 +536,148 @@
   body.japan-theme .nrd-quote {
     border-left-color: #bc002d;
   }
+
+
+  /* ═════════ PREMIERA FAZA / GLITCH TAKEOVER ═════════ */
+  #release-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #050505;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease;
+    overflow: hidden;
+  }
+
+  #release-screen.active { opacity: 1; pointer-events: auto; }
+
+  .release-noise {
+    position: absolute;
+    inset: -50%;
+    opacity: .07;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,.65) 3px, transparent 4px);
+    animation: scanNoise .16s steps(2) infinite;
+  }
+
+  @keyframes scanNoise {
+    0% { transform: translateY(-1%); }
+    100% { transform: translateY(1%); }
+  }
+
+  .release-stage {
+    position: relative;
+    z-index: 2;
+    width: min(92vw, 760px);
+    text-align: center;
+  }
+
+  .release-system {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: clamp(.9rem, 2vw, 1.15rem);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .release-system .big {
+    display: block;
+    margin-top: 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(2.2rem, 7vw, 5.8rem);
+    line-height: .95;
+    font-weight: 700;
+    letter-spacing: -.06em;
+  }
+
+  .glitching { animation: releaseGlitch .12s steps(2) infinite; }
+
+  @keyframes releaseGlitch {
+    0% { transform: translate(0); text-shadow: 3px 0 #ff004c, -3px 0 #00e5ff; }
+    25% { transform: translate(-3px, 1px); text-shadow: -4px 0 #ff004c, 2px 0 #00e5ff; }
+    50% { transform: translate(3px, -1px); text-shadow: 2px 0 #ff004c, -5px 0 #00e5ff; }
+    75% { transform: translate(-1px, 2px); text-shadow: 5px 0 #ff004c, -2px 0 #00e5ff; }
+    100% { transform: translate(0); text-shadow: none; }
+  }
+
+  .release-player {
+    display: none;
+    border: 1px solid rgba(255,255,255,.85);
+    padding: clamp(24px, 5vw, 44px);
+    background: rgba(5,5,5,.9);
+    box-shadow: 0 0 70px rgba(255,255,255,.06);
+  }
+
+  .release-player.active { display: block; animation: playerIn .7s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes playerIn { from { opacity:0; transform:scale(.96); filter:blur(8px); } to { opacity:1; transform:scale(1); filter:blur(0); } }
+
+  .release-kicker {
+    font-size: .72rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    opacity: .5;
+    margin-bottom: 16px;
+  }
+
+  .release-title {
+    font-size: clamp(2rem, 7vw, 4.8rem);
+    line-height: .95;
+    font-weight: 700;
+    letter-spacing: -.06em;
+  }
+
+  .release-artist {
+    margin-top: 10px;
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    opacity: .65;
+  }
+
+  .release-controls { margin-top: 38px; }
+  .release-progress {
+    height: 5px;
+    background: rgba(255,255,255,.18);
+    cursor: pointer;
+    position: relative;
+  }
+  #release-progress-bar { height: 100%; width: 0; background: #fff; pointer-events: none; }
+  .release-time { display:flex; justify-content:space-between; margin-top:9px; font-size:.72rem; opacity:.55; font-variant-numeric:tabular-nums; }
+  .release-buttons { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px; }
+  .release-btn {
+    appearance:none; background:transparent; color:#fff; border:1px solid #fff;
+    padding:12px 24px; font:inherit; cursor:pointer; letter-spacing:.12em; text-transform:uppercase;
+    transition:.2s ease;
+  }
+  .release-btn:hover { background:#fff; color:#050505; }
+  .release-status { margin-top:22px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:.75rem; opacity:.4; letter-spacing:.12em; }
+
+  /* ═════════ GOD.WIFIPEDIA CRASH ═════════ */
+  #wiki-crash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #020202;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+  }
+  #wiki-crash-screen.active { display:flex; }
+  .wiki-crash-inner { width:min(90vw, 900px); position:relative; z-index:2; }
+  .wiki-crash-code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:.8rem; letter-spacing:.16em; opacity:.5; margin-bottom:20px; }
+  .wiki-welcome { display:none; }
+  .wiki-welcome.active { display:block; animation:playerIn .55s ease both; }
+  .wiki-welcome h1 { font-size:clamp(3rem, 10vw, 8rem); line-height:.85; letter-spacing:-.07em; }
+  .wiki-welcome p { margin-top:22px; font-size:clamp(.9rem, 2vw, 1.15rem); letter-spacing:.32em; text-transform:uppercase; opacity:.6; }
+  .wiki-crash-close { margin-top:42px; }
+
 </style>
 </head>
 <body>
@@ -723,6 +865,47 @@
     </div>
   </div>
 
+
+  <!-- PREMIERA: FAZA -->
+  <div id="release-screen" aria-hidden="true">
+    <div class="release-noise"></div>
+    <div class="release-stage">
+      <div id="release-system" class="release-system">
+        <span id="release-system-line">SIGNAL LOST</span>
+        <span id="release-system-big" class="big">00:00:00</span>
+      </div>
+
+      <div id="release-player" class="release-player">
+        <div class="release-kicker">NEW SIGNAL FOUND / PREMIERE UNLOCKED</div>
+        <div class="release-title">FAZA</div>
+        <div class="release-artist">god.wifi</div>
+        <div class="release-controls">
+          <div class="release-progress" onclick="seekReleaseAudio(event)"><div id="release-progress-bar"></div></div>
+          <div class="release-time"><span id="release-current">0:00</span><span id="release-duration">0:00</span></div>
+          <div class="release-buttons">
+            <button id="release-play" class="release-btn" onclick="toggleReleaseAudio()">PLAY</button>
+            <button id="release-mute" class="release-btn" onclick="toggleReleaseMute()">MUTE</button>
+          </div>
+        </div>
+        <div class="release-status">CONNECTED TO GOD.WIFI // FULL SIGNAL</div>
+        <audio id="release-audio" src="media/videos/godwififazafull.mp3" preload="metadata"></audio>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOD.WIFIPEDIA: POST-PREMIERE CRASH -->
+  <div id="wiki-crash-screen" aria-hidden="true">
+    <div class="release-noise"></div>
+    <div class="wiki-crash-inner">
+      <div id="wiki-crash-code" class="wiki-crash-code">GOD.WIFIPEDIA // DATABASE CONNECTION</div>
+      <div id="wiki-welcome" class="wiki-welcome">
+        <h1>WELCOME<br>BACK</h1>
+        <p>STAY TUNED</p>
+        <button class="release-btn wiki-crash-close" onclick="closeWikiCrash()">WRÓĆ</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   /* ═════════ LOGIKA FAKE WYSZUKIWARKI / MP3 ═════════ */
   function openFakeMp3() {
@@ -762,32 +945,159 @@
     document.getElementById('mp3-visualizer').classList.remove('playing');
   });
 
+  let mainExperienceStarted = false;
+  let releaseSequenceStarted = false;
+  const START = new Date('2025-02-26T23:00:00Z');
+  // Premiera: 6 września 2026, 00:00 czasu polskiego (CEST / UTC+2)
+  const RELEASE_AT = new Date('2026-09-06T00:00:00+02:00');
+
+  function isReleased(){ return Date.now() >= RELEASE_AT.getTime(); }
+
   function startMainExperience() {
+    mainExperienceStarted = true;
     document.getElementById('fake-google-screen').classList.add('hidden');
     const intro = document.getElementById('intro-screen');
     intro.style.opacity = '1';
     intro.style.pointerEvents = 'auto';
+
+    if (isReleased()) {
+      freezeCounterAtRelease();
+      setTimeout(startReleaseSequence, 250);
+    }
   }
 
-  /* ═════════ LOGIKA LICZNIKA ═════════ */
-  const START = new Date('2025-02-26T23:00:00Z');
-  
+  /* ═════════ LOGIKA LICZNIKA + PREMIERY ═════════ */
   function pad(n, w=2){ return String(n).padStart(w,'0'); }
 
-  function tick(){
-    const diff = Date.now() - START;
-    const ts = Math.floor(diff/1000);
+  function renderElapsed(ms){
+    const ts = Math.max(0, Math.floor(ms/1000));
     const d = Math.floor(ts/86400);
     const h = Math.floor((ts%86400)/3600);
     const m = Math.floor((ts%3600)/60);
-    const s = ts%60;
-    
+    const sec = ts%60;
     document.getElementById('d').textContent = pad(d,3);
     document.getElementById('h').textContent = pad(h);
     document.getElementById('m').textContent = pad(m);
-    document.getElementById('s').textContent = pad(s);
+    document.getElementById('s').textContent = pad(sec);
   }
-  tick(); setInterval(tick, 1000);
+
+  function freezeCounterAtRelease(){
+    renderElapsed(RELEASE_AT.getTime() - START.getTime());
+  }
+
+  function tick(){
+    const now = Date.now();
+    if (now >= RELEASE_AT.getTime()) {
+      freezeCounterAtRelease();
+      if (mainExperienceStarted) startReleaseSequence();
+      return;
+    }
+    renderElapsed(now - START.getTime());
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  function startReleaseSequence(){
+    if (releaseSequenceStarted) return;
+    releaseSequenceStarted = true;
+
+    const screen = document.getElementById('release-screen');
+    const sys = document.getElementById('release-system');
+    const line = document.getElementById('release-system-line');
+    const big = document.getElementById('release-system-big');
+    const player = document.getElementById('release-player');
+
+    screen.classList.add('active');
+    screen.setAttribute('aria-hidden', 'false');
+    sys.classList.add('glitching');
+    line.textContent = 'SIGNAL INTERRUPTION';
+    big.textContent = '00:00:00';
+
+    setTimeout(() => {
+      sys.classList.remove('glitching');
+      line.textContent = 'CONNECTING...';
+      big.textContent = 'GOD.WIFI';
+    }, 1450);
+
+    setTimeout(() => {
+      sys.classList.add('glitching');
+      line.textContent = 'AUTHENTICATING SIGNAL';
+      big.textContent = '•••';
+    }, 2850);
+
+    setTimeout(() => {
+      sys.classList.remove('glitching');
+      line.textContent = 'CONNECTED TO';
+      big.textContent = 'GOD.WIFI';
+    }, 3950);
+
+    setTimeout(() => {
+      sys.style.display = 'none';
+      player.classList.add('active');
+    }, 5250);
+  }
+
+  const releaseAudio = document.getElementById('release-audio');
+  releaseAudio.addEventListener('loadedmetadata', () => {
+    document.getElementById('release-duration').textContent = formatTime(releaseAudio.duration);
+  });
+  releaseAudio.addEventListener('timeupdate', () => {
+    const pct = releaseAudio.duration ? (releaseAudio.currentTime / releaseAudio.duration) * 100 : 0;
+    document.getElementById('release-progress-bar').style.width = pct + '%';
+    document.getElementById('release-current').textContent = formatTime(releaseAudio.currentTime);
+  });
+  releaseAudio.addEventListener('ended', () => {
+    document.getElementById('release-play').textContent = 'PLAY';
+  });
+
+  function toggleReleaseAudio(){
+    const btn = document.getElementById('release-play');
+    if (releaseAudio.paused) {
+      releaseAudio.play();
+      btn.textContent = 'PAUSE';
+    } else {
+      releaseAudio.pause();
+      btn.textContent = 'PLAY';
+    }
+  }
+
+  function toggleReleaseMute(){
+    releaseAudio.muted = !releaseAudio.muted;
+    document.getElementById('release-mute').textContent = releaseAudio.muted ? 'UNMUTE' : 'MUTE';
+  }
+
+  function seekReleaseAudio(e){
+    if (!releaseAudio.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    releaseAudio.currentTime = pct * releaseAudio.duration;
+  }
+
+  function openWikiCrash(){
+    const crash = document.getElementById('wiki-crash-screen');
+    const code = document.getElementById('wiki-crash-code');
+    const welcome = document.getElementById('wiki-welcome');
+    crash.classList.add('active');
+    crash.setAttribute('aria-hidden', 'false');
+    welcome.classList.remove('active');
+    code.style.display = 'block';
+    code.classList.add('glitching');
+    code.textContent = 'GOD.WIFIPEDIA // DATABASE CONNECTION';
+
+    setTimeout(() => { code.textContent = 'ERROR 0xWIFI // ARCHIVE CORRUPTED'; }, 650);
+    setTimeout(() => { code.textContent = 'RESTORING SIGNAL...'; }, 1350);
+    setTimeout(() => {
+      code.classList.remove('glitching');
+      code.style.display = 'none';
+      welcome.classList.add('active');
+    }, 2250);
+  }
+
+  function closeWikiCrash(){
+    const crash = document.getElementById('wiki-crash-screen');
+    crash.classList.remove('active');
+    crash.setAttribute('aria-hidden', 'true');
+  }
 
   /* ═════════ NAWIGACJA: EKRANY ═════════ */
   function showSplitScreen() {
@@ -809,6 +1119,10 @@
   }
 
   function openFullscreen(type) {
+    if (type === 'wiki' && isReleased()) {
+      openWikiCrash();
+      return;
+    }
     const split = document.getElementById('split-screen');
     const view = document.getElementById(`${type}-view`);
     split.classList.remove('active');
