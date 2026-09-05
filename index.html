@@ -655,6 +655,31 @@
   }
   .release-btn:hover { background:#fff; color:#050505; }
   .release-status { margin-top:22px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:.75rem; opacity:.4; letter-spacing:.12em; }
+  .spotify-embed-slot {
+    margin-top: 34px;
+    width: min(92vw, 620px);
+  }
+  .spotify-embed-slot iframe {
+    width: 100%;
+    border: 0;
+    display: block;
+  }
+  .spotify-embed-placeholder {
+    min-height: 152px;
+    border: 1px dashed rgba(255,255,255,.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: .12em;
+    text-align: center;
+    opacity: .65;
+  }
+  .spotify-embed-placeholder span { font-size: .72rem; }
+  .spotify-embed-placeholder strong { font-size: 1rem; }
+
 
   /* ═════════ GOD.WIFIPEDIA CRASH ═════════ */
   #wiki-crash-screen {
@@ -879,16 +904,17 @@
         <div class="release-kicker">NEW SIGNAL FOUND / PREMIERE UNLOCKED</div>
         <div class="release-title">FAZA</div>
         <div class="release-artist">god.wifi</div>
-        <div class="release-controls">
-          <div class="release-progress" onclick="seekReleaseAudio(event)"><div id="release-progress-bar"></div></div>
-          <div class="release-time"><span id="release-current">0:00</span><span id="release-duration">0:00</span></div>
-          <div class="release-buttons">
-            <button id="release-play" class="release-btn" onclick="toggleReleaseAudio()">PLAY</button>
-            <button id="release-mute" class="release-btn" onclick="toggleReleaseMute()">MUTE</button>
+        <div id="spotify-embed-slot" class="spotify-embed-slot">
+          <!-- ═════════ SPOTIFY EMBED: WKLEJ TUTAJ KOD O 00:00 ═════════
+               Usuń poniższy div .spotify-embed-placeholder i w jego miejsce
+               wklej cały kod <iframe> wygenerowany przez Spotify.
+          ═══════════════════════════════════════════════════════════════ -->
+          <div class="spotify-embed-placeholder">
+            <span>SPOTIFY SIGNAL READY</span>
+            <strong>EMBED PENDING</strong>
           </div>
         </div>
         <div class="release-status">CONNECTED TO GOD.WIFI // FULL SIGNAL</div>
-        <audio id="release-audio" src="media/videos/godwififazafull.mp3" preload="metadata"></audio>
       </div>
     </div>
   </div>
@@ -1037,41 +1063,7 @@
     }, 5250);
   }
 
-  const releaseAudio = document.getElementById('release-audio');
-  releaseAudio.addEventListener('loadedmetadata', () => {
-    document.getElementById('release-duration').textContent = formatTime(releaseAudio.duration);
-  });
-  releaseAudio.addEventListener('timeupdate', () => {
-    const pct = releaseAudio.duration ? (releaseAudio.currentTime / releaseAudio.duration) * 100 : 0;
-    document.getElementById('release-progress-bar').style.width = pct + '%';
-    document.getElementById('release-current').textContent = formatTime(releaseAudio.currentTime);
-  });
-  releaseAudio.addEventListener('ended', () => {
-    document.getElementById('release-play').textContent = 'PLAY';
-  });
-
-  function toggleReleaseAudio(){
-    const btn = document.getElementById('release-play');
-    if (releaseAudio.paused) {
-      releaseAudio.play();
-      btn.textContent = 'PAUSE';
-    } else {
-      releaseAudio.pause();
-      btn.textContent = 'PLAY';
-    }
-  }
-
-  function toggleReleaseMute(){
-    releaseAudio.muted = !releaseAudio.muted;
-    document.getElementById('release-mute').textContent = releaseAudio.muted ? 'UNMUTE' : 'MUTE';
-  }
-
-  function seekReleaseAudio(e){
-    if (!releaseAudio.duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pct = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-    releaseAudio.currentTime = pct * releaseAudio.duration;
-  }
+  /* Spotify Embed działa niezależnie wewnątrz iframe — brak lokalnego playera MP3. */
 
   function openWikiCrash(){
     const crash = document.getElementById('wiki-crash-screen');
